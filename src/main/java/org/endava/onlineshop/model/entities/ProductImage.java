@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "productImage")
+@Table(name = "product_image")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,6 +21,6 @@ public class ProductImage {
     private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 }
