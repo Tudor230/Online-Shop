@@ -26,7 +26,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
-    private User userId;
+    private User user;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
