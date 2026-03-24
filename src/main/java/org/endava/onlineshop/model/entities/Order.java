@@ -25,18 +25,18 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
-    private User userId;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "orderProduct",
-        joinColumns = @JoinColumn(name = "orderId"),
-        inverseJoinColumns = @JoinColumn(name = "productId")
+        name = "order_product",
+        joinColumns = @JoinColumn(name = "order_id"),
+        inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private List<Product> products = new ArrayList<>();
 
-    @Column(name = "orderStatus", nullable = false)
+    @Column(name = "order_status", nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
