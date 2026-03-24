@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "products")
+@Table(name = "product")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,7 +30,6 @@ public class Product {
     @Column(name = "price", nullable = false)
     private Double price;
 
-    @OneToMany
-    @Column(name = "productImage", nullable = false)
-    private List<ProductImage> image = new ArrayList<ProductImage>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images = new ArrayList<>();
 }

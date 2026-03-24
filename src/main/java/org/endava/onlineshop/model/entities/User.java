@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.endava.onlineshop.model.enums.Role;
 
 @Entity
+@Table(name = "user")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,10 +24,10 @@ public class User {
     @Column(nullable = false, length = 30)
     private String password;
 
-    @Column(name = "first_name", nullable = false, length = 100)
+    @Column(name = "firstName", nullable = false, length = 100)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false, length = 100)
+    @Column(name = "lastName", nullable = false, length = 100)
     private String lastName;
 
     @Column(nullable = false)

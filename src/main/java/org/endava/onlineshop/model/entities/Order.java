@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
+// Use backticks so Hibernate will escape the identifier for MySQL: `order`
+@Table(name = "`order`")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,27 +22,22 @@ public class Order {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column(name = "userId", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", nullable = false)
     private User userId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "order_products",
+        name = "orderProduct",
         joinColumns = @JoinColumn(name = "orderId"),
         inverseJoinColumns = @JoinColumn(name = "productId")
     )
-    private List<Product> products = new ArrayList<Product>();
+    private List<Product> products = new ArrayList<>();
 
     @Column(name = "orderStatus", nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-
-
-
-
-
 
 }
