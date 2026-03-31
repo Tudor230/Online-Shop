@@ -1,13 +1,13 @@
 package org.endava.onlineshop.model.mapper;
 
-import org.endava.onlineshop.model.DTO.UserRequestDTO;
+import org.endava.onlineshop.model.dto.UserRequestDto;
+import org.endava.onlineshop.model.dto.UserResponseDto;
 import org.endava.onlineshop.model.entities.User;
 
 public class UserMapper {
-    public User toUser(UserRequestDTO userRequestDto){
+    public User toUserEntity(UserRequestDto userRequestDto) {
         User user = new User();
 
-        user.setId(userRequestDto.id());
         user.setEmail(userRequestDto.email());
         user.setPassword(userRequestDto.password());
         user.setFirstName(userRequestDto.firstName());
@@ -17,12 +17,10 @@ public class UserMapper {
         return user;
     }
 
-    public UserRequestDTO toUserRequestDTO(User user){
-
-        return new UserRequestDTO(
+    public UserResponseDto toUserResponseDto(User user) {
+        return new UserResponseDto(
                 user.getId(),
                 user.getEmail(),
-                user.getPassword(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getRole()

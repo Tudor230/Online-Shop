@@ -7,7 +7,7 @@ import org.endava.onlineshop.model.entities.ProductImage;
 
 public class ProductMapper {
 
-    public static Product toProductEntity(CreateProductRequestDto dto) {
+    public Product toProductEntity(CreateProductRequestDto dto) {
 
         Product product = new Product();
         product.setName(dto.name());
@@ -23,7 +23,7 @@ public class ProductMapper {
         return product;
     }
 
-    public static ProductResponseDto toProductDto(Product product) {
+    public ProductResponseDto toProductDto(Product product) {
 
         return new ProductResponseDto(
             product.getId(),
