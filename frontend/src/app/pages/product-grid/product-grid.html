@@ -31,7 +31,12 @@
   } @else {
     <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5">
       @for (product of products(); track product.id) {
-        <app-product-card [product]="product" />
+        <app-product-card
+          [product]="product"
+          (selected)="openProductDetails(product.id)"
+          (addToCart)="addProductToCart(product.id)"
+          (saveToWishlist)="saveProductToWishlist(product.id)"
+        />
       }
     </div>
   }

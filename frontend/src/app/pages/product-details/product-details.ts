@@ -1,18 +1,19 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { mockProducts } from '../../../assets/data/mock-products';
+import { ProductDisplayComponent } from '../../shared/ui/product-display/product-display';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, RouterLink],
+  imports: [ProductDisplayComponent],
   templateUrl: './product-details.html'
 })
 export class ProductDetailsComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   readonly isLoading = signal(false);
   readonly selectedImageIndex = signal(0);
@@ -42,4 +43,12 @@ export class ProductDetailsComponent {
   selectImage(index: number): void {
     this.selectedImageIndex.set(index);
   }
+
+  goBackToGrid(): void {
+    void this.router.navigateByUrl('/');
+  }
+
+  addToCart(): void {}
+
+  saveToWishlist(): void {}
 }

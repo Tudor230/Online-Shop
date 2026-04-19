@@ -1,12 +1,16 @@
 <article
-  [routerLink]="['/product', product.id]"
   class="group relative grid h-full cursor-pointer gap-4 rounded-2xl border border-surface-elevated bg-surface-default p-4 transition-colors duration-200 hover:bg-surface-elevated"
+  role="button"
+  tabindex="0"
+  (click)="onSelected()"
+  (keydown.enter)="onSelected()"
+  (keydown.space)="onSelected()"
 >
   <button
     type="button"
     aria-label="Save to wishlist"
     class="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-surface-default text-text-primary opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-    (click)="$event.stopPropagation()"
+    (click)="onSaveToWishlist($event)"
   >
     ♡
   </button>
@@ -31,7 +35,7 @@
       type="button"
       aria-label="Add to cart"
       class="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
-      (click)="$event.stopPropagation()"
+      (click)="onAddToCart($event)"
     >
       +
     </button>
