@@ -1,0 +1,39 @@
+<article
+  [routerLink]="['/product', product.id]"
+  class="group relative grid h-full cursor-pointer gap-4 rounded-2xl border border-surface-elevated bg-surface-default p-4 transition-colors duration-200 hover:bg-surface-elevated"
+>
+  <button
+    type="button"
+    aria-label="Save to wishlist"
+    class="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-surface-default text-text-primary opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+    (click)="$event.stopPropagation()"
+  >
+    ♡
+  </button>
+
+  <div
+    class="aspect-[4/3] rounded-xl bg-surface-elevated text-text-secondary grid place-items-center"
+    role="img"
+    [attr.aria-label]="product.imagePlaceholder"
+  >
+    <span class="text-sm font-medium">{{ product.imagePlaceholder }}</span>
+  </div>
+
+  <div class="grid gap-2">
+    <p class="text-xs font-semibold uppercase tracking-wide text-primary-hover">{{ product.category }}</p>
+    <h3 class="text-base font-semibold text-text-primary">{{ product.title }}</h3>
+    <p class="text-sm text-text-secondary">★ {{ product.rating | number : '1.1-1' }} ({{ product.reviewCount }})</p>
+  </div>
+
+  <div class="mt-auto flex items-center justify-between gap-3">
+    <p class="text-lg font-semibold text-text-primary">{{ product.price | currency : 'USD' : 'symbol' : '1.2-2' }}</p>
+    <button
+      type="button"
+      aria-label="Add to cart"
+      class="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
+      (click)="$event.stopPropagation()"
+    >
+      +
+    </button>
+  </div>
+</article>

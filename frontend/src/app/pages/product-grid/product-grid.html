@@ -1,0 +1,38 @@
+<section class="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 lg:px-8">
+  <header class="mb-6 flex flex-col gap-2">
+    <h1 class="text-2xl font-semibold text-text-primary">Gaming Tech Grid</h1>
+    <p class="text-sm text-text-secondary">Customized accessories for your next setup upgrade.</p>
+  </header>
+
+  @if (isLoading()) {
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5">
+      @for (item of skeletonItems; track item) {
+        <div class="rounded-2xl border border-surface-elevated bg-surface-default p-4">
+          <div class="aspect-[4/3] rounded-xl bg-surface-elevated animate-pulse"></div>
+          <div class="mt-4 h-4 w-3/4 rounded-full bg-surface-elevated animate-pulse"></div>
+          <div class="mt-3 h-4 w-1/3 rounded-full bg-surface-elevated animate-pulse"></div>
+        </div>
+      }
+    </div>
+  } @else if (!products().length) {
+    <div
+      class="flex min-h-64 flex-col items-center justify-center gap-3 rounded-2xl border border-surface-elevated bg-surface-default p-8 text-center"
+    >
+      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-surface-elevated text-text-secondary">◎</div>
+      <p class="text-base font-semibold text-text-primary">No products found</p>
+      <p class="text-sm text-text-secondary">Try refreshing or browse the featured collection next.</p>
+      <button
+        type="button"
+        class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
+      >
+        Browse featured drops
+      </button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5">
+      @for (product of products(); track product.id) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  }
+</section>

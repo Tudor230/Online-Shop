@@ -1,3 +1,26 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@theme {
+  --color-primary: hsl(250 85% 55%);
+  --color-primary-hover: hsl(250 85% 65%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-warning: hsl(45 100% 50%);
+
+  --color-bg-default: hsl(220 40% 10%);
+  --color-surface-default: hsl(220 35% 15%);
+  --color-surface-elevated: hsl(220 35% 20%);
+  --color-surface-glass: hsl(220 35% 15% / 0.7);
+
+  --color-text-primary: hsl(210 20% 98%);
+  --color-text-secondary: hsl(215 15% 65%);
+
+  --font-sans: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+}
+
+body {
+  background-color: var(--color-bg-default);
+  color: var(--color-text-primary);
+  color-scheme: dark;
+}
