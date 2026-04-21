@@ -7,7 +7,7 @@ import org.endava.onlineshop.model.entities.Product;
 import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.model.enums.OrderStatus;
 
-import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 // TODO: use MapStruct
@@ -20,7 +20,7 @@ public class OrderMapper {
         this.productMapper = productMapper;
     }
 
-    public Order toOrderEntity(CreateOrderRequestDto dto, Function<Long, User> userMapper, Function<Long, Product> productMapper) {
+    public Order toOrderEntity(CreateOrderRequestDto dto, Function<UUID, User> userMapper, Function<Long, Product> productMapper) {
         Order order = new Order();
 
         order.setUser(userMapper.apply(dto.userId()));

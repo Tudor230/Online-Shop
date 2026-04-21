@@ -37,3 +37,4 @@ build/
 **/out
 **/target
 **/.angular
+/schema/schema.sql
