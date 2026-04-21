@@ -27,6 +27,5 @@ public record UserRequestDto(
         String lastName,
 
         @NotNull(message = "Role can not be empty")
-        @NotBlank
         Role role) {
 }
