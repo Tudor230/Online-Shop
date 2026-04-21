@@ -1,20 +1,21 @@
 package org.endava.onlineshop.service;
 
+import lombok.RequiredArgsConstructor;
+import org.endava.onlineshop.model.dto.ProductResponseDto;
 import org.endava.onlineshop.model.entities.Product;
 import org.endava.onlineshop.repository.ProductRepository;
-import org.endava.onlineshop.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.endava.onlineshop.model.mapper.ProductMapper;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductMapper productMapper = new ProductMapper();
 
-    public ProductService(ProductService productService) {
-        this.productRepository = productService.productRepository;
-    }
 
     public void deleteProductById(Long id) {
         productRepository.deleteById(id);
@@ -24,20 +25,20 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-    public List<Product> findByName(String name) {
-        return productRepository.findByName(name).stream().toList();
+    public List<ProductResponseDto> findByName(String name) {
+        return productRepository.findByName(name).stream().map(productMapper::toProductDto).toList();
     }
 
-    public List<Product> findByPriceLessThan(Double price) {
-        return productRepository.findByPriceLessThan(price).stream().toList();
+    public List<ProductResponseDto> findByPriceLessThan(Double price) {
+        return productRepository.findByPriceLessThan(price).stream().map(productMapper::toProductDto).toList();
     }
 
-    public List<Product> findByPriceGreaterThan(Double price) {
-        return productRepository.findByPriceGreaterThan(price).stream().toList();
+    public List<ProductResponseDto> findByPriceGreaterThan(Double price) {
+        return productRepository.findByPriceGreaterThan(price).stream().map(productMapper::toProductDto).toList();
     }
 
-    public List<Product> findByPriceBetween(Double price1, Double price2) {
-        return productRepository.findByPriceBetween(price1, price2).stream().toList();
+    public List<ProductResponseDto> findByPriceBetween(Double price1, Double price2) {
+        return productRepository.findByPriceBetween(price1, price2).stream().map(productMapper::toProductDto).toList();
     }
 
     public Product createProduct(Product product) {
@@ -53,7 +54,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public List<ProductResponseDto> findAll() {
+        return productRepository.findAll().stream().map(productMapper::toProductDto).toList();
     }
 }
