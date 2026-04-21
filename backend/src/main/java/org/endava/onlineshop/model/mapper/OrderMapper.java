@@ -12,13 +12,8 @@ import java.util.function.Function;
 
 // TODO: use MapStruct
 public class OrderMapper {
-    private final UserMapper userMapper;
-    private final ProductMapper productMapper;
-
-    private OrderMapper(UserMapper userMapper, ProductMapper productMapper) {
-        this.userMapper = userMapper;
-        this.productMapper = productMapper;
-    }
+    private final UserMapper userMapper = new UserMapper();
+    private final ProductMapper productMapper = new ProductMapper();
 
     public Order toOrderEntity(CreateOrderRequestDto dto, Function<Long, User> userMapper, Function<Long, Product> productMapper) {
         Order order = new Order();
