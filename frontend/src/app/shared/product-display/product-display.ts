@@ -1,6 +1,6 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import type { Product } from '../../../../assets/data/mock-products';
+import type { Product } from '../../../assets/data/mock-products';
 
 @Component({
   selector: 'app-product-display',

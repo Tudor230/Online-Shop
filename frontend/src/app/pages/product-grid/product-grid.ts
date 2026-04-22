@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { mockProducts, type Product } from '../../../assets/data/mock-products';
-import { ProductCardComponent } from '../../shared/ui/product-card/product-card';
+import { ProductCardComponent } from '../../shared/product-card/product-card';
 
 @Component({
   selector: 'app-product-grid',

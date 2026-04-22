@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { mockProducts } from '../../../assets/data/mock-products';
-import { ProductDisplayComponent } from '../../shared/ui/product-display/product-display';
+import { ProductDisplayComponent } from '../../shared/product-display/product-display';
 
 @Component({
   selector: 'app-product-details',
