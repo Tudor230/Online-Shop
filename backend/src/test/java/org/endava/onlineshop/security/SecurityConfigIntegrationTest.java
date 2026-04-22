@@ -1,6 +1,7 @@
 package org.endava.onlineshop.security;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -87,6 +88,11 @@ class SecurityConfigIntegrationTest {
 
     @TestConfiguration
     static class TestBeans {
+        @Bean
+        AuthenticatedUserSyncFilter authenticatedUserSyncFilter() {
+            return Mockito.mock(AuthenticatedUserSyncFilter.class);
+        }
+
         @Bean
         JwtDecoder jwtDecoder() {
             return token -> Jwt.withTokenValue(token)
