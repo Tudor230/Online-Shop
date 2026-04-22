@@ -58,7 +58,7 @@ public class User {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders = new ArrayList<>();
+//    @OneToMany(mappedBy = "user")
+//    private List<Order> orders = new ArrayList<>();
 }
 
