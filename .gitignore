@@ -38,3 +38,4 @@ build/
 **/target
 **/.angular
 /schema/schema.sql
+/.agents
