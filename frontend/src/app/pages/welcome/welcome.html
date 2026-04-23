@@ -1,0 +1,157 @@
+<main>
+  <!-- Section 1: Hero — Cinematic Depth -->
+  <section class="relative flex min-h-[100dvh] items-center justify-center overflow-hidden">
+    <!-- Mesh gradient background -->
+    <div class="hero-mesh-gradient absolute inset-0" aria-hidden="true"></div>
+
+    <!-- Grid pattern texture -->
+    <div class="hero-grid-pattern absolute inset-0" aria-hidden="true"></div>
+
+    <!-- Decorative floating orbs -->
+    <div class="absolute -right-20 top-1/4 h-72 w-72 rounded-full bg-primary/5 blur-3xl animate-pulse-glow" aria-hidden="true"></div>
+    <div class="absolute -left-16 bottom-1/4 h-56 w-56 rounded-full bg-primary/10 blur-3xl animate-pulse-glow [animation-delay:2s]" aria-hidden="true"></div>
+
+    <!-- Hero content -->
+    <div class="relative z-10 flex flex-col items-center gap-8 px-4 text-center animate-hero-entrance">
+      <!-- Eyebrow tag -->
+      <span class="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium text-primary">Premium Tech</span>
+
+      <h1 class="gradient-text-brand text-5xl font-extrabold tracking-tight md:text-7xl lg:text-8xl">Online Shop</h1>
+
+      <p class="max-w-md text-lg font-normal leading-relaxed text-text-secondary md:text-xl">Build Your Setup. Make It Yours.</p>
+
+      <button
+        type="button"
+        aria-label="Explore the Collection"
+        class="group mt-2 inline-flex items-center gap-3 rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all duration-500 ease-premium hover:bg-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-default"
+        (click)="navigateToProducts()"
+      >
+        Explore the Collection
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Decorative divider -->
+  <div class="mx-auto h-px w-24 bg-gradient-to-r from-transparent via-primary/30 to-transparent" aria-hidden="true"></div>
+
+  <!-- Section 2: Featured Products — Editorial Grid -->
+  <section class="mx-auto w-full max-w-7xl px-4 py-24 md:px-6 lg:px-8" aria-labelledby="featured-heading">
+    <header class="mb-10 flex flex-col gap-3">
+      <span class="w-fit rounded-full border border-surface-elevated/80 bg-surface-elevated/50 px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium text-primary backdrop-blur-sm">Curated Selection</span>
+      <h2 id="featured-heading" class="text-2xl font-semibold tracking-tight text-text-primary md:text-3xl">Featured Drops</h2>
+      <p class="text-sm font-normal text-text-secondary">Curated picks for your next upgrade.</p>
+    </header>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+      @for (product of products(); track product.id) {
+        <app-product-card
+          [product]="product"
+          (selected)="openProductDetails(product.id)"
+          (addToCart)="addProductToCart(product.id)"
+          (saveToWishlist)="saveProductToWishlist(product.id)"
+        />
+      }
+    </div>
+
+    <div class="mt-10 flex justify-center">
+      <button
+        type="button"
+        aria-label="View all products"
+        class="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all duration-500 ease-premium hover:bg-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-default"
+        (click)="navigateToProducts()"
+      >
+        View All
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/10 transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-[1px]" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Section 3: Value Propositions — Haptic Cards -->
+  <section class="mx-auto w-full max-w-7xl px-4 py-24 md:px-6 lg:px-8" aria-label="Why shop with us">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <!-- Free Delivery — Double-Bezel Card -->
+      <div class="group p-1.5 rounded-[1.75rem] ring-1 ring-white/[0.06] bg-white/[0.03] transition-all duration-500 ease-premium hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
+        <div class="flex flex-col gap-4 rounded-[1.375rem] bg-surface-default p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-elevated/80 text-primary ring-1 ring-white/[0.04]" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 3h15v13H1z" />
+              <path d="M16 8h4l3 3v5h-7V8z" />
+              <circle cx="5.5" cy="18.5" r="2.5" />
+              <circle cx="18.5" cy="18.5" r="2.5" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold tracking-tight text-text-primary">Free Delivery</h3>
+          <p class="text-sm font-normal text-text-secondary">On orders over $50. Estimated 2-4 business days.</p>
+        </div>
+      </div>
+
+      <!-- 30-Day Free Returns — Double-Bezel Card -->
+      <div class="group p-1.5 rounded-[1.75rem] ring-1 ring-white/[0.06] bg-white/[0.03] transition-all duration-500 ease-premium hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
+        <div class="flex flex-col gap-4 rounded-[1.375rem] bg-surface-default p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-elevated/80 text-primary ring-1 ring-white/[0.04]" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold tracking-tight text-text-primary">30-Day Free Returns</h3>
+          <p class="text-sm font-normal text-text-secondary">Not satisfied? Return it for a full refund.</p>
+        </div>
+      </div>
+
+      <!-- Secure Checkout — Double-Bezel Card -->
+      <div class="group p-1.5 rounded-[1.75rem] ring-1 ring-white/[0.06] bg-white/[0.03] transition-all duration-500 ease-premium hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
+        <div class="flex flex-col gap-4 rounded-[1.375rem] bg-surface-default p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
+          <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-elevated/80 text-primary ring-1 ring-white/[0.04]" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-semibold tracking-tight text-text-primary">Secure Checkout</h3>
+          <p class="text-sm font-normal text-text-secondary">Your payment information is encrypted and safe.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: CTA Banner — Atmospheric Layering -->
+  <section class="relative overflow-hidden py-24" aria-label="Call to action">
+    <div class="cta-mesh-gradient absolute inset-0" aria-hidden="true"></div>
+
+    <!-- Decorative glow orb -->
+    <div class="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl animate-pulse-glow" aria-hidden="true"></div>
+
+    <div class="relative z-10 mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 text-center md:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold tracking-tight leading-tight text-text-primary md:text-4xl">Ready to Upgrade?</h2>
+      <button
+        type="button"
+        aria-label="Browse the collection"
+        class="group mt-2 inline-flex items-center gap-3 rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all duration-500 ease-premium hover:bg-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-default"
+        (click)="navigateToProducts()"
+      >
+        Explore the Collection
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Section 5: Footer -->
+  <footer class="border-t border-surface-elevated/50 py-12">
+    <div class="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 text-center md:px-6 lg:px-8">
+      <p class="text-xs font-normal text-text-secondary">&copy; 2026 Online Shop. All rights reserved.</p>
+      <a
+        class="text-xs font-normal text-text-secondary transition-all duration-500 ease-premium hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-default focus-visible:rounded-sm"
+        routerLink="/"
+      >
+        Browse Products
+      </a>
+    </div>
+  </footer>
+</main>

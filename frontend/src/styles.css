@@ -17,10 +17,75 @@
   --font-sans: 'Plus Jakarta Sans', 'Inter', sans-serif;
   --radius-2xl: 1rem;
   --radius-3xl: 1.5rem;
+
+  --animate-fade-in: fade-in 400ms ease-out forwards;
+  --animate-hero-entrance: hero-entrance 900ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  --animate-pulse-glow: pulse-glow 4s ease-in-out infinite;
+
+  --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hero-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background-color: var(--color-bg-default);
   color: var(--color-text-primary);
   color-scheme: dark;
+}
+
+@layer components {
+  .hero-mesh-gradient {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(250 85% 55% / 0.15), transparent),
+      radial-gradient(ellipse 60% 40% at 85% 50%, hsl(250 85% 55% / 0.08), transparent),
+      radial-gradient(ellipse 60% 50% at 15% 80%, hsl(280 60% 40% / 0.06), transparent);
+  }
+
+  .cta-mesh-gradient {
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 50%, hsl(250 85% 55% / 0.12), transparent),
+      radial-gradient(ellipse 80% 40% at 20% 30%, hsl(280 50% 40% / 0.06), transparent),
+      radial-gradient(ellipse 60% 50% at 80% 80%, hsl(250 85% 45% / 0.08), transparent);
+  }
+
+  .gradient-text-brand {
+    background: linear-gradient(135deg, hsl(270 80% 75%) 0%, hsl(250 85% 55%) 50%, hsl(230 70% 65%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-grid-pattern {
+    background-image:
+      linear-gradient(hsl(250 85% 55% / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(250 85% 55% / 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 20%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 20%, transparent 70%);
+  }
 }
