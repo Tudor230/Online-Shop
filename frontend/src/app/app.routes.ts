@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
+import { profileAuthGuard } from './core/auth/profile-auth.guard';
 import { ProductDetailsComponent } from './pages/product-details/product-details';
 import { ProductGridComponent } from './pages/product-grid/product-grid';
+import { ProfilePageComponent } from './pages/profile/profile';
 
 export const routes: Routes = [
   {
@@ -10,5 +12,10 @@ export const routes: Routes = [
   {
     path: 'product/:id',
     component: ProductDetailsComponent
+  },
+  {
+    path: 'profile',
+    canActivate: [profileAuthGuard],
+    component: ProfilePageComponent
   }
 ];

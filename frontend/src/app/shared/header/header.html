@@ -1,15 +1,18 @@
 <header class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 md:px-6 lg:px-8">
-  <a href="/" class="text-lg font-semibold text-text-primary">Online Shop</a>
+  <a routerLink="/" class="text-lg font-semibold text-text-primary">Online Shop</a>
 
   @if (authState.isAuthenticated()) {
-    <div class="inline-flex items-center gap-2 rounded-full bg-surface-default px-3 py-2 text-sm text-text-primary">
+    <a
+      routerLink="/profile"
+      class="inline-flex items-center gap-2 rounded-full bg-surface-default px-3 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
+    >
       <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-surface-elevated" aria-hidden="true">
         <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
           <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" />
         </svg>
       </span>
       <span>{{ authState.displayName() }}</span>
-    </div>
+    </a>
   } @else {
     <button
       type="button"

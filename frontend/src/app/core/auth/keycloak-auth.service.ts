@@ -76,6 +76,10 @@ export class KeycloakAuthService {
     this.authState.clear();
   }
 
+  getAccessToken(): string | null {
+    return this.keycloak?.token ?? null;
+  }
+
   private async ensureKeycloak(): Promise<Keycloak> {
     if (this.keycloak) {
       return this.keycloak;
