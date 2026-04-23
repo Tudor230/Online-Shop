@@ -25,6 +25,123 @@
   --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg-default);
+    color: var(--color-text-primary);
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  .hero-mesh-gradient {
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(250 85% 55% / 0.15), transparent),
+      radial-gradient(ellipse 60% 40% at 85% 50%, hsl(250 85% 55% / 0.08), transparent),
+      radial-gradient(ellipse 60% 50% at 15% 80%, hsl(280 60% 40% / 0.06), transparent);
+  }
+
+  .cta-mesh-gradient {
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 50%, hsl(250 85% 55% / 0.12), transparent),
+      radial-gradient(ellipse 80% 40% at 20% 30%, hsl(280 50% 40% / 0.06), transparent),
+      radial-gradient(ellipse 60% 50% at 80% 80%, hsl(250 85% 45% / 0.08), transparent);
+  }
+
+  .hero-grid-pattern {
+    background-image:
+      linear-gradient(hsl(250 85% 55% / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(250 85% 55% / 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 20%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 20%, transparent 70%);
+  }
+
+  /* Glass-morphism surfaces */
+  .glass-surface {
+    background: var(--color-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(220 35% 30% / 0.4);
+  }
+
+}
+
+@layer utilities {
+  .px-safe {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .link-underline {
+    position: relative;
+    text-decoration: none;
+  }
+
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.4s var(--ease-premium);
+  }
+
+  .link-underline:hover::after {
+    width: 100%;
+  }
+
+  /* Scroll-driven entrance animations (progressive enhancement) */
+  @supports (animation-timeline: view()) {
+    .animate-fade-up {
+      animation: fade-up 0.8s var(--ease-premium) both;
+      animation-timeline: view(block 10% 30%);
+      animation-range: entry 0% cover 25%;
+    }
+
+    .animate-scale-in {
+      animation: scale-in 0.8s var(--ease-premium) both;
+      animation-timeline: view(block 10% 30%);
+      animation-range: entry 0% cover 25%;
+    }
+
+    .animate-slide-in-left {
+      animation: slide-in-left 0.8s var(--ease-premium) both;
+      animation-timeline: view(block 10% 30%);
+      animation-range: entry 0% cover 25%;
+    }
+
+    .animate-slide-in-right {
+      animation: slide-in-right 0.8s var(--ease-premium) both;
+      animation-timeline: view(block 10% 30%);
+      animation-range: entry 0% cover 25%;
+    }
+
+    /* Stagger ranges for children */
+    .range-stagger-1 { animation-range: entry 0% cover 25%; }
+    .range-stagger-2 { animation-range: entry 5% cover 30%; }
+    .range-stagger-3 { animation-range: entry 10% cover 35%; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-fade-up,
+      .animate-scale-in,
+      .animate-slide-in-left,
+      .animate-slide-in-right {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+
+}
+
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -48,44 +165,69 @@
   50% { opacity: 0.8; }
 }
 
-html {
-  scroll-behavior: smooth;
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-body {
-  background-color: var(--color-bg-default);
-  color: var(--color-text-primary);
-  color-scheme: dark;
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-@layer components {
-  .hero-mesh-gradient {
-    background:
-      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(250 85% 55% / 0.15), transparent),
-      radial-gradient(ellipse 60% 40% at 85% 50%, hsl(250 85% 55% / 0.08), transparent),
-      radial-gradient(ellipse 60% 50% at 15% 80%, hsl(280 60% 40% / 0.06), transparent);
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
   }
-
-  .cta-mesh-gradient {
-    background:
-      radial-gradient(ellipse 70% 60% at 50% 50%, hsl(250 85% 55% / 0.12), transparent),
-      radial-gradient(ellipse 80% 40% at 20% 30%, hsl(280 50% 40% / 0.06), transparent),
-      radial-gradient(ellipse 60% 50% at 80% 80%, hsl(250 85% 45% / 0.08), transparent);
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
+}
 
-  .gradient-text-brand {
-    background: linear-gradient(135deg, hsl(270 80% 75%) 0%, hsl(250 85% 55%) 50%, hsl(230 70% 65%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
   }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 
-  .hero-grid-pattern {
-    background-image:
-      linear-gradient(hsl(250 85% 55% / 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(250 85% 55% / 0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 20%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 20%, transparent 70%);
+/* Fallback for browsers without scroll-driven animation support */
+@supports not (animation-timeline: view()) {
+  .animate-fade-up,
+  .animate-scale-in,
+  .animate-slide-in-left,
+  .animate-slide-in-right {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Global reduced-motion guard */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

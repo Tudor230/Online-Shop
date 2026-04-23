@@ -6,6 +6,10 @@ import { WelcomeComponent } from './pages/welcome/welcome';
 export const routes: Routes = [
   {
     path: '',
+    component: WelcomeComponent
+  },
+  {
+    path: 'products',
     component: ProductGridComponent
   },
   {
@@ -14,6 +18,7 @@ export const routes: Routes = [
   },
   {
     path: 'welcome',
-    component: WelcomeComponent
+    redirectTo: '',
+    pathMatch: 'full'
   }
 ];
