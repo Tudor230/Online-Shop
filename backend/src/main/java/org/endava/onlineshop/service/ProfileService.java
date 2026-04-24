@@ -9,6 +9,7 @@ import org.endava.onlineshop.model.entities.Address;
 import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.repository.AddressRepository;
 import org.endava.onlineshop.repository.UserRepository;
+import org.endava.onlineshop.security.KeycloakAdminService;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +24,16 @@ public class ProfileService {
 
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
+    private final KeycloakAdminService keycloakAdminService;
 
-    public ProfileService(UserRepository userRepository, AddressRepository addressRepository) {
+    public ProfileService(
+            UserRepository userRepository,
+            AddressRepository addressRepository,
+            KeycloakAdminService keycloakAdminService
+    ) {
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
+        this.keycloakAdminService = keycloakAdminService;
     }
 
     @Transactional(readOnly = true)
@@ -38,8 +45,13 @@ public class ProfileService {
     @Transactional
     public ProfileResponseDto updateProfile(Jwt jwt, UpdateProfileRequestDto request) {
         User user = getCurrentUser(jwt);
-        user.setFirstName(request.firstName().trim());
-        user.setLastName(request.lastName().trim());
+        String trimmedFirstName = request.firstName().trim();
+        String trimmedLastName = request.lastName().trim();
+
+        keycloakAdminService.updateUserNames(user.getId(), trimmedFirstName, trimmedLastName);
+
+        user.setFirstName(trimmedFirstName);
+        user.setLastName(trimmedLastName);
 
         User savedUser = userRepository.save(user);
         return toProfileResponseDto(savedUser, findSortedAddresses(savedUser.getId()));

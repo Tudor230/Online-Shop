@@ -84,7 +84,10 @@ export class ProfilePageComponent {
       })
       .pipe(finalize(() => this.isSavingProfile.set(false)))
       .subscribe({
-        next: (profile) => this.applyProfile(profile),
+        next: (profile) => {
+          this.applyProfile(profile);
+          void this.refreshTokenAfterProfileUpdate();
+        },
         error: () => this.profileSaveError.set('Could not save profile details. Please try again.')
       });
   }
@@ -210,5 +213,12 @@ export class ProfilePageComponent {
       firstName: profile.firstName,
       lastName: profile.lastName
     });
+  }
+
+  private async refreshTokenAfterProfileUpdate(): Promise<void> {
+    const tokenRefreshed = await this.keycloakAuthService.refreshUserToken();
+    if (!tokenRefreshed) {
+      this.profileSaveError.set('Profile saved, but session claims could not be refreshed. Please sign in again.');
+    }
   }
 }
