@@ -1,17 +1,21 @@
 services:
-  # --- APP DATABASE (MySQL for Spring Boot) ---
+  # --- APP DATABASE (PostgreSQL for Spring Boot) ---
   shop-db:
-    image: mysql:8.0
+    image: postgres:16
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: online-shop
-      MYSQL_USER: user
-      MYSQL_PASSWORD: 1235
+      POSTGRES_DB: online-shop
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 1235
     ports:
-      - "3306:3306"
+      - "5433:5432"
     volumes:
-      - shop_mysql_data:/var/lib/mysql
+      - shop_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   # --- AUTH DATABASE (Postgres for Keycloak) ---
   keycloak-db:
@@ -42,5 +46,5 @@ services:
       - keycloak-db
 
 volumes:
-  shop_mysql_data:
+  shop_pg_data:
   keycloak_pg_data:
