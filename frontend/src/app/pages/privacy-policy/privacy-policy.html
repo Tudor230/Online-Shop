@@ -1,0 +1,124 @@
+<section class="mx-auto w-full max-w-5xl px-4 py-8 md:px-6 lg:px-8">
+  <header class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+    <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">Policy center</p>
+    <h1 class="mt-2 text-2xl font-semibold text-text-primary md:text-3xl">Privacy policy</h1>
+    <p class="mt-3 max-w-3xl text-sm text-text-secondary md:text-base">
+      This page explains what we collect, why we collect it, and how you can control your data when using our store.
+      We keep this policy practical and readable, especially for custom electronics orders that involve support and warranty workflows.
+    </p>
+    <p class="mt-2 text-xs text-text-secondary">Last updated: April 25, 2026</p>
+  </header>
+
+  <div class="mt-6 grid gap-4 md:grid-cols-3">
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-4">
+      <h2 class="text-sm font-semibold text-text-primary">What we collect</h2>
+      <p class="mt-2 text-sm text-text-secondary">Only data needed for orders, support, security, and store improvement.</p>
+    </article>
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-4">
+      <h2 class="text-sm font-semibold text-text-primary">How we use it</h2>
+      <p class="mt-2 text-sm text-text-secondary">To fulfill purchases, prevent abuse, and improve the buying experience.</p>
+    </article>
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-4">
+      <h2 class="text-sm font-semibold text-text-primary">Your controls</h2>
+      <p class="mt-2 text-sm text-text-secondary">You can access, correct, delete, or limit usage of your data where applicable.</p>
+    </article>
+  </div>
+
+  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-default p-6">
+    <h2 class="text-xl font-semibold text-text-primary">🧾 Data we collect</h2>
+    <div class="mt-4 grid gap-4 md:grid-cols-3">
+      @for (category of dataCategories; track category.title) {
+        <article class="rounded-xl border border-surface-elevated bg-bg-default p-4">
+          <h3 class="text-sm font-semibold text-text-primary">{{ category.title }}</h3>
+          <ul class="mt-3 space-y-2 text-sm text-text-secondary">
+            @for (example of category.examples; track example) {
+              <li>{{ example }}</li>
+            }
+          </ul>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="mt-6 grid gap-4 lg:grid-cols-2">
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">🔍 Why we process personal data</h2>
+      <ul class="mt-4 space-y-3 text-sm text-text-secondary">
+        @for (purpose of usagePurposes; track purpose) {
+          <li>{{ purpose }}</li>
+        }
+      </ul>
+    </article>
+
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">🍪 Cookie and analytics use</h2>
+      <ul class="mt-4 space-y-3 text-sm text-text-secondary">
+        @for (note of analyticsNotes; track note) {
+          <li>{{ note }}</li>
+        }
+      </ul>
+    </article>
+  </section>
+
+  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">🤝 Third-party sharing and processing</h2>
+    <p class="mt-2 text-sm text-text-secondary">
+      We do not sell personal data. We share data only when needed to operate the store, deliver services, or comply with legal obligations.
+    </p>
+    <ul class="mt-4 grid gap-3 md:grid-cols-2">
+      @for (caseItem of sharingCases; track caseItem) {
+        <li class="rounded-xl border border-surface-elevated bg-bg-default p-4 text-sm text-text-secondary">{{ caseItem }}</li>
+      }
+    </ul>
+  </section>
+
+  <section class="mt-6 grid gap-4 lg:grid-cols-2">
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">📤 Social share buttons and embedded content</h2>
+      <ul class="mt-4 space-y-3 text-sm text-text-secondary">
+        <li>Pages may include share actions for platforms like Facebook, X, or similar services.</li>
+        <li>Embedded social widgets can collect technical data such as IP address, browser details, and page URL.</li>
+        <li>If you are logged in to a social platform, interactions with share features may be associated with your social account.</li>
+        <li>Where possible, we prefer privacy-friendly share links over always-on embedded trackers.</li>
+      </ul>
+    </article>
+
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">🗂️ Data retention</h2>
+      <div class="mt-4 space-y-3">
+        @for (rule of retentionRules; track rule.dataType) {
+          <div class="rounded-xl border border-surface-elevated bg-bg-default p-4">
+            <p class="text-sm font-semibold text-text-primary">{{ rule.dataType }}</p>
+            <p class="mt-1 text-sm text-text-secondary">{{ rule.retention }}</p>
+          </div>
+        }
+      </div>
+    </article>
+  </section>
+
+  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-default p-6">
+    <h2 class="text-xl font-semibold text-text-primary">🔐 Your privacy rights</h2>
+    <ul class="mt-4 grid gap-3 md:grid-cols-2">
+      @for (right of userRights; track right) {
+        <li class="rounded-xl border border-surface-elevated bg-bg-default p-4 text-sm text-text-secondary">{{ right }}</li>
+      }
+    </ul>
+  </section>
+
+  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-glass p-6">
+    <h2 class="text-lg font-semibold text-text-primary">Privacy requests and contact</h2>
+    <p class="mt-2 text-sm text-text-secondary">
+      For privacy requests, email privacy@onlineshop.example and include your order number or account email so we can verify your request securely.
+    </p>
+    <div class="mt-4 flex flex-wrap gap-3">
+      <a routerLink="/terms" class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover">
+        Read terms of use
+      </a>
+      <a routerLink="/" class="rounded-full border border-surface-elevated px-4 py-2 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-elevated">
+        Continue shopping
+      </a>
+    </div>
+  </section>
+</section>
+
+

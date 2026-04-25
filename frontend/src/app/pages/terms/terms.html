@@ -1,0 +1,70 @@
+<section class="mx-auto w-full max-w-5xl px-4 py-8 md:px-6 lg:px-8">
+  <header class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+    <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">Policy center</p>
+    <h1 class="mt-2 text-2xl font-semibold text-text-primary md:text-3xl">Terms of use</h1>
+    <p class="mt-3 max-w-3xl text-sm text-text-secondary md:text-base">
+      These terms explain how to use our store, place orders, and interact with our services.
+      We keep them concise so expectations are clear before and after checkout.
+    </p>
+    <p class="mt-2 text-xs text-text-secondary">Last updated: April 25, 2026</p>
+  </header>
+
+  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-default p-6">
+    <h2 class="text-xl font-semibold text-text-primary">✨ Quick highlights</h2>
+    <ul class="mt-4 grid gap-3 md:grid-cols-3">
+      @for (highlight of highlights; track highlight) {
+        <li class="rounded-xl border border-surface-elevated bg-bg-default p-4 text-sm text-text-secondary">{{ highlight }}</li>
+      }
+    </ul>
+  </section>
+
+  <section class="mt-6 grid gap-4">
+    @for (block of termsBlocks; track block.title) {
+      <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+        <h2 class="text-xl font-semibold text-text-primary">{{ block.title }}</h2>
+        <ul class="mt-4 space-y-3 text-sm text-text-secondary">
+          @for (point of block.points; track point) {
+            <li>{{ point }}</li>
+          }
+        </ul>
+      </article>
+    }
+  </section>
+
+  <section class="mt-6 grid gap-4 lg:grid-cols-2">
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">📦 Shipping, returns, and warranty</h2>
+      <ul class="mt-4 space-y-3 text-sm text-text-secondary">
+        <li>Shipping timelines, returns, and warranty coverage are described in the dedicated policy pages linked in the footer.</li>
+        <li>For the fastest answer, use the support and legal links below when you need a specific policy.</li>
+      </ul>
+    </article>
+
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">🚫 Prohibited uses</h2>
+      <ul class="mt-4 space-y-3 text-sm text-text-secondary">
+        @for (item of prohibitedUses; track item) {
+          <li>{{ item }}</li>
+        }
+      </ul>
+    </article>
+  </section>
+
+  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-glass p-6">
+    <h2 class="text-lg font-semibold text-text-primary">📣 Changes and contact</h2>
+    <p class="mt-2 text-sm text-text-secondary">
+      We may update these terms when services, laws, or business practices change. Material updates are reflected by the last updated date.
+      Questions can be sent to legal@onlineshop.example.
+    </p>
+    <div class="mt-4 flex flex-wrap gap-3">
+      <a routerLink="/privacy-policy" class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover">
+        Read privacy policy
+      </a>
+      <a routerLink="/" class="rounded-full border border-surface-elevated px-4 py-2 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-elevated">
+        Continue shopping
+      </a>
+    </div>
+  </section>
+</section>
+
+
