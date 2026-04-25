@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { mockProducts, type Product } from '../../../assets/data/mock-products';
+import { catchError, map, of, startWith } from 'rxjs';
+import { ProductApiService } from '../../core/products/product-api.service';
+import { type ProductSummary } from '../../core/products/product.types';
 import { ProductCardComponent } from '../../shared/product-card/product-card';
 
 @Component({
@@ -12,9 +15,19 @@ import { ProductCardComponent } from '../../shared/product-card/product-card';
 })
 export class ProductGridComponent {
   private readonly router = inject(Router);
+  private readonly productApiService = inject(ProductApiService);
 
-  readonly isLoading = signal(false);
-  readonly products = signal<readonly Product[]>(mockProducts);
+  private readonly productListState = toSignal(
+    this.productApiService.getProducts().pipe(
+      map((products) => ({ isLoading: false, products })),
+      startWith({ isLoading: true, products: [] as ProductSummary[] }),
+      catchError(() => of({ isLoading: false, products: [] as ProductSummary[] }))
+    ),
+    { initialValue: { isLoading: true, products: [] as ProductSummary[] } }
+  );
+
+  readonly isLoading = computed(() => this.productListState().isLoading);
+  readonly products = computed(() => this.productListState().products);
   readonly skeletonItems = Array.from({ length: 8 }, (_, index) => index);
 
   openProductDetails(productId: string): void {
