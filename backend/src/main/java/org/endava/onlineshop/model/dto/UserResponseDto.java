@@ -2,7 +2,7 @@ package org.endava.onlineshop.model.dto;
 
 import org.endava.onlineshop.model.enums.Role;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public record UserResponseDto(
@@ -14,8 +14,8 @@ public record UserResponseDto(
         UUID defaultShippingAddressId,
         UUID defaultBillingAddressId,
         Boolean isActive,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }
 

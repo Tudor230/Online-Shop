@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -18,7 +17,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+public class Category extends BaseAuditEntity {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -33,10 +32,5 @@ public class Category {
     @Column(name = "slug", nullable = false, unique = true, length = 120)
     private String slug;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", insertable = false, updatable = false)
-    private LocalDateTime updatedAt;
 }
 
