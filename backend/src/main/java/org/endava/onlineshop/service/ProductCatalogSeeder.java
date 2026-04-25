@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 // TODO: Remove before deploying to production.
 @Component
@@ -57,7 +56,6 @@ public class ProductCatalogSeeder implements ApplicationRunner {
                 .orElseGet(() -> createCategory(seedProduct.category()));
 
         Product product = new Product();
-        product.setId(UUID.randomUUID());
         product.setSlug(slug);
         product.setName(seedProduct.title());
         product.setSku(toSku(slug));
@@ -80,7 +78,6 @@ public class ProductCatalogSeeder implements ApplicationRunner {
 
     private Category createCategory(String categoryName) {
         Category category = new Category();
-        category.setId(UUID.randomUUID());
         category.setName(categoryName);
         category.setSlug(toSlug(categoryName));
         return categoryRepository.save(category);
@@ -119,7 +116,4 @@ public class ProductCatalogSeeder implements ApplicationRunner {
     private record SeedColorOption(String name, String swatch) {
     }
 }
-
-
-
 

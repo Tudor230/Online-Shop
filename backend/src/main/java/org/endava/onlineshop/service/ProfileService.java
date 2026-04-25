@@ -61,7 +61,6 @@ public class ProfileService {
         User user = getCurrentUser(jwt);
 
         Address address = new Address();
-        address.setId(UUID.randomUUID());
         address.setUserId(user.getId());
         address.setRecipientName(request.recipientName().trim());
         address.setPhoneNumber(trimToNull(request.phoneNumber()));

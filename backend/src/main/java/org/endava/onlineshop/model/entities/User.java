@@ -10,7 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.endava.onlineshop.model.enums.Role;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -36,7 +38,8 @@ public class User extends BaseAuditEntity {
     private String lastName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "role", nullable = false, columnDefinition = "user_role")
     private Role role = Role.CUSTOMER;
 
     @Column(name = "default_shipping_address_id")
