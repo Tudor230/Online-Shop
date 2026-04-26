@@ -62,11 +62,12 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
   // Scroll section length: 1.5vh for the camera fly-through
   private readonly deskSectionVh = 1.6;
   private readonly pcStickyVh = 0.7;
+  private readonly textDissolveVh = 0.85;
 
   // Background parallax configs
   private readonly modelConfigs = [
-    { path: 'models/playstation_5_controller.glb', targetSize: 2.2, x: -4.5, parallaxSpeed: 0.9, scrollOffset: 0.6, baseY: -2.5, baseRotation: 1.0 },
-    { path: 'models/razer_huntsman_mini_keyboard.glb', targetSize: 2.4, x: 4.5, parallaxSpeed: 1.1, scrollOffset: 0.9, baseY: -1.0, baseRotation: -1.0 }
+    { path: 'models/playstation_5_controller.glb', targetSize: 2.2, x: -4.5, parallaxSpeed: 0.9, scrollOffset: 0.9, baseY: 0, baseRotation: -2.5, baseTiltX: 0 },
+    { path: 'models/razer_huntsman_mini_keyboard.glb', targetSize: 2.4, x: 4.5, parallaxSpeed: 1.1, scrollOffset: 0.99, baseY: -3.0, baseRotation: -4.3, baseTiltX: 0.45 }
   ];
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {
@@ -393,7 +394,7 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
       const worldUnitsPerViewport = 4;
       model.position.y = config.baseY + (offsetFromAnchor / vh) * config.parallaxSpeed * worldUnitsPerViewport;
       model.rotation.y = config.baseRotation + this.scrollY * 0.001 + this.sceneRotationY;
-      model.rotation.x = 0;
+      model.rotation.x = config.baseTiltX ?? 0;
       model.rotation.z = 0;
     });
 

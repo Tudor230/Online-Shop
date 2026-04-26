@@ -1,23 +1,29 @@
-<header class="relative z-50 mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 md:px-6 lg:px-8">
-  <a href="/" class="text-lg font-semibold text-text-primary">Online Shop</a>
+<header
+  class="fixed top-0 left-0 right-0 z-50 border-b border-surface-elevated/50 bg-surface-default/30 backdrop-blur-sm transition-transform duration-300 ease-premium"
+  [class.-translate-y-full]="isHidden()"
+  [class.translate-y-0]="!isHidden()"
+>
+  <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 md:px-6 lg:px-8">
+    <a href="/" class="text-lg font-semibold text-text-primary">Online Shop</a>
 
-  @if (authState.isAuthenticated()) {
-    <div class="inline-flex items-center gap-2 rounded-full bg-surface-default px-3 py-2 text-sm text-text-primary">
-      <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-surface-elevated" aria-hidden="true">
-        <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
-          <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" />
-        </svg>
-      </span>
-      <span>{{ authState.displayName() }}</span>
-    </div>
-  } @else {
-    <button
-      type="button"
-      class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
-      (click)="login()"
-    >
-      Login
-    </button>
-  }
+    @if (authState.isAuthenticated()) {
+      <div class="inline-flex items-center gap-2 rounded-full bg-surface-default px-3 py-2 text-sm text-text-primary">
+        <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-surface-elevated" aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
+            <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" />
+          </svg>
+        </span>
+        <span>{{ authState.displayName() }}</span>
+      </div>
+    } @else {
+      <button
+        type="button"
+        class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
+        (click)="login()"
+      >
+        Login
+      </button>
+    }
+  </div>
 </header>
 
