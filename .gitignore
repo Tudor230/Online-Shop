@@ -39,4 +39,4 @@ build/
 **/.angular
 /schema/schema.sql
 /.agents
-/.opencode
+.opencode/

@@ -17,5 +17,3 @@ export class HeaderComponent {
     await this.keycloakAuthService.login();
   }
 }
-
-
