@@ -97,12 +97,15 @@
     width: 100%;
   }
 
-  /* Scroll-driven entrance animations (progressive enhancement) */
   @supports (animation-timeline: view()) {
     .animate-fade-up {
       animation: fade-up 0.8s var(--ease-premium) both;
-      animation-timeline: view(block 10% 30%);
-      animation-range: entry 0% cover 25%;
+      animation-timeline: view();
+      animation-range: entry 10% entry 90%;
+    }
+
+    .last-section {
+      animation-range: entry 0% entry 70%;
     }
 
     .animate-scale-in {
@@ -123,7 +126,6 @@
       animation-range: entry 0% cover 25%;
     }
 
-    /* Stagger ranges for children */
     .range-stagger-1 { animation-range: entry 0% cover 25%; }
     .range-stagger-2 { animation-range: entry 5% cover 30%; }
     .range-stagger-3 { animation-range: entry 10% cover 35%; }
@@ -209,7 +211,6 @@
   }
 }
 
-/* Fallback for browsers without scroll-driven animation support */
 @supports not (animation-timeline: view()) {
   .animate-fade-up,
   .animate-scale-in,
@@ -220,7 +221,6 @@
   }
 }
 
-/* Global reduced-motion guard */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

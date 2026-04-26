@@ -2,8 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { mockProducts, type Product } from '../../../assets/data/mock-products';
-import { Hero3dComponent } from '../../shared/hero-3d/hero-3d';
-import { ProductCardComponent } from '../../shared/product-card/product-card';
+import { Background3dComponent } from '../../shared/background-3d/background-3d';
 
 export interface ValueProp {
   readonly title: string;
@@ -13,13 +12,14 @@ export interface ValueProp {
 @Component({
   selector: 'app-welcome',
   standalone: true,
-  imports: [CommonModule, RouterLink, ProductCardComponent, Hero3dComponent],
+  imports: [CommonModule, RouterLink, Background3dComponent],
   templateUrl: './welcome.html'
 })
 export class WelcomeComponent {
   private readonly router = inject(Router);
 
   readonly products = signal<readonly Product[]>(mockProducts);
+  readonly isLoading = signal<boolean>(true);
 
   readonly valueProps = signal<readonly ValueProp[]>([
     {
@@ -35,6 +35,12 @@ export class WelcomeComponent {
       description: 'End-to-end encryption keeps your payment details private and protected at every step.'
     }
   ]);
+
+  onModelsLoaded(): void {
+    setTimeout(() => {
+      this.isLoading.set(false);
+    }, 500);
+  }
 
   openProductDetails(productId: string): void {
     void this.router.navigate(['/product', productId]);
