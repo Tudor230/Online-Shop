@@ -1,0 +1,113 @@
+<section class="mx-auto w-full max-w-5xl px-4 py-8 md:px-6 lg:px-8">
+  <header class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+    <p class="text-xs font-semibold uppercase tracking-wide text-text-secondary">Policy center</p>
+    <h1 class="mt-2 text-2xl font-semibold text-text-primary md:text-3xl">Warranty policy</h1>
+    <p class="mt-3 max-w-3xl text-sm text-text-secondary md:text-base">
+      Our warranty is designed for real-world electronics use: clear coverage, quick diagnostics, and practical outcomes.
+      We explain exactly what is covered, what is not, and how to resolve issues fast.
+    </p>
+  </header>
+
+  <div class="mt-6 grid gap-4 md:grid-cols-3">
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-4">
+      <h2 class="text-sm font-semibold text-text-primary">⚡ Fast first response</h2>
+      <p class="mt-2 text-sm text-text-secondary">Warranty claims receive a technical response within 1 business day.</p>
+    </article>
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-4">
+      <h2 class="text-sm font-semibold text-text-primary">🔍 No hidden process</h2>
+      <p class="mt-2 text-sm text-text-secondary">You always see claim status, required steps, and expected completion time.</p>
+    </article>
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-4">
+      <h2 class="text-sm font-semibold text-text-primary">🛠️ Repair first, then replace</h2>
+      <p class="mt-2 text-sm text-text-secondary">We prioritize repair quality and sustainability, then replacement or refund if needed.</p>
+    </article>
+  </div>
+
+  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-default p-6">
+    <h2 class="text-xl font-semibold text-text-primary">🛡️ Coverage by product type</h2>
+    <p class="mt-2 text-sm text-text-secondary">Warranty starts on the delivery date shown in your order confirmation.</p>
+
+    <div class="mt-4 grid gap-3 md:grid-cols-2">
+      @for (coverage of coverageByCategory; track coverage.category) {
+        <article class="rounded-xl border border-surface-elevated bg-bg-default p-4">
+          <h3 class="text-sm font-semibold text-text-primary">{{ coverage.category }}</h3>
+          <p class="mt-1 text-sm text-text-secondary">Coverage period: {{ coverage.period }}</p>
+          <p class="mt-2 text-sm text-text-secondary">{{ coverage.details }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="mt-6 grid gap-4 lg:grid-cols-2">
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">🧭 How to file a warranty claim</h2>
+      <ol class="mt-4 space-y-3 text-sm text-text-secondary">
+        @for (step of claimSteps; track step; let stepIndex = $index) {
+          <li>
+            <span class="font-medium text-text-primary">{{ stepIndex + 1 }}.</span>
+            {{ step }}
+          </li>
+        }
+      </ol>
+    </article>
+
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">⏱️ Typical turnaround times</h2>
+      <ul class="mt-4 space-y-3 text-sm text-text-secondary">
+        <li>Remote troubleshooting: same day to 1 business day</li>
+        <li>Bench diagnostics after arrival: 1-2 business days</li>
+        <li>Repair completion: 3-7 business days depending on parts</li>
+        <li>Replacement dispatch: 1-2 business days once approved</li>
+      </ul>
+      <p class="mt-4 text-xs text-text-secondary">
+        If parts are backordered, we provide alternatives or a refund option instead of keeping you waiting indefinitely.
+      </p>
+    </article>
+  </section>
+
+  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-default p-6">
+    <h2 class="text-xl font-semibold text-text-primary">🚫 What is not covered</h2>
+    <ul class="mt-4 grid gap-3 md:grid-cols-2">
+      @for (item of notCovered; track item) {
+        <li class="rounded-xl border border-surface-elevated bg-bg-default p-4 text-sm text-text-secondary">{{ item }}</li>
+      }
+    </ul>
+  </section>
+
+  <section class="mt-6 grid gap-4 lg:grid-cols-2">
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">📄 Proof and eligibility</h2>
+      <ul class="mt-4 space-y-3 text-sm text-text-secondary">
+        <li>Order number or invoice is required for any warranty claim.</li>
+        <li>Serial number labels must remain readable and unaltered.</li>
+        <li>Transferred gifts are covered if original proof of purchase is provided.</li>
+        <li>Business buyers get the same base hardware coverage unless contract terms state otherwise.</li>
+      </ul>
+    </article>
+
+    <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">🧑‍🔧 After-warranty support</h2>
+      <ul class="mt-4 space-y-3 text-sm text-text-secondary">
+        <li>Paid diagnostics and repair are available for out-of-warranty devices.</li>
+        <li>We can provide upgrade recommendations if a direct repair is not cost-effective.</li>
+        <li>For discontinued components, we offer compatible alternatives where possible.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-glass p-6">
+    <h2 class="text-lg font-semibold text-text-primary">💬 Need help with an active issue?</h2>
+    <p class="mt-2 text-sm text-text-secondary">
+      Open a warranty request from your account to share diagnostics faster and reduce back-and-forth.
+    </p>
+    <div class="mt-4 flex flex-wrap gap-3">
+      <a routerLink="/profile" class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover">
+        Start warranty request
+      </a>
+      <a routerLink="/shipping-and-returns" class="rounded-full border border-surface-elevated px-4 py-2 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-elevated">
+        View shipping and returns
+      </a>
+    </div>
+  </section>
+</section>
+

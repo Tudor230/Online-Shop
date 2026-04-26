@@ -4,12 +4,12 @@ import { AuthStateService } from '../../core/auth/auth-state.service';
 import { KeycloakAuthService } from '../../core/auth/keycloak-auth.service';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-landing-header',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './header.html'
+  templateUrl: './landing-header.html'
 })
-export class HeaderComponent {
+export class LandingHeaderComponent {
   private readonly keycloakAuthService = inject(KeycloakAuthService);
   readonly authState = inject(AuthStateService);
 
@@ -41,4 +41,3 @@ export class HeaderComponent {
     await this.keycloakAuthService.login();
   }
 }
-

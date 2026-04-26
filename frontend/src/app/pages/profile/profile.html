@@ -1,0 +1,280 @@
+<section class="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 lg:px-8">
+  <header class="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold text-text-primary">Your profile</h1>
+      <p class="mt-1 text-sm text-text-secondary">Manage your details and default addresses.</p>
+    </div>
+  </header>
+
+  @if (!isAuthenticated()) {
+    <div class="rounded-2xl border border-surface-elevated bg-surface-default p-6 text-center">
+      <p class="text-sm text-text-secondary">Log in to view and edit your profile.</p>
+      <button
+        type="button"
+        class="mt-4 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
+        (click)="login()"
+      >
+        Login
+      </button>
+    </div>
+  } @else if (isLoadingProfile()) {
+    <div class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <div class="h-4 w-40 rounded-full bg-surface-elevated animate-pulse"></div>
+      <div class="mt-3 h-4 w-64 rounded-full bg-surface-elevated animate-pulse"></div>
+    </div>
+  } @else if (profileError()) {
+    <div class="rounded-2xl border border-red-400/40 bg-surface-default p-6 text-sm text-red-300">
+      {{ profileError() }}
+    </div>
+  } @else {
+    <div class="grid gap-6 lg:grid-cols-2">
+      <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
+        <h2 class="text-lg font-semibold text-text-primary">Personal details</h2>
+        <p class="mt-1 text-sm text-text-secondary">Update your name for checkout and delivery records.</p>
+
+        <form class="mt-5 space-y-4" [formGroup]="profileForm" (ngSubmit)="saveProfileDetails()">
+          <label class="block text-sm text-text-secondary">
+            Email
+            <input
+              type="email"
+              [value]="profile()?.email ?? ''"
+              readonly
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-secondary outline-none"
+            />
+          </label>
+
+          <label class="block text-sm text-text-secondary">
+            First name
+            <input
+              type="text"
+              formControlName="firstName"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          <label class="block text-sm text-text-secondary">
+            Last name
+            <input
+              type="text"
+              formControlName="lastName"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          @if (profileSaveError()) {
+            <p class="text-sm text-red-300">{{ profileSaveError() }}</p>
+          }
+
+          <button
+            type="submit"
+            [disabled]="isSavingProfile()"
+            class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            @if (isSavingProfile()) {
+              Saving...
+            } @else {
+              Save details
+            }
+          </button>
+        </form>
+      </article>
+
+      <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
+        <h2 class="text-lg font-semibold text-text-primary">Add address</h2>
+        <p class="mt-1 text-sm text-text-secondary">Create billing and shipping options for this account.</p>
+
+        <form class="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2" [formGroup]="addressForm" (ngSubmit)="addAddress()">
+          <label class="text-sm text-text-secondary md:col-span-2">
+            Recipient name
+            <input
+              type="text"
+              formControlName="recipientName"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          <label class="text-sm text-text-secondary">
+            Phone number
+            <input
+              type="text"
+              formControlName="phoneNumber"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          <div></div>
+
+          <label class="text-sm text-text-secondary md:col-span-2">
+            Address line 1
+            <input
+              type="text"
+              formControlName="addressLine1"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          <label class="text-sm text-text-secondary md:col-span-2">
+            Address line 2
+            <input
+              type="text"
+              formControlName="addressLine2"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          <label class="text-sm text-text-secondary">
+            City
+            <input
+              type="text"
+              formControlName="city"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          <label class="text-sm text-text-secondary">
+            State
+            <input
+              type="text"
+              formControlName="state"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          <label class="text-sm text-text-secondary">
+            Postal code
+            <input
+              type="text"
+              formControlName="postalCode"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          <label class="text-sm text-text-secondary">
+            Country
+            <input
+              type="text"
+              formControlName="country"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+            />
+          </label>
+
+          @if (addressCreateError()) {
+            <p class="text-sm text-red-300 md:col-span-2">{{ addressCreateError() }}</p>
+          }
+
+          <div class="md:col-span-2">
+            <button
+              type="submit"
+              [disabled]="isCreatingAddress()"
+              class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              @if (isCreatingAddress()) {
+                Adding...
+              } @else {
+                Add address
+              }
+            </button>
+          </div>
+        </form>
+      </article>
+    </div>
+
+    <article class="mt-6 rounded-2xl border border-surface-elevated bg-surface-default p-5">
+      <h2 class="text-lg font-semibold text-text-primary">Saved addresses</h2>
+      <p class="mt-1 text-sm text-text-secondary">Choose one primary address for shipping and one for billing.</p>
+
+      @if (primarySelectionError()) {
+        <p class="mt-3 text-sm text-red-300">{{ primarySelectionError() }}</p>
+      }
+
+      @if (deleteAddressError()) {
+        <p class="mt-3 text-sm text-red-300">{{ deleteAddressError() }}</p>
+      }
+
+      @if (!addresses().length) {
+        <div class="mt-4 rounded-xl border border-dashed border-surface-elevated p-4 text-sm text-text-secondary">
+          No saved addresses yet.
+        </div>
+      } @else {
+        <div class="mt-4 grid gap-4 md:grid-cols-2">
+          @for (address of addresses(); track address.id) {
+            <article class="rounded-xl border border-surface-elevated bg-surface-elevated/40 p-4">
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="text-sm font-semibold text-text-primary">{{ address.recipientName }}</h3>
+                @if (isPrimaryShipping(address.id)) {
+                  <span class="rounded-full bg-primary/20 px-2 py-1 text-xs text-primary">Primary shipping</span>
+                }
+                @if (isPrimaryBilling(address.id)) {
+                  <span class="rounded-full bg-warning/20 px-2 py-1 text-xs text-warning">Primary billing</span>
+                }
+              </div>
+
+              <p class="mt-3 text-sm text-text-secondary">
+                {{ address.addressLine1 }}<br />
+                @if (address.addressLine2) {
+                  {{ address.addressLine2 }}<br />
+                }
+                {{ address.city }}, {{ address.state }} {{ address.postalCode }}<br />
+                {{ address.country }}
+              </p>
+
+              @if (address.phoneNumber) {
+                <p class="mt-2 text-sm text-text-secondary">Phone: {{ address.phoneNumber }}</p>
+              }
+
+              <div class="mt-4 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  (click)="setPrimaryShipping(address)"
+                  [disabled]="isPrimaryShipping(address.id) || shippingUpdateInProgressId() === address.id"
+                  class="rounded-full border border-surface-elevated px-3 py-1.5 text-xs font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-default disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  @if (shippingUpdateInProgressId() === address.id) {
+                    Setting shipping...
+                  } @else if (isPrimaryShipping(address.id)) {
+                    Shipping selected
+                  } @else {
+                    Set as shipping
+                  }
+                </button>
+
+                <button
+                  type="button"
+                  (click)="setPrimaryBilling(address)"
+                  [disabled]="isPrimaryBilling(address.id) || billingUpdateInProgressId() === address.id"
+                  class="rounded-full border border-surface-elevated px-3 py-1.5 text-xs font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-default disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  @if (billingUpdateInProgressId() === address.id) {
+                    Setting billing...
+                  } @else if (isPrimaryBilling(address.id)) {
+                    Billing selected
+                  } @else {
+                    Set as billing
+                  }
+                </button>
+
+                <span
+                  [attr.title]="canDeleteAddress(address.id) ? 'Delete address' : 'You cannot delete the primary address'"
+                  class="inline-flex"
+                >
+                  <button
+                    type="button"
+                    (click)="deleteAddress(address)"
+                    [disabled]="!canDeleteAddress(address.id) || deleteInProgressId() === address.id"
+                    class="rounded-full border border-red-400/50 px-3 py-1.5 text-xs font-semibold text-red-300 transition-colors duration-200 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    @if (deleteInProgressId() === address.id) {
+                      Deleting...
+                    } @else {
+                      Delete
+                    }
+                  </button>
+                </span>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </article>
+  }
+</section>

@@ -76,6 +76,30 @@ export class KeycloakAuthService {
     this.authState.clear();
   }
 
+  async refreshUserToken(minValidity = 0): Promise<boolean> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const instance = await this.ensureKeycloak();
+    if (!instance.authenticated) {
+      return false;
+    }
+
+    try {
+      await instance.updateToken(minValidity);
+      this.updateUserFromToken();
+      return true;
+    } catch {
+      this.authState.clear();
+      return false;
+    }
+  }
+
+  getAccessToken(): string | null {
+    return this.keycloak?.token ?? null;
+  }
+
   private async ensureKeycloak(): Promise<Keycloak> {
     if (this.keycloak) {
       return this.keycloak;

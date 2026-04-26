@@ -19,19 +19,26 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render login button when unauthenticated', () => {
+  it('should render login button when unauthenticated', async () => {
     const fixture = TestBed.createComponent(App);
+    const router = TestBed.inject(Router);
+
+    await router.navigateByUrl('/');
     fixture.detectChanges();
+    await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    const loginButton = compiled.querySelector('button');
+    const loginButton = Array.from(compiled.querySelectorAll('button')).find(
+      (button) => button.textContent?.trim() === 'Login'
+    );
 
-    expect(loginButton?.textContent?.trim()).toBe('Login');
+    expect(loginButton).toBeTruthy();
   });
 
-  it('should render full user name when authenticated', () => {
+  it('should render full user name when authenticated', async () => {
     const fixture = TestBed.createComponent(App);
     const authState = TestBed.inject(AuthStateService);
+    const router = TestBed.inject(Router);
 
     authState.setUser({
       email: 'john.doe@example.com',
@@ -40,7 +47,9 @@ describe('App', () => {
       role: Role.CUSTOMER
     });
 
+    await router.navigateByUrl('/');
     fixture.detectChanges();
+    await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('John Doe');

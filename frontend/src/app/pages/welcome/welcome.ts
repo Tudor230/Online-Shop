@@ -3,6 +3,7 @@ import { Component, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { mockProducts, type Product } from '../../../assets/data/mock-products';
 import { Background3dComponent } from '../../shared/background-3d/background-3d';
+import { LandingHeaderComponent } from '../../shared/landing-header/landing-header';
 
 export interface ValueProp {
   readonly title: string;
@@ -12,7 +13,7 @@ export interface ValueProp {
 @Component({
   selector: 'app-welcome',
   standalone: true,
-  imports: [CommonModule, RouterLink, Background3dComponent],
+  imports: [CommonModule, RouterLink, Background3dComponent, LandingHeaderComponent],
   templateUrl: './welcome.html'
 })
 export class WelcomeComponent {

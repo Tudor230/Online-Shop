@@ -6,7 +6,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -34,13 +33,17 @@ public class AuthenticatedUserSyncService {
         if (isNewUser) {
             user = new User();
             user.setId(keycloakUserId);
-            user.setCreatedAt(LocalDateTime.now());
         }
 
-        // Always sync from Keycloak to DB, persisting partial profiles with safe defaults.
+        // Sync account bootstrap details from Keycloak to DB.
+        // Names are user-managed in profile update flow and must not be overwritten on every request.
         user.setEmail(nonBlankOrFallback(claims.email(), keycloakUserId + "@keycloak.local"));
-        user.setFirstName(nonBlankOrFallback(claims.firstName(), "Unknown"));
-        user.setLastName(nonBlankOrFallback(claims.lastName(), "User"));
+        if (isBlank(user.getFirstName())) {
+            user.setFirstName(nonBlankOrFallback(claims.firstName(), "Unknown"));
+        }
+        if (isBlank(user.getLastName())) {
+            user.setLastName(nonBlankOrFallback(claims.lastName(), "User"));
+        }
         user.setRole(claims.role());
         user.setIsActive(claims.isActive());
 
@@ -60,6 +63,10 @@ public class AuthenticatedUserSyncService {
 
     private String nonBlankOrFallback(String value, String fallback) {
         return value == null || value.isBlank() ? fallback : value;
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 }
 
