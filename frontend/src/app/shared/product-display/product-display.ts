@@ -1,6 +1,6 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import type { Product } from '../../../assets/data/mock-products';
+import { ProductDetails } from '../../core/products/product.types';
 
 @Component({
   selector: 'app-product-display',
@@ -10,7 +10,7 @@ import type { Product } from '../../../assets/data/mock-products';
 })
 export class ProductDisplayComponent {
   @Input({ required: true }) isLoading = false;
-  @Input({ required: true }) product: Product | null = null;
+  @Input({ required: true }) product: ProductDetails | null = null;
   @Input({ required: true }) selectedImage = '';
   @Input({ required: true }) selectedImageIndex = 0;
 

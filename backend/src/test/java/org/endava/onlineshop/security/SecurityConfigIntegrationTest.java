@@ -38,6 +38,12 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
+    void shouldAllowAnonymousAccessToProductEndpoints() throws Exception {
+        mockMvc.perform(get("/api/products"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void shouldAllowAuthenticatedRequests() throws Exception {
         mockMvc.perform(get("/test/authenticated")
                         .with(jwt()))

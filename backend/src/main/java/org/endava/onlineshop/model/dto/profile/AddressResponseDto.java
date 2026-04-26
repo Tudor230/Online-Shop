@@ -1,6 +1,6 @@
 package org.endava.onlineshop.model.dto.profile;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public record AddressResponseDto(
@@ -13,7 +13,7 @@ public record AddressResponseDto(
         String state,
         String postalCode,
         String country,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }

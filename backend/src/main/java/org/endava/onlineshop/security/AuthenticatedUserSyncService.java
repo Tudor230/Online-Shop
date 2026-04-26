@@ -6,7 +6,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -34,7 +33,6 @@ public class AuthenticatedUserSyncService {
         if (isNewUser) {
             user = new User();
             user.setId(keycloakUserId);
-            user.setCreatedAt(LocalDateTime.now());
         }
 
         // Sync account bootstrap details from Keycloak to DB.
