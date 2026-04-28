@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, map, of, startWith, switchMap } from 'rxjs';
+import { CartFacadeService } from '../../core/cart/cart-facade.service';
 import { ProductApiService } from '../../core/products/product-api.service';
 import { ProductDetails } from '../../core/products/product.types';
 import { ProductDisplayComponent } from '../../shared/product-display/product-display';
@@ -16,6 +17,7 @@ export class ProductDetailsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productApiService = inject(ProductApiService);
+  private readonly cartFacadeService = inject(CartFacadeService);
 
   readonly selectedImageIndex = signal(0);
 
@@ -63,10 +65,16 @@ export class ProductDetailsComponent {
   }
 
   goBackToGrid(): void {
-    void this.router.navigateByUrl('/');
+    void this.router.navigateByUrl('/products');
   }
 
-  addToCart(): void {}
+  addToCart(): void {
+    const currentProduct = this.product();
+    if (!currentProduct) {
+      return;
+    }
+    this.cartFacadeService.addItem(currentProduct.id);
+  }
 
   saveToWishlist(): void {}
 }

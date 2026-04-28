@@ -4,9 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -17,6 +19,7 @@ import java.util.Map;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +30,9 @@ class SecurityConfigIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private JpaMetamodelMappingContext jpaMetamodelMappingContext;
 
     @Autowired
     private JwtRoleConverter jwtRoleConverter;
@@ -41,6 +47,28 @@ class SecurityConfigIntegrationTest {
     void shouldAllowAnonymousAccessToProductEndpoints() throws Exception {
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldAllowAnonymousAccessToCartEndpoints() throws Exception {
+        mockMvc.perform(get("/api/cart"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldAllowAnonymousAccessToCartItemModificationEndpoints() throws Exception {
+        mockMvc.perform(patch("/api/cart/items/00000000-0000-0000-0000-000000000000")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"quantity\":2}"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldRejectUnauthenticatedGuestCartClaim() throws Exception {
+        mockMvc.perform(post("/api/cart/claim")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Session-Id", "guest-session"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -95,8 +123,13 @@ class SecurityConfigIntegrationTest {
     @TestConfiguration
     static class TestBeans {
         @Bean
-        AuthenticatedUserSyncFilter authenticatedUserSyncFilter() {
-            return Mockito.mock(AuthenticatedUserSyncFilter.class);
+        AuthenticatedUserSyncService authenticatedUserSyncService() {
+            return Mockito.mock(AuthenticatedUserSyncService.class);
+        }
+
+        @Bean
+        AuthenticatedUserSyncFilter authenticatedUserSyncFilter(AuthenticatedUserSyncService authenticatedUserSyncService) {
+            return new AuthenticatedUserSyncFilter(authenticatedUserSyncService);
         }
 
         @Bean

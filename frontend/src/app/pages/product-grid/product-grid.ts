@@ -3,6 +3,7 @@ import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { catchError, map, of, startWith } from 'rxjs';
+import { CartFacadeService } from '../../core/cart/cart-facade.service';
 import { ProductApiService } from '../../core/products/product-api.service';
 import { type ProductSummary } from '../../core/products/product.types';
 import { ProductCardComponent } from '../../shared/product-card/product-card';
@@ -16,6 +17,7 @@ import { ProductCardComponent } from '../../shared/product-card/product-card';
 export class ProductGridComponent {
   private readonly router = inject(Router);
   private readonly productApiService = inject(ProductApiService);
+  private readonly cartFacadeService = inject(CartFacadeService);
 
   private readonly productListState = toSignal(
     this.productApiService.getProducts().pipe(
@@ -34,7 +36,9 @@ export class ProductGridComponent {
     void this.router.navigate(['/product', productId]);
   }
 
-  addProductToCart(_productId: string): void {}
+  addProductToCart(productId: string): void {
+    this.cartFacadeService.addItem(productId);
+  }
 
   saveProductToWishlist(_productId: string): void {}
 }
