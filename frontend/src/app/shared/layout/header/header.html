@@ -51,17 +51,45 @@
       </button>
 
       @if (authState.isAuthenticated()) {
-        <a
-          routerLink="/profile"
-          class="inline-flex items-center gap-2 rounded-full border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
-        >
-          <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-surface-elevated" aria-hidden="true">
-            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-current">
-              <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" />
+        <details #profileMenu class="group relative">
+          <summary
+            class="inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
+          >
+            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-surface-elevated" aria-hidden="true">
+              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-current">
+                <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" />
+              </svg>
+            </span>
+            <span class="hidden md:inline">{{ authState.displayName() }}</span>
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-current text-text-secondary transition group-open:rotate-180">
+              <path d="M7 10l5 5 5-5z" />
             </svg>
-          </span>
-          <span class="hidden md:inline">{{ authState.displayName() }}</span>
-        </a>
+          </summary>
+
+          <div class="absolute right-0 top-[calc(100%+0.5rem)] z-50 w-44 rounded-xl border border-surface-elevated bg-surface-default p-1 shadow-lg">
+            <a
+              routerLink="/profile"
+              class="block rounded-lg px-3 py-2 text-sm text-text-primary transition-colors duration-150 hover:bg-surface-elevated"
+              (click)="closeProfileMenu()"
+            >
+              Profile
+            </a>
+            <a
+              routerLink="/orders"
+              class="block rounded-lg px-3 py-2 text-sm text-text-primary transition-colors duration-150 hover:bg-surface-elevated"
+              (click)="closeProfileMenu()"
+            >
+              Order history
+            </a>
+            <button
+              type="button"
+              class="block w-full rounded-lg px-3 py-2 text-left text-sm text-text-primary transition-colors duration-150 hover:bg-surface-elevated"
+              (click)="logout()"
+            >
+              Logout
+            </button>
+          </div>
+        </details>
       } @else {
         <button
           type="button"

@@ -1,0 +1,92 @@
+<section class="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 lg:px-8">
+  <header class="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold text-text-primary">Order history</h1>
+      <p class="mt-1 text-sm text-text-secondary">Track your latest purchases and shipment status.</p>
+    </div>
+  </header>
+
+  @if (!isAuthenticated()) {
+    <div class="rounded-2xl border border-surface-elevated bg-surface-default p-6 text-center">
+      <p class="text-sm text-text-secondary">Log in to view your order history.</p>
+      <button
+        type="button"
+        class="mt-4 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
+        (click)="login()"
+      >
+        Login
+      </button>
+    </div>
+  } @else if (isLoading()) {
+    <div class="space-y-4">
+      @for (skeleton of [0, 1, 2]; track skeleton) {
+        <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
+          <div class="h-4 w-40 rounded-full bg-surface-elevated animate-pulse"></div>
+          <div class="mt-3 h-4 w-64 rounded-full bg-surface-elevated animate-pulse"></div>
+          <div class="mt-5 h-16 rounded-xl bg-surface-elevated animate-pulse"></div>
+        </article>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="rounded-2xl border border-red-400/40 bg-surface-default p-6 text-sm text-red-300">
+      {{ error() }}
+    </div>
+  } @else if (!orders().length) {
+    <div class="rounded-2xl border border-surface-elevated bg-surface-default p-6 text-center">
+      <p class="text-base font-semibold text-text-primary">No orders yet</p>
+      <p class="mt-1 text-sm text-text-secondary">Your completed checkouts will appear here.</p>
+      <a
+        routerLink="/"
+        class="mt-4 inline-flex rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
+      >
+        Continue shopping
+      </a>
+    </div>
+  } @else {
+    <div class="space-y-4">
+      @for (order of orders(); track order.id) {
+        <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p class="text-sm text-text-secondary">{{ order.createdAt | date: 'mediumDate' }}</p>
+              <h2 class="text-base font-semibold text-text-primary">{{ order.orderNumber }}</h2>
+            </div>
+            <span class="rounded-full px-3 py-1 text-xs font-semibold" [ngClass]="statusClass(order.status)">
+              {{ statusLabel(order.status) }}
+            </span>
+          </div>
+
+          <div class="mt-4 overflow-hidden rounded-xl border border-surface-elevated">
+            <table class="w-full border-collapse text-left text-sm">
+              <thead class="bg-surface-elevated/60 text-text-secondary">
+                <tr>
+                  <th class="px-3 py-2 font-medium">Item</th>
+                  <th class="px-3 py-2 font-medium">Qty</th>
+                  <th class="px-3 py-2 font-medium">Unit price</th>
+                  <th class="px-3 py-2 font-medium">Line total</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of order.items; track item.productId) {
+                  <tr class="border-t border-surface-elevated/70 text-text-primary">
+                    <td class="px-3 py-2">{{ item.title }}</td>
+                    <td class="px-3 py-2">{{ item.quantity }}</td>
+                    <td class="px-3 py-2">{{ item.unitPrice | currency: 'USD' : 'symbol' : '1.2-2' }}</td>
+                    <td class="px-3 py-2">{{ item.lineTotal | currency: 'USD' : 'symbol' : '1.2-2' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-4 flex flex-wrap justify-end gap-4 text-sm">
+            <span class="text-text-secondary">Subtotal: <strong class="text-text-primary">{{ order.subtotal | currency: 'USD' : 'symbol' : '1.2-2' }}</strong></span>
+            <span class="text-text-secondary">Discount: <strong class="text-text-primary">{{ order.discountAmount | currency: 'USD' : 'symbol' : '1.2-2' }}</strong></span>
+            <span class="text-text-secondary">Total: <strong class="text-text-primary">{{ order.totalAmount | currency: 'USD' : 'symbol' : '1.2-2' }}</strong></span>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>
+

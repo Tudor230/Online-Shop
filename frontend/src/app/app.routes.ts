@@ -9,6 +9,7 @@ import { ShippingReturnsPageComponent } from './pages/shipping-returns/shipping-
 import { TermsPageComponent } from './pages/terms/terms';
 import { WarrantyPolicyPageComponent } from './pages/warranty-policy/warranty-policy';
 import { CommonLayoutComponent } from './shared/layout/common-layout/common-layout';
+import { OrderHistoryPageComponent } from './pages/order-history/order-history';
 
 export const routes: Routes = [
   {
@@ -47,6 +48,11 @@ export const routes: Routes = [
       {
         path: 'terms',
         component: TermsPageComponent
+      },
+      {
+        path: 'orders',
+        canActivate: [profileAuthGuard],
+        component: OrderHistoryPageComponent
       }
     ]
   }
