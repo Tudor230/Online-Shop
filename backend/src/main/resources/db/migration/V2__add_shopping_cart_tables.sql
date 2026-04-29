@@ -5,7 +5,7 @@ CREATE TABLE shopping_cart (
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ,
     CONSTRAINT fk_shopping_cart_user FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE,
-    CONSTRAINT chk_shopping_cart_owner CHECK (user_id IS NOT NULL OR session_id IS NOT NULL)
+    CONSTRAINT chk_shopping_cart_owner CHECK ((user_id IS NOT NULL) <> (session_id IS NOT NULL))
 );
 
 CREATE TABLE cart_item (
