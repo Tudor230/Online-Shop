@@ -82,10 +82,21 @@ public class CartService {
         CartOwner owner = resolveOwner(jwt, sessionId);
         ShoppingCart cart = findCart(owner)
                 .orElseThrow(() -> new BadRequestException("Cart was not found"));
-        Product product = findActiveProductBySlug(productId);
 
-        CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
-                .orElseThrow(() -> new BadRequestException("Product is not in cart"));
+        CartItem item = null;
+        for (CartItem cartItem : cartItemRepository.findAll()) {
+            if (cartItem.getCart() != null
+                    && cartItem.getCart().getId().equals(cart.getId())
+                    && cartItem.getProduct() != null
+                    && productId.equals(cartItem.getProduct().getSlug())) {
+                item = cartItem;
+                break;
+            }
+        }
+
+        if (item == null) {
+            throw new BadRequestException("Product is not in cart");
+        }
         cartItemRepository.delete(item);
 
         return toResponse(cart);
