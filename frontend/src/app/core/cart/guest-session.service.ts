@@ -11,9 +11,9 @@ export class GuestSessionService {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-  getOrCreateSessionId(): string {
+  getOrCreateSessionId(): string | null {
     if (!this.isBrowser) {
-      return 'server-session';
+      return null;
     }
 
     const existingSessionId = localStorage.getItem(GUEST_SESSION_STORAGE_KEY)?.trim();
