@@ -1,19 +1,42 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthStateService } from '../../../core/auth/auth-state.service';
+import { CartFacadeService } from '../../../core/cart/cart-facade.service';
 import { KeycloakAuthService } from '../../../core/auth/keycloak-auth.service';
+import { CartSidebarComponent } from '../cart-sidebar/cart-sidebar';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CartSidebarComponent],
   templateUrl: './header.html'
 })
 export class HeaderComponent {
   private readonly keycloakAuthService = inject(KeycloakAuthService);
   readonly authState = inject(AuthStateService);
+  readonly cartFacade = inject(CartFacadeService);
 
   async login(): Promise<void> {
     await this.keycloakAuthService.login();
+  }
+
+  openCartSidebar(): void {
+    this.cartFacade.openSidebar();
+  }
+
+  closeCartSidebar(): void {
+    this.cartFacade.closeSidebar();
+  }
+
+  incrementCartItem(productId: string): void {
+    this.cartFacade.incrementItemQuantity(productId);
+  }
+
+  decrementCartItem(productId: string): void {
+    this.cartFacade.decrementItemQuantity(productId);
+  }
+
+  removeCartItem(productId: string): void {
+    this.cartFacade.removeItem(productId);
   }
 }

@@ -34,12 +34,20 @@
 
       <button
         type="button"
-        class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-surface-elevated bg-surface-default text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
+        class="relative inline-flex h-9 w-9 items-center justify-center rounded-full border border-surface-elevated bg-surface-default text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
         aria-label="Open shopping cart"
+        (click)="openCartSidebar()"
       >
         <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
           <path d="M7 18a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm10 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2ZM7.2 14h10.7a2 2 0 0 0 2-1.6L22 5H6.2l-.3-2H2v2h2.3l1.6 10.4A2 2 0 0 0 7.2 17H20v-2H7.2Z" />
         </svg>
+        @if (cartFacade.cartCount() > 0) {
+          <span
+            class="absolute -right-1 -top-1 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-primary-foreground"
+          >
+            {{ cartFacade.cartCount() > 99 ? '99+' : cartFacade.cartCount() }}
+          </span>
+        }
       </button>
 
       @if (authState.isAuthenticated()) {
@@ -67,4 +75,12 @@
   </div>
 </header>
 
-
+<app-cart-sidebar
+  [isOpen]="cartFacade.isSidebarOpen()"
+  [items]="cartFacade.items()"
+  [totalPrice]="cartFacade.totalPrice()"
+  (closeRequested)="closeCartSidebar()"
+  (incrementRequested)="incrementCartItem($event)"
+  (decrementRequested)="decrementCartItem($event)"
+  (removeRequested)="removeCartItem($event)"
+/>

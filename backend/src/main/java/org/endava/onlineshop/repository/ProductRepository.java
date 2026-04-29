@@ -16,7 +16,12 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @EntityGraph(attributePaths = {"categories", "inventory"})
     Optional<Product> findBySlugAndIsActiveTrue(String slug);
 
+    @EntityGraph(attributePaths = {"categories", "inventory"})
+    Optional<Product> findBySlug(String slug);
+
     boolean existsBySlug(String slug);
+
+    boolean existsByIdAndIsActiveTrue(UUID id);
+
+    boolean existsBySlugAndIsActiveTrue(String slug);
 }
-
-

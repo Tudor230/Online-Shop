@@ -23,7 +23,7 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     const router = TestBed.inject(Router);
 
-    await router.navigateByUrl('/');
+    await router.navigateByUrl('/products');
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -47,7 +47,7 @@ describe('App', () => {
       role: Role.CUSTOMER
     });
 
-    await router.navigateByUrl('/');
+    await router.navigateByUrl('/products');
     fixture.detectChanges();
     await fixture.whenStable();
 
@@ -59,7 +59,7 @@ describe('App', () => {
   it('should render the product grid heading', async () => {
     const fixture = TestBed.createComponent(App);
     const router = TestBed.inject(Router);
-    await router.navigateByUrl('/');
+    await router.navigateByUrl('/products');
     fixture.detectChanges();
     await fixture.whenStable();
 
