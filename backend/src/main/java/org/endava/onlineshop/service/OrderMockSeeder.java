@@ -88,7 +88,6 @@ public class OrderMockSeeder implements ApplicationRunner {
             Order order = new Order();
             order.setOrderNumber(template.orderNumber() + "-" + shortUserSuffix(user.getId()) + "-" + (index + 1));
             order.setUserId(user.getId());
-            order.setGuestEmail(user.getEmail());
             order.setShippingAddressId(user.getDefaultShippingAddressId());
             order.setBillingAddressId(user.getDefaultBillingAddressId());
             order.setCurrentStatus(template.status());
