@@ -16,7 +16,8 @@ describe('GuestSessionService', () => {
     const service = TestBed.inject(GuestSessionService);
     const sessionId = service.getOrCreateSessionId();
 
-    expect(sessionId.length).toBeGreaterThan(0);
+    expect(sessionId).not.toBeNull();
+    expect(sessionId?.length ?? 0).toBeGreaterThan(0);
     expect(localStorage.getItem(STORAGE_KEY)).toBe(sessionId);
   });
 

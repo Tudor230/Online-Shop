@@ -14,7 +14,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -67,7 +69,7 @@ public class CartService {
         CartOwner owner = resolveOwner(jwt, sessionId);
         ShoppingCart cart = findCart(owner)
                 .orElseThrow(() -> new BadRequestException("Cart was not found"));
-        Product product = findActiveProductBySlug(productId);
+        Product product = findProductBySlug(productId);
 
         CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
                 .orElseThrow(() -> new BadRequestException("Product is not in cart"));
@@ -137,18 +139,23 @@ public class CartService {
         }
 
         List<CartItem> guestItems = cartItemRepository.findByCartIdOrderByCreatedAtAsc(guestCart.getId());
-        for (CartItem guestItem : guestItems) {
-            CartItem targetItem = cartItemRepository.findByCartIdAndProductId(userCart.getId(), guestItem.getProduct().getId())
-                    .orElseGet(() -> {
-                        CartItem createdItem = new CartItem();
-                        createdItem.setCart(userCart);
-                        createdItem.setProduct(guestItem.getProduct());
-                        createdItem.setQuantity(0);
-                        return createdItem;
-                    });
-            targetItem.setQuantity(targetItem.getQuantity() + guestItem.getQuantity());
-            cartItemRepository.save(targetItem);
+        List<CartItem> userItems = cartItemRepository.findByCartIdOrderByCreatedAtAsc(userCart.getId());
+        Map<UUID, CartItem> userItemsByProductId = new HashMap<>();
+        for (CartItem userItem : userItems) {
+            userItemsByProductId.put(userItem.getProduct().getId(), userItem);
         }
+
+        for (CartItem guestItem : guestItems) {
+            CartItem targetItem = userItemsByProductId.computeIfAbsent(guestItem.getProduct().getId(), ignored -> {
+                CartItem createdItem = new CartItem();
+                createdItem.setCart(userCart);
+                createdItem.setProduct(guestItem.getProduct());
+                createdItem.setQuantity(0);
+                return createdItem;
+            });
+            targetItem.setQuantity(targetItem.getQuantity() + guestItem.getQuantity());
+        }
+        cartItemRepository.saveAll(userItemsByProductId.values());
 
         shoppingCartRepository.delete(guestCart);
         userCart.setSessionId(null);
@@ -174,6 +181,11 @@ public class CartService {
 
     private Product findActiveProductBySlug(String slug) {
         return productRepository.findBySlugAndIsActiveTrue(slug)
+                .orElseThrow(() -> new BadRequestException("Product not found"));
+    }
+
+    private Product findProductBySlug(String slug) {
+        return productRepository.findBySlug(slug)
                 .orElseThrow(() -> new BadRequestException("Product not found"));
     }
 

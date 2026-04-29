@@ -1,4 +1,5 @@
-import { computed, Injectable, effect, inject, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { computed, Injectable, effect, inject, PLATFORM_ID, signal } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { AuthStateService } from '../auth/auth-state.service';
 import { CartApiService } from './cart-api.service';
@@ -10,6 +11,8 @@ export class CartFacadeService {
   private readonly authState = inject(AuthStateService);
   private readonly cartApiService = inject(CartApiService);
   private readonly guestSessionService = inject(GuestSessionService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly isSidebarOpen = signal(false);
   readonly cartState = signal<CartState>({ items: [], totalItems: 0 });
@@ -17,9 +20,13 @@ export class CartFacadeService {
   readonly cartCount = computed(() => this.cartState().totalItems);
   readonly totalPrice = computed(() => this.items().reduce((sum, item) => sum + item.quantity * item.price, 0));
   private wasAuthenticated = false;
+  private mutationQueue: Promise<void> = Promise.resolve();
 
   constructor() {
     effect(() => {
+      if (!this.isBrowser) {
+        return;
+      }
       const isAuthenticated = this.authState.isAuthenticated();
       void this.handleAuthenticationChange(isAuthenticated);
     });
@@ -72,6 +79,10 @@ export class CartFacadeService {
   }
 
   private async refreshCart(): Promise<void> {
+    if (!this.isBrowser) {
+      return;
+    }
+
     try {
       const cartState = await firstValueFrom(this.cartApiService.getCart(this.getGuestSessionIfNeeded()));
       this.cartState.set(cartState);
@@ -102,20 +113,24 @@ export class CartFacadeService {
   }
 
   private applyMutation(mutation: (sessionId?: string) => Observable<CartState>): void {
-    void (async () => {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    this.mutationQueue = this.mutationQueue.then(async () => {
       try {
         const cartState = await firstValueFrom(mutation(this.getGuestSessionIfNeeded()));
         this.cartState.set(cartState);
       } catch {
         // Keep current cart state if mutation fails.
       }
-    })();
+    });
   }
 
   private getGuestSessionIfNeeded(): string | undefined {
     if (this.authState.isAuthenticated()) {
       return undefined;
     }
-    return this.guestSessionService.getOrCreateSessionId();
+    return this.guestSessionService.getOrCreateSessionId() ?? undefined;
   }
 }
