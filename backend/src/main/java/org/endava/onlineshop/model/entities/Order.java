@@ -19,6 +19,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,8 +58,26 @@ public class Order extends BaseAuditEntity {
     @Column(name = "discount_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal discountAmount = BigDecimal.ZERO;
 
+    @Column(name = "shipping_amount", nullable = false, precision = 10, scale = 2)
+    private BigDecimal shippingAmount = BigDecimal.ZERO;
+
+    @Column(name = "tax_amount", nullable = false, precision = 10, scale = 2)
+    private BigDecimal taxAmount = BigDecimal.ZERO;
+
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
+
+    @Column(name = "currency_code", nullable = false, length = 3)
+    private String currencyCode = "RON";
+
+    @Column(name = "stripe_checkout_session_id", length = 255, unique = true)
+    private String stripeCheckoutSessionId;
+
+    @Column(name = "stripe_payment_intent_id", length = 255)
+    private String stripePaymentIntentId;
+
+    @Column(name = "paid_at")
+    private Instant paidAt;
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)

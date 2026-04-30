@@ -1,28 +1,32 @@
 package org.endava.onlineshop.util;
 
-public class APIResponse {
-    String message;
-    int statusCode;
+import lombok.Getter;
 
-    private APIResponse(Builder builder){
-        builder.build();
+@Getter
+public class APIResponse {
+    private final String message;
+    private final int statusCode;
+
+    private APIResponse(Builder builder) {
+        this.message = builder.message;
+        this.statusCode = builder.statusCode;
     }
 
-    public static class Builder{
+    public static class Builder {
         private String message;
         private int statusCode;
 
-        public Builder message(String Message){
-            this.message=message;
+        public Builder message(String message) {
+            this.message = message;
             return this;
         }
 
-        public Builder statusCode(int statusCode){
-            this.statusCode=statusCode;
+        public Builder statusCode(int statusCode) {
+            this.statusCode = statusCode;
             return this;
         }
 
-        public APIResponse build(){
+        public APIResponse build() {
             return new APIResponse(this);
         }
     }

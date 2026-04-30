@@ -1,6 +1,7 @@
 package org.endava.onlineshop.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.endava.onlineshop.exception.BadRequestException;
 import org.endava.onlineshop.model.dto.cart.AddCartItemRequestDto;
 import org.endava.onlineshop.model.dto.cart.CartResponseDto;
@@ -18,15 +19,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
 
     private final CartService cartService;
-
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
 
     @GetMapping
     public CartResponseDto getCart(

@@ -1,6 +1,7 @@
 package org.endava.onlineshop.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.endava.onlineshop.model.dto.profile.CreateAddressRequestDto;
 import org.endava.onlineshop.model.dto.profile.ProfileResponseDto;
 import org.endava.onlineshop.model.dto.profile.SetPrimaryAddressRequestDto;
@@ -19,15 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/profile")
 public class ProfileController {
 
     private final ProfileService profileService;
-
-    public ProfileController(ProfileService profileService) {
-        this.profileService = profileService;
-    }
 
     @GetMapping
     public ProfileResponseDto getProfile(@AuthenticationPrincipal User user) {

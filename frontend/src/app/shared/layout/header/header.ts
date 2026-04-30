@@ -3,6 +3,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
+import { Component, ElementRef, HostListener, ViewChild, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { AuthStateService } from '../../../core/auth/auth-state.service';
 import { CartFacadeService } from '../../../core/cart/cart-facade.service';
 import { KeycloakAuthService } from '../../../core/auth/keycloak-auth.service';
@@ -19,9 +21,11 @@ export class HeaderComponent {
 
   private readonly router = inject(Router);
   private readonly keycloakAuthService = inject(KeycloakAuthService);
+  private readonly router = inject(Router);
   readonly authState = inject(AuthStateService);
   readonly cartFacade = inject(CartFacadeService);
   readonly searchControl = new FormControl('', { nonNullable: true });
+  isCheckoutInProgress = false;
 
   private readonly searchTermFromRoute = toSignal(
     this.router.events.pipe(
@@ -89,5 +93,27 @@ export class HeaderComponent {
 
   removeCartItem(productId: string): void {
     this.cartFacade.removeItem(productId);
+  }
+
+  async startCheckout(): Promise<void> {
+    if (this.isCheckoutInProgress) {
+      return;
+    }
+
+    if (!this.authState.isAuthenticated()) {
+      await this.login();
+      return;
+    }
+
+    this.isCheckoutInProgress = true;
+    this.closeCartSidebar();
+    try {
+      const didNavigate = await this.router.navigate(['/checkout']);
+      if (!didNavigate) {
+        this.isCheckoutInProgress = false;
+      }
+    } catch {
+      this.isCheckoutInProgress = false;
+    }
   }
 }

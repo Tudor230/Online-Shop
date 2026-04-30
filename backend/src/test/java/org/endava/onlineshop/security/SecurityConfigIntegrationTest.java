@@ -96,6 +96,14 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
+    void shouldAllowAnonymousAccessToStripeWebhookEndpoint() throws Exception {
+        mockMvc.perform(post("/api/checkout/webhook")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldAllowAuthenticatedRequests() throws Exception {
         when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(userWithId(UUID.randomUUID()));
 

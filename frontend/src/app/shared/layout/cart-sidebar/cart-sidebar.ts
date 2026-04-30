@@ -14,11 +14,13 @@ export class CartSidebarComponent {
   @Input({ required: true }) isOpen = false;
   @Input({ required: true }) items: CartItem[] = [];
   @Input({ required: true }) totalPrice = 0;
+  @Input({ required: false }) isCheckoutInProgress = false;
 
   @Output() closeRequested = new EventEmitter<void>();
   @Output() incrementRequested = new EventEmitter<string>();
   @Output() decrementRequested = new EventEmitter<string>();
   @Output() removeRequested = new EventEmitter<string>();
+  @Output() checkoutRequested = new EventEmitter<void>();
 
   readonly cartImageOptions: CloudinaryTransformOptions = {
     width: 160,
@@ -44,4 +46,7 @@ export class CartSidebarComponent {
     this.removeRequested.emit(productId);
   }
 
+  onCheckoutRequested(): void {
+    this.checkoutRequested.emit();
+  }
 }
