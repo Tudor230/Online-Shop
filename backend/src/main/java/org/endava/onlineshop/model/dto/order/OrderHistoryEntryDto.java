@@ -12,8 +12,11 @@ public record OrderHistoryEntryDto(
         OrderStatus status,
         Instant createdAt,
         BigDecimal subtotal,
+        BigDecimal shippingAmount,
+        BigDecimal taxAmount,
         BigDecimal discountAmount,
         BigDecimal totalAmount,
+        String currencyCode,
         List<OrderHistoryItemDto> items
 ) {
 }

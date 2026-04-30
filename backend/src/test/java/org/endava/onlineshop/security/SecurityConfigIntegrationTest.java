@@ -96,6 +96,14 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
+    void shouldAllowAnonymousAccessToStripeWebhookEndpoint() throws Exception {
+        mockMvc.perform(post("/api/checkout/webhook")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldRejectUnauthenticatedWishlistRequests() throws Exception {
         mockMvc.perform(get("/api/wishlist"))
                 .andExpect(status().isUnauthorized());

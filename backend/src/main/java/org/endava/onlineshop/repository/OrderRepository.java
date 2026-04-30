@@ -32,5 +32,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             ORDER BY CAST(o.createdAt AS java.time.LocalDate)
             """)
     List<Object[]> findRevenueBetween(@Param("from") Instant from, @Param("to") Instant to);
+
+    java.util.Optional<Order> findByStripeCheckoutSessionId(String stripeCheckoutSessionId);
 }
 

@@ -1,5 +1,6 @@
 package org.endava.onlineshop.service;
 
+import lombok.RequiredArgsConstructor;
 import org.endava.onlineshop.exception.BadRequestException;
 import org.endava.onlineshop.model.dto.profile.AddressResponseDto;
 import org.endava.onlineshop.model.dto.profile.CreateAddressRequestDto;
@@ -17,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class ProfileService {
 
@@ -24,15 +26,6 @@ public class ProfileService {
     private final AddressRepository addressRepository;
     private final KeycloakAdminService keycloakAdminService;
 
-    public ProfileService(
-            UserRepository userRepository,
-            AddressRepository addressRepository,
-            KeycloakAdminService keycloakAdminService
-    ) {
-        this.userRepository = userRepository;
-        this.addressRepository = addressRepository;
-        this.keycloakAdminService = keycloakAdminService;
-    }
 
     @Transactional(readOnly = true)
     public ProfileResponseDto getProfile(User user) {
