@@ -2,6 +2,7 @@ package org.endava.onlineshop.security;
 
 import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.repository.UserRepository;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +23,6 @@ public class AuthenticatedUserSyncService {
     @Transactional
     public User syncUser(Jwt jwt) {
         UUID keycloakUserId = parseKeycloakId(jwt.getSubject());
-        if (keycloakUserId == null) {
-            return null;
-        }
 
         KeycloakUserClaims claims = keycloakClaimsMapper.toUserClaims(jwt);
 
@@ -52,12 +50,12 @@ public class AuthenticatedUserSyncService {
 
     private UUID parseKeycloakId(String subject) {
         if (subject == null || subject.isBlank()) {
-            return null;
+            throw new BadCredentialsException("Invalid authentication subject");
         }
         try {
             return UUID.fromString(subject);
         } catch (IllegalArgumentException ex) {
-            return null;
+            throw new BadCredentialsException("Invalid authentication subject");
         }
     }
 

@@ -5,6 +5,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class UserAuthenticationToken extends AbstractAuthenticationToken {
 
@@ -12,7 +13,7 @@ public class UserAuthenticationToken extends AbstractAuthenticationToken {
 
     public UserAuthenticationToken(User user, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
-        this.user = user;
+        this.user = Objects.requireNonNull(user, "Authenticated user must not be null");
         setAuthenticated(true);
     }
 
