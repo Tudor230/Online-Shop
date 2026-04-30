@@ -20,10 +20,10 @@ public class AuthenticatedUserSyncService {
     }
 
     @Transactional
-    public void syncUser(Jwt jwt) {
+    public User syncUser(Jwt jwt) {
         UUID keycloakUserId = parseKeycloakId(jwt.getSubject());
         if (keycloakUserId == null) {
-            return;
+            return null;
         }
 
         KeycloakUserClaims claims = keycloakClaimsMapper.toUserClaims(jwt);
@@ -47,7 +47,7 @@ public class AuthenticatedUserSyncService {
         user.setRole(claims.role());
         user.setIsActive(claims.isActive());
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     private UUID parseKeycloakId(String subject) {

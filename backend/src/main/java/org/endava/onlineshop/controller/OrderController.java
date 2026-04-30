@@ -1,9 +1,9 @@
 package org.endava.onlineshop.controller;
 
 import org.endava.onlineshop.model.dto.order.OrderHistoryEntryDto;
+import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.service.OrderService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,8 +21,8 @@ public class OrderController {
     }
 
     @GetMapping("/history")
-    public List<OrderHistoryEntryDto> getOrderHistory(@AuthenticationPrincipal Jwt jwt) {
-        return orderService.getOrderHistory(jwt);
+    public List<OrderHistoryEntryDto> getOrderHistory(@AuthenticationPrincipal User user) {
+        return orderService.getOrderHistory(user);
     }
 }
 

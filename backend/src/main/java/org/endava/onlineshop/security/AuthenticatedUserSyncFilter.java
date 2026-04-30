@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.endava.onlineshop.model.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -33,7 +34,12 @@ public class AuthenticatedUserSyncFilter extends OncePerRequestFilter {
 
         if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
             try {
-                authenticatedUserSyncService.syncUser(jwtAuthenticationToken.getToken());
+                User user = authenticatedUserSyncService.syncUser(jwtAuthenticationToken.getToken());
+                if (user != null) {
+                    UserAuthenticationToken userAuth = new UserAuthenticationToken(
+                            user, jwtAuthenticationToken.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(userAuth);
+                }
             } catch (RuntimeException ex) {
                 log.warn("Failed to sync authenticated user to local database", ex);
             }
