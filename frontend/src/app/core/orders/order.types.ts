@@ -8,7 +8,7 @@ export type OrderStatus =
   | 'RETURNED';
 
 export interface OrderHistoryItem {
-  productId: string;
+  productSlug: string;
   title: string;
   imagePlaceholder: string;
   quantity: number;

@@ -3,7 +3,7 @@ package org.endava.onlineshop.model.dto.order;
 import java.math.BigDecimal;
 
 public record OrderHistoryItemDto(
-        String productId,
+        String productSlug,
         String title,
         String imagePlaceholder,
         int quantity,

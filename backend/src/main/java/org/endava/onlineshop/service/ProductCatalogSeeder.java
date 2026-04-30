@@ -10,6 +10,7 @@ import org.endava.onlineshop.repository.ProductRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 
 // TODO: Remove before deploying to production.
 @Component
+@Profile("dev")
 public class ProductCatalogSeeder implements ApplicationRunner {
 
     private final ProductRepository productRepository;

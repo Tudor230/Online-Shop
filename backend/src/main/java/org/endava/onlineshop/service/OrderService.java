@@ -8,12 +8,12 @@ import org.endava.onlineshop.model.entities.Order;
 import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.repository.OrderRepository;
 import org.endava.onlineshop.repository.UserRepository;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,21 +22,28 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    private final OrderMockSeeder orderMockSeeder;
+    private final ObjectProvider<OrderMockSeeder> orderMockSeederProvider;
 
-    public OrderService(OrderRepository orderRepository, UserRepository userRepository, OrderMockSeeder orderMockSeeder) {
+    public OrderService(
+            OrderRepository orderRepository,
+            UserRepository userRepository,
+            ObjectProvider<OrderMockSeeder> orderMockSeederProvider
+    ) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
-        this.orderMockSeeder = orderMockSeeder;
+        this.orderMockSeederProvider = orderMockSeederProvider;
     }
 
     @Transactional
     public List<OrderHistoryEntryDto> getOrderHistory(Jwt jwt) {
         User user = getCurrentUser(jwt);
-        orderMockSeeder.seedForUserIfMissing(user);
+
+        OrderMockSeeder orderMockSeeder = orderMockSeederProvider.getIfAvailable();
+        if (orderMockSeeder != null) {
+            orderMockSeeder.seedForUserIfMissing(user);
+        }
 
         return orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId()).stream()
-                .sorted(Comparator.comparing(Order::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
                 .map(this::toOrderHistoryDto)
                 .toList();
     }

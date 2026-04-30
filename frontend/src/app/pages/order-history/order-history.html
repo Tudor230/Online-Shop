@@ -67,7 +67,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (item of order.items; track item.productId) {
+                @for (item of order.items; track item.productSlug) {
                   <tr class="border-t border-surface-elevated/70 text-text-primary">
                     <td class="px-3 py-2">{{ item.title }}</td>
                     <td class="px-3 py-2">{{ item.quantity }}</td>
