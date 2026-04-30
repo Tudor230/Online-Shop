@@ -7,10 +7,10 @@ import org.endava.onlineshop.model.dto.cart.CartResponseDto;
 import org.endava.onlineshop.model.entities.CartItem;
 import org.endava.onlineshop.model.entities.Product;
 import org.endava.onlineshop.model.entities.ShoppingCart;
+import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.repository.CartItemRepository;
 import org.endava.onlineshop.repository.ProductRepository;
 import org.endava.onlineshop.repository.ShoppingCartRepository;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,16 +37,16 @@ public class CartService {
     }
 
     @Transactional(readOnly = true)
-    public CartResponseDto getCart(Jwt jwt, String sessionId) {
-        CartOwner owner = resolveOwner(jwt, sessionId);
+    public CartResponseDto getCart(User user, String sessionId) {
+        CartOwner owner = resolveOwner(user, sessionId);
         return findCart(owner)
                 .map(this::toResponse)
                 .orElse(new CartResponseDto(List.of(), 0));
     }
 
     @Transactional
-    public CartResponseDto addItem(Jwt jwt, String sessionId, AddCartItemRequestDto request) {
-        CartOwner owner = resolveOwner(jwt, sessionId);
+    public CartResponseDto addItem(User user, String sessionId, AddCartItemRequestDto request) {
+        CartOwner owner = resolveOwner(user, sessionId);
         Product product = findActiveProductBySlug(request.productId());
         ShoppingCart cart = findOrCreateCart(owner);
 
@@ -65,8 +65,8 @@ public class CartService {
     }
 
     @Transactional
-    public CartResponseDto updateItemQuantity(Jwt jwt, String sessionId, String productId, int quantity) {
-        CartOwner owner = resolveOwner(jwt, sessionId);
+    public CartResponseDto updateItemQuantity(User user, String sessionId, String productId, int quantity) {
+        CartOwner owner = resolveOwner(user, sessionId);
         ShoppingCart cart = findCart(owner)
                 .orElseThrow(() -> new BadRequestException("Cart was not found"));
         Product product = findProductBySlug(productId);
@@ -80,8 +80,8 @@ public class CartService {
     }
 
     @Transactional
-    public CartResponseDto removeItem(Jwt jwt, String sessionId, String productId) {
-        CartOwner owner = resolveOwner(jwt, sessionId);
+    public CartResponseDto removeItem(User user, String sessionId, String productId) {
+        CartOwner owner = resolveOwner(user, sessionId);
         ShoppingCart cart = findCart(owner)
                 .orElseThrow(() -> new BadRequestException("Cart was not found"));
 
@@ -105,8 +105,8 @@ public class CartService {
     }
 
     @Transactional
-    public CartResponseDto claimGuestCart(Jwt jwt, String sessionId) {
-        UUID userId = parseUserId(jwt.getSubject());
+    public CartResponseDto claimGuestCart(User user, String sessionId) {
+        UUID userId = user.getId();
         if (sessionId == null || sessionId.isBlank()) {
             throw new BadRequestException("Guest session id is required");
         }
@@ -189,9 +189,9 @@ public class CartService {
                 .orElseThrow(() -> new BadRequestException("Product not found"));
     }
 
-    private CartOwner resolveOwner(Jwt jwt, String sessionId) {
-        if (jwt != null) {
-            return new CartOwner(parseUserId(jwt.getSubject()), null);
+    private CartOwner resolveOwner(User user, String sessionId) {
+        if (user != null) {
+            return new CartOwner(user.getId(), null);
         }
 
         if (sessionId == null || sessionId.isBlank()) {
@@ -200,16 +200,6 @@ public class CartService {
         return new CartOwner(null, sessionId.trim());
     }
 
-    private UUID parseUserId(String subject) {
-        if (subject == null || subject.isBlank()) {
-            throw new BadRequestException("Invalid authentication subject");
-        }
-        try {
-            return UUID.fromString(subject);
-        } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("Invalid authentication subject");
-        }
-    }
 
     private CartResponseDto toResponse(ShoppingCart cart) {
         List<CartItemDto> items = cartItemRepository.findByCartIdOrderByCreatedAtAsc(cart.getId()).stream()

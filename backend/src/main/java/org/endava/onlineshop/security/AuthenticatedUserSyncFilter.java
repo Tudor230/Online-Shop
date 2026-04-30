@@ -4,9 +4,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.endava.onlineshop.model.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -33,9 +36,20 @@ public class AuthenticatedUserSyncFilter extends OncePerRequestFilter {
 
         if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
             try {
-                authenticatedUserSyncService.syncUser(jwtAuthenticationToken.getToken());
+                User user = authenticatedUserSyncService.syncUser(jwtAuthenticationToken.getToken());
+                UserAuthenticationToken userAuth = new UserAuthenticationToken(
+                        user, jwtAuthenticationToken.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(userAuth);
+            } catch (AuthenticationException ex) {
+                log.warn("Authenticated request rejected because user sync failed", ex);
+                SecurityContextHolder.clearContext();
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
+                return;
             } catch (RuntimeException ex) {
-                log.warn("Failed to sync authenticated user to local database", ex);
+                log.error("Authenticated request rejected because user sync failed unexpectedly", ex);
+                SecurityContextHolder.clearContext();
+                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Authentication sync failed");
+                return;
             }
         }
 

@@ -10,7 +10,6 @@ import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.repository.AddressRepository;
 import org.endava.onlineshop.repository.UserRepository;
 import org.endava.onlineshop.security.KeycloakAdminService;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,14 +35,12 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileResponseDto getProfile(Jwt jwt) {
-        User user = getCurrentUser(jwt);
+    public ProfileResponseDto getProfile(User user) {
         return toProfileResponseDto(user, findSortedAddresses(user.getId()));
     }
 
     @Transactional
-    public ProfileResponseDto updateProfile(Jwt jwt, UpdateProfileRequestDto request) {
-        User user = getCurrentUser(jwt);
+    public ProfileResponseDto updateProfile(User user, UpdateProfileRequestDto request) {
         String trimmedFirstName = request.firstName().trim();
         String trimmedLastName = request.lastName().trim();
 
@@ -57,9 +54,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileResponseDto createAddress(Jwt jwt, CreateAddressRequestDto request) {
-        User user = getCurrentUser(jwt);
-
+    public ProfileResponseDto createAddress(User user, CreateAddressRequestDto request) {
         Address address = new Address();
         address.setUserId(user.getId());
         address.setRecipientName(request.recipientName().trim());
@@ -77,8 +72,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileResponseDto setPrimaryShippingAddress(Jwt jwt, UUID addressId) {
-        User user = getCurrentUser(jwt);
+    public ProfileResponseDto setPrimaryShippingAddress(User user, UUID addressId) {
         ensureAddressBelongsToUser(user.getId(), addressId);
 
         user.setDefaultShippingAddressId(addressId);
@@ -87,8 +81,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileResponseDto setPrimaryBillingAddress(Jwt jwt, UUID addressId) {
-        User user = getCurrentUser(jwt);
+    public ProfileResponseDto setPrimaryBillingAddress(User user, UUID addressId) {
         ensureAddressBelongsToUser(user.getId(), addressId);
 
         user.setDefaultBillingAddressId(addressId);
@@ -97,8 +90,7 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileResponseDto deleteAddress(Jwt jwt, UUID addressId) {
-        User user = getCurrentUser(jwt);
+    public ProfileResponseDto deleteAddress(User user, UUID addressId) {
         ensureAddressBelongsToUser(user.getId(), addressId);
 
         if (addressId.equals(user.getDefaultShippingAddressId()) || addressId.equals(user.getDefaultBillingAddressId())) {
@@ -109,22 +101,6 @@ public class ProfileService {
         return toProfileResponseDto(user, findSortedAddresses(user.getId()));
     }
 
-    private User getCurrentUser(Jwt jwt) {
-        UUID userId = parseUserId(jwt.getSubject());
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new BadRequestException("Authenticated user not found"));
-    }
-
-    private UUID parseUserId(String subject) {
-        if (subject == null || subject.isBlank()) {
-            throw new BadRequestException("Invalid authentication subject");
-        }
-        try {
-            return UUID.fromString(subject);
-        } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("Invalid authentication subject");
-        }
-    }
 
     private void ensureAddressBelongsToUser(UUID userId, UUID addressId) {
         boolean addressExistsForUser = addressRepository.findByIdAndUserId(addressId, userId).isPresent();
