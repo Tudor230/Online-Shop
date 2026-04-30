@@ -1,0 +1,43 @@
+[
+  {
+    "orderNumber": "ORD-2026-1001",
+    "status": "DELIVERED",
+    "statusNote": "Package delivered to front desk.",
+    "discountAmount": 10.00,
+    "items": [
+      {
+        "productSlug": "ps5-controller",
+        "quantity": 1
+      },
+      {
+        "productSlug": "ps5-console-shell",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "orderNumber": "ORD-2026-1002",
+    "status": "SHIPPED",
+    "statusNote": "Carrier accepted shipment and generated tracking.",
+    "discountAmount": 0,
+    "items": [
+      {
+        "productSlug": "switch-2-joy-cons",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "orderNumber": "ORD-2026-1003",
+    "status": "PROCESSING",
+    "statusNote": "Warehouse is preparing your order.",
+    "discountAmount": 5.50,
+    "items": [
+      {
+        "productSlug": "xbox-controller",
+        "quantity": 2
+      }
+    ]
+  }
+]
+
