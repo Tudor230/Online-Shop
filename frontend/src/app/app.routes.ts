@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { profileAuthGuard } from './core/auth/profile-auth.guard';
+import { adminAuthGuard } from './core/auth/admin-auth.guard';
 import { ProductDetailsComponent } from './pages/product-details/product-details';
 import { ProductGridComponent } from './pages/product-grid/product-grid';
 import { WelcomeComponent } from './pages/welcome/welcome';
@@ -54,6 +55,18 @@ export const routes: Routes = [
         canActivate: [profileAuthGuard],
         component: OrderHistoryPageComponent
       }
+    ]
+  },
+  {
+    path: 'admin',
+    canActivate: [adminAuthGuard],
+    loadComponent: () => import('./pages/admin/admin-layout').then(m => m.AdminLayoutComponent),
+    children: [
+      { path: '', loadComponent: () => import('./pages/admin/dashboard/dashboard').then(m => m.AdminDashboardComponent) },
+      { path: 'users', loadComponent: () => import('./pages/admin/users/users').then(m => m.AdminUsersComponent) },
+      { path: 'products', loadComponent: () => import('./pages/admin/products/products').then(m => m.AdminProductsComponent) },
+      { path: 'orders', loadComponent: () => import('./pages/admin/orders/orders').then(m => m.AdminOrdersComponent) },
+      { path: 'categories', loadComponent: () => import('./pages/admin/categories/categories').then(m => m.AdminCategoriesComponent) }
     ]
   }
 ];

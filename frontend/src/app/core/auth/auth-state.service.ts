@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { AuthUser } from './auth.types';
+import { AuthUser, Role } from './auth.types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStateService {
@@ -7,6 +7,10 @@ export class AuthStateService {
 
   readonly user = this.userState.asReadonly();
   readonly isAuthenticated = computed(() => this.user() !== null);
+  readonly isAdmin = computed(() => {
+    const role = this.user()?.role;
+    return role === Role.ADMIN || role === Role.SUPPORT;
+  });
   readonly displayName = computed(() => {
     const user = this.user();
     if (!user) {

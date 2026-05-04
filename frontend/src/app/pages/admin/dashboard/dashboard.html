@@ -1,0 +1,59 @@
+<div class="space-y-6">
+  <h1 class="text-2xl font-bold text-text-primary">Dashboard</h1>
+
+  @if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+  }
+
+  <!-- Stats Grid -->
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
+      <p class="text-sm text-text-secondary">Total Orders</p>
+      <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.totalOrders ?? 0 }}</p>
+    </div>
+    <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
+      <p class="text-sm text-text-secondary">Total Users</p>
+      <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.totalUsers ?? 0 }}</p>
+    </div>
+    <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
+      <p class="text-sm text-text-secondary">Total Products</p>
+      <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.totalProducts ?? 0 }}</p>
+    </div>
+    <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
+      <p class="text-sm text-text-secondary">Pending Orders</p>
+      <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.pendingOrders ?? 0 }}</p>
+    </div>
+    <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
+      <p class="text-sm text-text-secondary">Low Stock Items</p>
+      <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.lowStockCount ?? 0 }}</p>
+    </div>
+    <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
+      <p class="text-sm text-text-secondary">Total Revenue</p>
+      <p class="mt-1 text-3xl font-bold text-text-primary">${{ (stats()?.totalRevenue ?? 0) | number:'1.2-2' }}</p>
+    </div>
+  </div>
+
+  <!-- Revenue Chart -->
+  <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
+    <h2 class="mb-4 text-lg font-semibold text-text-primary">Revenue (Last 30 Days)</h2>
+    @if (loading()) {
+      <p class="text-sm text-text-secondary">Loading...</p>
+    } @else if (revenue().length === 0) {
+      <p class="text-sm text-text-secondary">No revenue data available.</p>
+    } @else {
+      <div class="flex items-end gap-1 overflow-x-auto">
+        @let maxRev = revenue().reduce((m, r) => m > r.revenue ? m : r.revenue, 0.01);
+        @for (item of revenue(); track item.date) {
+          <div class="flex flex-1 flex-col items-center gap-1">
+            <div
+              class="w-full rounded-sm bg-primary"
+              [style.height.px]="(item.revenue / maxRev) * 160 > 4 ? (item.revenue / maxRev) * 160 : 4"
+              [title]="item.date + ': $' + item.revenue"
+            ></div>
+            <span class="text-[10px] text-text-secondary">{{ item.date | date:'MMM d' }}</span>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
