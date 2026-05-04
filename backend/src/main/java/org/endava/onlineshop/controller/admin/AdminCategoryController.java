@@ -1,5 +1,6 @@
 package org.endava.onlineshop.controller.admin;
 
+import jakarta.validation.Valid;
 import org.endava.onlineshop.model.dto.admin.AdminCategoryCreateRequestDto;
 import org.endava.onlineshop.model.dto.admin.AdminCategoryDto;
 import org.endava.onlineshop.service.admin.AdminCategoryService;
@@ -34,13 +35,13 @@ public class AdminCategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public AdminCategoryDto createCategory(@RequestBody AdminCategoryCreateRequestDto request) {
+    public AdminCategoryDto createCategory(@Valid @RequestBody AdminCategoryCreateRequestDto request) {
         return adminCategoryService.createCategory(request);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public AdminCategoryDto updateCategory(@PathVariable UUID id, @RequestBody AdminCategoryCreateRequestDto request) {
+    public AdminCategoryDto updateCategory(@PathVariable UUID id, @Valid @RequestBody AdminCategoryCreateRequestDto request) {
         return adminCategoryService.updateCategory(id, request);
     }
 

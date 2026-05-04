@@ -34,6 +34,55 @@ public class KeycloakAdminService {
         this.restClient = restClientBuilder.build();
     }
 
+    public void createUser(UUID userId, String email, String firstName, String lastName, String password) {
+        String accessToken = obtainAdminAccessToken();
+        String createUserUri = "%s/admin/realms/%s/users".formatted(keycloakServerUrl, keycloakRealm);
+        URI validatedUri = validateAbsoluteUri(createUserUri, "create-user");
+
+        try {
+            restClient.post()
+                    .uri(validatedUri)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(Map.of(
+                            "id", userId.toString(),
+                            "username", email,
+                            "email", email,
+                            "firstName", firstName,
+                            "lastName", lastName,
+                            "enabled", true,
+                            "credentials", java.util.List.of(Map.of(
+                                    "type", "password",
+                                    "value", password,
+                                    "temporary", false
+                            ))
+                    ))
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (RestClientResponseException ex) {
+            throw new BadRequestException("Failed to create user in Keycloak: " + ex.getMessage());
+        }
+    }
+
+    public void deleteUser(UUID userId) {
+        String accessToken = obtainAdminAccessToken();
+        String deleteUserUri = "%s/admin/realms/%s/users/%s".formatted(keycloakServerUrl, keycloakRealm, userId);
+        URI validatedUri = validateAbsoluteUri(deleteUserUri, "delete-user");
+
+        try {
+            restClient.delete()
+                    .uri(validatedUri)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (RestClientResponseException ex) {
+            if (ex.getStatusCode().value() == 404) {
+                return;
+            }
+            throw new BadRequestException("Failed to delete user from Keycloak: " + ex.getMessage());
+        }
+    }
+
     public void updateUserNames(UUID userId, String firstName, String lastName) {
         String accessToken = obtainAdminAccessToken();
         String updateUserUri = "%s/admin/realms/%s/users/%s".formatted(keycloakServerUrl, keycloakRealm, userId);

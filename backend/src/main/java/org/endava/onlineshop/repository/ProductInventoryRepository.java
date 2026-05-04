@@ -15,6 +15,9 @@ public interface ProductInventoryRepository extends JpaRepository<ProductInvento
     @Query("SELECT pi FROM ProductInventory pi WHERE pi.quantityAvailable <= pi.lowStockThreshold")
     List<ProductInventory> findLowStockItems();
 
+    @Query("SELECT COUNT(pi) FROM ProductInventory pi WHERE pi.quantityAvailable <= pi.lowStockThreshold")
+    long countLowStockItems();
+
     @Query("SELECT pi FROM ProductInventory pi WHERE pi.quantityAvailable = 0")
     List<ProductInventory> findOutOfStockItems();
 }

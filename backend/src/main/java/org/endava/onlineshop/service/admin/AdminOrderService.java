@@ -1,9 +1,11 @@
 package org.endava.onlineshop.service.admin;
 
+import org.endava.onlineshop.exception.BadRequestException;
 import org.endava.onlineshop.model.dto.admin.*;
 import org.endava.onlineshop.model.entities.Order;
 import org.endava.onlineshop.model.entities.OrderItem;
 import org.endava.onlineshop.model.entities.OrderStatusHistory;
+import org.endava.onlineshop.model.enums.OrderStatus;
 import org.endava.onlineshop.repository.OrderRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,10 +14,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class AdminOrderService {
+
+    private static final Map<OrderStatus, Set<OrderStatus>> VALID_TRANSITIONS = Map.of(
+            OrderStatus.PENDING, EnumSet.of(OrderStatus.PAID, OrderStatus.CANCELLED),
+            OrderStatus.PAID, EnumSet.of(OrderStatus.PROCESSING, OrderStatus.CANCELLED),
+            OrderStatus.PROCESSING, EnumSet.of(OrderStatus.SHIPPED, OrderStatus.CANCELLED),
+            OrderStatus.SHIPPED, EnumSet.of(OrderStatus.DELIVERED),
+            OrderStatus.DELIVERED, EnumSet.of(OrderStatus.RETURNED),
+            OrderStatus.CANCELLED, EnumSet.noneOf(OrderStatus.class),
+            OrderStatus.RETURNED, EnumSet.noneOf(OrderStatus.class)
+    );
 
     private final OrderRepository orderRepository;
 
@@ -40,13 +55,20 @@ public class AdminOrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
+        OrderStatus current = order.getCurrentStatus();
+        OrderStatus next = request.newStatus();
+        Set<OrderStatus> allowed = VALID_TRANSITIONS.getOrDefault(current, EnumSet.noneOf(OrderStatus.class));
+        if (!allowed.contains(next)) {
+            throw new BadRequestException("Invalid status transition from %s to %s".formatted(current, next));
+        }
+
         OrderStatusHistory history = new OrderStatusHistory();
         history.setOrder(order);
-        history.setStatus(request.newStatus());
+        history.setStatus(next);
         history.setNotes(request.notes());
         order.addStatusHistory(history);
 
-        order.setCurrentStatus(request.newStatus());
+        order.setCurrentStatus(next);
         Order saved = orderRepository.save(order);
         return toDetailDto(saved);
     }

@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.endava.onlineshop.model.enums.NotificationType;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -42,6 +44,7 @@ public class NotificationTemplate extends BaseAuditEntity {
     @Column(name = "body_template", nullable = false)
     private String bodyTemplate;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "variables")
     private String variables;
 }

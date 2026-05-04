@@ -10,7 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -41,9 +44,13 @@ public class AdminAuditLog {
     @Column(name = "entity_id", length = 100)
     private String entityId;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "details")
     private String details;
 
     @Column(name = "ip_address", length = 45)
     private String ipAddress;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 }

@@ -1,5 +1,6 @@
 package org.endava.onlineshop.controller.admin;
 
+import jakarta.validation.Valid;
 import org.endava.onlineshop.model.dto.admin.*;
 import org.endava.onlineshop.service.admin.AdminProductService;
 import org.springframework.data.domain.Page;
@@ -35,13 +36,13 @@ public class AdminProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public AdminProductDetailDto createProduct(@RequestBody AdminProductCreateRequestDto request) {
+    public AdminProductDetailDto createProduct(@Valid @RequestBody AdminProductCreateRequestDto request) {
         return adminProductService.createProduct(request);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public AdminProductDetailDto updateProduct(@PathVariable UUID id, @RequestBody AdminProductUpdateRequestDto request) {
+    public AdminProductDetailDto updateProduct(@PathVariable UUID id, @Valid @RequestBody AdminProductUpdateRequestDto request) {
         return adminProductService.updateProduct(id, request);
     }
 
@@ -55,21 +56,21 @@ public class AdminProductController {
     @PostMapping("/bulk-delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
-    public void bulkDeleteProducts(@RequestBody AdminBulkActionRequestDto request) {
+    public void bulkDeleteProducts(@Valid @RequestBody AdminBulkActionRequestDto request) {
         adminProductService.bulkDeleteProducts(request.ids());
     }
 
     @PostMapping("/bulk-activate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
-    public void bulkActivateProducts(@RequestBody AdminBulkActionRequestDto request) {
+    public void bulkActivateProducts(@Valid @RequestBody AdminBulkActionRequestDto request) {
         adminProductService.bulkActivateProducts(request.ids());
     }
 
     @PostMapping("/bulk-deactivate")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
-    public void bulkDeactivateProducts(@RequestBody AdminBulkActionRequestDto request) {
+    public void bulkDeactivateProducts(@Valid @RequestBody AdminBulkActionRequestDto request) {
         adminProductService.bulkDeactivateProducts(request.ids());
     }
 }

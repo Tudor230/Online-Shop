@@ -1,5 +1,6 @@
 package org.endava.onlineshop.controller.admin;
 
+import jakarta.validation.Valid;
 import org.endava.onlineshop.model.dto.admin.*;
 import org.endava.onlineshop.service.admin.AdminUserService;
 import org.springframework.data.domain.Page;
@@ -33,12 +34,12 @@ public class AdminUserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AdminUserDetailDto createUser(@RequestBody AdminUserCreateRequestDto request) {
+    public AdminUserDetailDto createUser(@Valid @RequestBody AdminUserCreateRequestDto request) {
         return adminUserService.createUser(request);
     }
 
     @PutMapping("/{id}")
-    public AdminUserDetailDto updateUser(@PathVariable UUID id, @RequestBody AdminUserUpdateRequestDto request) {
+    public AdminUserDetailDto updateUser(@PathVariable UUID id, @Valid @RequestBody AdminUserUpdateRequestDto request) {
         return adminUserService.updateUser(id, request);
     }
 

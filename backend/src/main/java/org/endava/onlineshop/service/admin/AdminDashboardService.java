@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,32 +40,23 @@ public class AdminDashboardService {
         long totalOrders = orderRepository.count();
         long totalUsers = userRepository.count();
         long totalProducts = productRepository.count();
-        long lowStockCount = productInventoryRepository.findLowStockItems().size();
-        long pendingOrders = orderRepository.findAll().stream()
-                .filter(o -> o.getCurrentStatus() == OrderStatus.PENDING)
-                .count();
-        BigDecimal totalRevenue = orderRepository.findAll().stream()
-                .map(o -> o.getTotalAmount() != null ? o.getTotalAmount() : BigDecimal.ZERO)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        long lowStockCount = productInventoryRepository.countLowStockItems();
+        long pendingOrders = orderRepository.countByCurrentStatus(OrderStatus.PENDING);
+        BigDecimal totalRevenue = orderRepository.sumTotalAmount();
 
         return new AdminDashboardStatsDto(totalOrders, totalUsers, totalProducts, lowStockCount, pendingOrders, totalRevenue);
     }
 
     @Transactional(readOnly = true)
     public List<AdminRevenueChartDto> getRevenueChart(LocalDate from, LocalDate to) {
-        return orderRepository.findAll().stream()
-                .filter(o -> o.getCreatedAt() != null)
-                .filter(o -> !o.getCreatedAt().isBefore(from.atStartOfDay().toInstant(java.time.ZoneOffset.UTC)))
-                .filter(o -> !o.getCreatedAt().isAfter(to.plusDays(1).atStartOfDay().toInstant(java.time.ZoneOffset.UTC)))
-                .collect(java.util.stream.Collectors.groupingBy(
-                        o -> o.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toLocalDate(),
-                        java.util.stream.Collectors.mapping(
-                                o -> o.getTotalAmount() != null ? o.getTotalAmount() : BigDecimal.ZERO,
-                                java.util.stream.Collectors.reducing(BigDecimal.ZERO, BigDecimal::add)
-                        )
+        Instant fromInstant = from.atStartOfDay(java.time.ZoneOffset.UTC).toInstant();
+        Instant toInstant = to.plusDays(1).atStartOfDay(java.time.ZoneOffset.UTC).toInstant();
+
+        return orderRepository.findRevenueBetween(fromInstant, toInstant).stream()
+                .map(r -> new AdminRevenueChartDto(
+                        (LocalDate) r[0],
+                        r[1] != null ? (BigDecimal) r[1] : BigDecimal.ZERO
                 ))
-                .entrySet().stream()
-                .map(e -> new AdminRevenueChartDto(e.getKey(), e.getValue()))
                 .sorted(java.util.Comparator.comparing(AdminRevenueChartDto::date))
                 .toList();
     }

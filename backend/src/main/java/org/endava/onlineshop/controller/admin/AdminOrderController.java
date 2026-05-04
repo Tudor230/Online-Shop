@@ -1,5 +1,6 @@
 package org.endava.onlineshop.controller.admin;
 
+import jakarta.validation.Valid;
 import org.endava.onlineshop.model.dto.admin.AdminOrderDetailDto;
 import org.endava.onlineshop.model.dto.admin.AdminOrderListDto;
 import org.endava.onlineshop.model.dto.admin.AdminOrderStatusUpdateDto;
@@ -34,7 +35,7 @@ public class AdminOrderController {
 
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public AdminOrderDetailDto updateOrderStatus(@PathVariable UUID id, @RequestBody AdminOrderStatusUpdateDto request) {
+    public AdminOrderDetailDto updateOrderStatus(@PathVariable UUID id, @Valid @RequestBody AdminOrderStatusUpdateDto request) {
         return adminOrderService.updateOrderStatus(id, request);
     }
 }

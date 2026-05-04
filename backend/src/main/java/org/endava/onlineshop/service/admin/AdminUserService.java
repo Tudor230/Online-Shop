@@ -44,9 +44,11 @@ public class AdminUserService {
             throw new BadRequestException("User with this email already exists");
         }
 
-        // Create user locally (Keycloak sync would happen via existing auth flow or KeycloakAdminService extension)
+        UUID userId = UUID.randomUUID();
+        keycloakAdminService.createUser(userId, request.email(), request.firstName(), request.lastName(), request.password());
+
         User user = new User();
-        user.setId(UUID.randomUUID());
+        user.setId(userId);
         user.setEmail(request.email());
         user.setFirstName(request.firstName());
         user.setLastName(request.lastName());
@@ -90,6 +92,7 @@ public class AdminUserService {
         if (!userRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
+        keycloakAdminService.deleteUser(id);
         userRepository.deleteById(id);
     }
 

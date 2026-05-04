@@ -56,11 +56,14 @@ public class AdminCategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
-        if (request.slug() != null && !request.slug().equals(category.getSlug())) {
-            if (categoryRepository.findBySlug(request.slug()).isPresent()) {
-                throw new BadRequestException("Category slug already exists");
+        if (request.slug() != null) {
+            String slug = request.slug().trim();
+            if (!slug.equals(category.getSlug())) {
+                if (categoryRepository.findBySlug(slug).isPresent()) {
+                    throw new BadRequestException("Category slug already exists");
+                }
+                category.setSlug(slug);
             }
-            category.setSlug(request.slug());
         }
         if (request.name() != null) category.setName(request.name());
         if (request.parentId() != null) category.setParentId(request.parentId());
