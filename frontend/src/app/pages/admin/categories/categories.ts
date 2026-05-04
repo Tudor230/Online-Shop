@@ -15,6 +15,8 @@ export class AdminCategoriesComponent implements OnInit {
 
   readonly categories = signal<AdminCategory[]>([]);
   readonly loading = signal(true);
+  readonly error = signal<string | null>(null);
+  readonly actionError = signal<string | null>(null);
   readonly editing = signal<AdminCategory | null>(null);
   readonly name = signal('');
   readonly slug = signal('');
@@ -26,12 +28,17 @@ export class AdminCategoriesComponent implements OnInit {
 
   loadCategories(): void {
     this.loading.set(true);
+    this.error.set(null);
+    this.actionError.set(null);
     this.api.getCategories().subscribe({
       next: (data) => {
         this.categories.set(data);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false)
+      error: (err) => {
+        this.error.set(err?.message ?? 'Failed to load categories');
+        this.loading.set(false);
+      }
     });
   }
 
@@ -40,6 +47,7 @@ export class AdminCategoriesComponent implements OnInit {
     this.name.set('');
     this.slug.set('');
     this.parentId.set('');
+    this.actionError.set(null);
   }
 
   startEdit(cat: AdminCategory): void {
@@ -47,31 +55,67 @@ export class AdminCategoriesComponent implements OnInit {
     this.name.set(cat.name);
     this.slug.set(cat.slug);
     this.parentId.set(cat.parentId ?? '');
+    this.actionError.set(null);
   }
 
   cancelEdit(): void {
     this.editing.set(null);
+    this.actionError.set(null);
   }
 
   save(): void {
     const editing = this.editing();
     if (!editing) return;
 
+    const nameVal = this.name().trim();
+    const slugVal = this.slug().trim();
+
+    if (!nameVal) {
+      this.actionError.set('Name is required');
+      return;
+    }
+    if (!slugVal) {
+      this.actionError.set('Slug is required');
+      return;
+    }
+
     const request = {
-      name: this.name(),
-      slug: this.slug(),
+      name: nameVal,
+      slug: slugVal,
       parentId: this.parentId() || undefined
     };
 
+    this.actionError.set(null);
     if (editing.id) {
-      this.api.updateCategory(editing.id, request).subscribe({ next: () => { this.cancelEdit(); this.loadCategories(); } });
+      this.api.updateCategory(editing.id, request).subscribe({
+        next: () => { this.cancelEdit(); this.loadCategories(); },
+        error: (err) => this.actionError.set(err?.message ?? 'Failed to update category')
+      });
     } else {
-      this.api.createCategory(request).subscribe({ next: () => { this.cancelEdit(); this.loadCategories(); } });
+      this.api.createCategory(request).subscribe({
+        next: () => { this.cancelEdit(); this.loadCategories(); },
+        error: (err) => this.actionError.set(err?.message ?? 'Failed to create category')
+      });
     }
   }
 
   deleteCategory(id: string): void {
     if (!confirm('Delete this category?')) return;
-    this.api.deleteCategory(id).subscribe({ next: () => this.loadCategories() });
+    this.actionError.set(null);
+    this.api.deleteCategory(id).subscribe({
+      next: () => this.loadCategories(),
+      error: (err) => this.actionError.set(err?.message ?? 'Failed to delete category')
+    });
+  }
+
+  parentOptions(): AdminCategory[] {
+    const editing = this.editing();
+    return this.categories().filter(c => c.id !== editing?.id);
+  }
+
+  parentName(parentId: string | null): string {
+    if (!parentId) return '-';
+    const parent = this.categories().find(c => c.id === parentId);
+    return parent?.name ?? parentId;
   }
 }

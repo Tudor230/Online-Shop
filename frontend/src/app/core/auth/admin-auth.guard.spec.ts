@@ -59,4 +59,18 @@ describe('adminAuthGuard', () => {
     expect(mockNavigateByUrl).toHaveBeenCalledWith('/');
     expect(result).toBe(false);
   });
+
+  it('should deny access during SSR (server platform)', async () => {
+    const serverInjector = createEnvironmentInjector([
+      { provide: AuthStateService, useValue: authState },
+      { provide: Router, useValue: router },
+      { provide: PLATFORM_ID, useValue: 'server' },
+      { provide: KeycloakAuthService, useValue: { login: mockLogin } }
+    ], null as any);
+
+    const result = await runInInjectionContext(serverInjector, () => adminAuthGuard({} as any, {} as any));
+    expect(result).toBe(false);
+    expect(mockLogin).not.toHaveBeenCalled();
+    expect(mockNavigateByUrl).not.toHaveBeenCalled();
+  });
 });

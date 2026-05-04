@@ -1,7 +1,15 @@
 <div class="space-y-4">
   <div class="flex items-center justify-between">
     <h1 class="text-2xl font-bold text-text-primary">Products</h1>
-    <div class="flex gap-2">
+    <div class="flex items-center gap-2">
+      <input
+        type="search"
+        placeholder="Search products..."
+        class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary outline-none focus:border-primary"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+      <a routerLink="/admin/products/new" class="rounded-lg bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover">Add Product</a>
       @if (selectedIds().size > 0) {
         <button class="rounded-lg bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-700" (click)="bulkActivate()">Activate</button>
         <button class="rounded-lg bg-yellow-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-yellow-700" (click)="bulkDeactivate()">Deactivate</button>
@@ -9,6 +17,14 @@
       }
     </div>
   </div>
+
+  @if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+  }
+
+  @if (actionError()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ actionError() }}</div>
+  }
 
   @if (loading()) {
     <p class="text-sm text-text-secondary">Loading...</p>
@@ -24,10 +40,11 @@
             <th class="px-4 py-3 font-medium">Stock</th>
             <th class="px-4 py-3 font-medium">Status</th>
             <th class="px-4 py-3 font-medium">Rating</th>
+            <th class="px-4 py-3 font-medium text-right">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-surface-elevated">
-          @for (product of products(); track product.id) {
+          @for (product of filteredProducts(); track product.id) {
             <tr class="transition-colors hover:bg-surface-elevated/50">
               <td class="px-4 py-3"><input type="checkbox" class="h-4 w-4 rounded border-surface-elevated" [checked]="selectedIds().has(product.id)" (change)="toggleSelection(product.id)" /></td>
               <td class="px-4 py-3 text-text-primary">{{ product.sku }}</td>
@@ -46,6 +63,13 @@
                 </span>
               </td>
               <td class="px-4 py-3 text-text-primary">{{ product.rating }} ({{ product.reviewCount }})</td>
+              <td class="px-4 py-3 text-right">
+                <a [routerLink]="['/admin/products', product.id, 'edit']" class="text-xs text-text-secondary hover:text-text-primary">Edit</a>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="px-4 py-6 text-center text-sm text-text-secondary">No products found.</td>
             </tr>
           }
         </tbody>

@@ -180,6 +180,18 @@ export interface AdminBulkActionRequest {
   ids: string[];
 }
 
+export interface AdminAuditLog {
+  id: string;
+  adminUserId: string | null;
+  adminEmail: string;
+  actionType: string;
+  entityType: string;
+  entityId: string | null;
+  details: string;
+  ipAddress: string | null;
+  createdAt: string;
+}
+
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;

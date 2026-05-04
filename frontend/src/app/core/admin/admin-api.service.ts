@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { keycloakConfig } from '../../keycloak.config';
 import {
   AdminBulkActionRequest,
   AdminCategory,
@@ -19,11 +20,12 @@ import {
   AdminUserList,
   AdminUserUpdateRequest,
   PageResponse,
+  AdminAuditLog,
 } from './admin.types';
 
 @Injectable({ providedIn: 'root' })
 export class AdminApiService {
-  private readonly baseUrl = '/api/admin';
+  private readonly baseUrl = `${keycloakConfig.backendApiUrl}/admin`;
 
   constructor(private readonly http: HttpClient) {}
 
@@ -126,5 +128,11 @@ export class AdminApiService {
 
   deleteCategory(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/categories/${id}`);
+  }
+
+  // Audit Logs
+  getAuditLogs(page = 0, size = 20): Observable<PageResponse<AdminAuditLog>> {
+    const params = new HttpParams().set('page', page).set('size', size);
+    return this.http.get<PageResponse<AdminAuditLog>>(`${this.baseUrl}/audit-logs`, { params });
   }
 }

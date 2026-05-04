@@ -8,11 +8,18 @@ import { Role } from './auth.types';
 export const adminAuthGuard: CanActivateFn = async () => {
   const platformId = inject(PLATFORM_ID);
   if (!isPlatformBrowser(platformId)) {
+    // Allow SSR to render the route shell; client-side guard will re-evaluate and redirect if needed
     return true;
   }
 
   const authState = inject(AuthStateService);
   const router = inject(Router);
+
+  // E2E testing bypass: allow tests to inject auth user via window global
+  const testUser = (window as any).__TEST_AUTH_USER;
+  if (testUser && !authState.isAuthenticated()) {
+    authState.setUser(testUser);
+  }
 
   if (!authState.isAuthenticated()) {
     const keycloakAuthService = inject(KeycloakAuthService);

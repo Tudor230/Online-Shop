@@ -1,7 +1,38 @@
 <div class="space-y-4">
   <div class="flex items-center justify-between">
     <h1 class="text-2xl font-bold text-text-primary">Orders</h1>
+    <div class="flex items-center gap-2">
+      <select
+        class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary outline-none focus:border-primary"
+        [ngModel]="statusFilter()"
+        (ngModelChange)="statusFilter.set($event)"
+      >
+        <option value="">All Statuses</option>
+        <option value="PENDING">PENDING</option>
+        <option value="PAID">PAID</option>
+        <option value="PROCESSING">PROCESSING</option>
+        <option value="SHIPPED">SHIPPED</option>
+        <option value="DELIVERED">DELIVERED</option>
+        <option value="CANCELLED">CANCELLED</option>
+        <option value="RETURNED">RETURNED</option>
+      </select>
+      <input
+        type="search"
+        placeholder="Search orders..."
+        class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary outline-none focus:border-primary"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+    </div>
   </div>
+
+  @if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+  }
+
+  @if (actionError()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ actionError() }}</div>
+  }
 
   @if (loading()) {
     <p class="text-sm text-text-secondary">Loading...</p>
@@ -19,7 +50,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-surface-elevated">
-          @for (order of orders(); track order.id) {
+          @for (order of filteredOrders(); track order.id) {
             <tr class="cursor-pointer transition-colors hover:bg-surface-elevated/50" (click)="openDetail(order)">
               <td class="px-4 py-3 text-text-primary">{{ order.orderNumber }}</td>
               <td class="px-4 py-3 text-text-primary">{{ order.userId ?? order.guestEmail ?? 'Guest' }}</td>
@@ -29,6 +60,10 @@
               <td class="px-4 py-3 text-text-primary">${{ order.totalAmount | number:'1.2-2' }}</td>
               <td class="px-4 py-3 text-text-secondary">{{ order.createdAt | date:'short' }}</td>
               <td class="px-4 py-3 text-right text-text-secondary">View</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="px-4 py-6 text-center text-sm text-text-secondary">No orders found.</td>
             </tr>
           }
         </tbody>
@@ -62,6 +97,10 @@
           <h2 class="text-lg font-bold text-text-primary">Order {{ detail.orderNumber }}</h2>
           <button class="text-text-secondary hover:text-text-primary" (click)="closeDetail()">Close</button>
         </div>
+
+        @if (actionError()) {
+          <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ actionError() }}</div>
+        }
 
         <div class="mb-4 grid gap-4 sm:grid-cols-2">
           <div class="rounded-lg border border-surface-elevated p-3">

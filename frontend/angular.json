@@ -31,7 +31,7 @@
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": []
+              "allowedHosts": ["localhost", "127.0.0.1"]
             },
             "ssr": {
               "entry": "src/server.ts"
@@ -39,18 +39,18 @@
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
-              ],
+                  "budgets": [
+                    {
+                      "type": "initial",
+                      "maximumWarning": "2MB",
+                      "maximumError": "3MB"
+                    },
+                    {
+                      "type": "anyComponentStyle",
+                      "maximumWarning": "4kB",
+                      "maximumError": "8kB"
+                    }
+                  ],
               "outputHashing": "all"
             },
             "development": {

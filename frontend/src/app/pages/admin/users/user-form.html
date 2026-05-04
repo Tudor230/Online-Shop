@@ -1,0 +1,65 @@
+<div class="mx-auto max-w-xl space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-text-primary">{{ userId() ? 'Edit' : 'New' }} User</h1>
+    <button class="text-sm text-text-secondary hover:text-text-primary" (click)="cancel()">Back to Users</button>
+  </div>
+
+  @if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <p class="text-sm text-text-secondary">Loading...</p>
+  } @else {
+    <div class="space-y-4 rounded-xl border border-surface-elevated bg-surface-default p-5">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="firstName" class="mb-1 block text-xs font-medium text-text-secondary">First Name *</label>
+          <input id="firstName" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="firstName" />
+        </div>
+        <div>
+          <label for="lastName" class="mb-1 block text-xs font-medium text-text-secondary">Last Name *</label>
+          <input id="lastName" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="lastName" />
+        </div>
+      </div>
+
+      @if (!userId()) {
+        <div>
+          <label for="email" class="mb-1 block text-xs font-medium text-text-secondary">Email *</label>
+          <input id="email" type="email" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="email" />
+        </div>
+        <div>
+          <label for="password" class="mb-1 block text-xs font-medium text-text-secondary">Password *</label>
+          <input id="password" type="password" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="password" />
+        </div>
+      } @else {
+        <div>
+          <label for="email" class="mb-1 block text-xs font-medium text-text-secondary">Email</label>
+          <input id="email" type="email" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [value]="email()" disabled />
+        </div>
+      }
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="role" class="mb-1 block text-xs font-medium text-text-secondary">Role</label>
+          <select id="role" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="role">
+            <option value="CUSTOMER">Customer</option>
+            <option value="SUPPORT">Support</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="isActive" [checked]="isActive()" (change)="isActive.set(!isActive())" />
+          <label for="isActive" class="text-sm text-text-primary">Active</label>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button class="rounded-lg border border-surface-elevated bg-surface-default px-4 py-2 text-sm text-text-primary hover:bg-surface-elevated" (click)="cancel()">Cancel</button>
+        <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50" [disabled]="saving()" (click)="save()">
+          {{ saving() ? 'Saving...' : (userId() ? 'Update' : 'Create') }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

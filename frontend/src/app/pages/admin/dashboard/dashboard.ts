@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
 import { AdminApiService } from '../../../core/admin/admin-api.service';
 import { AdminDashboardStats, AdminRevenueChart } from '../../../core/admin/admin.types';
 
@@ -18,29 +19,28 @@ export class AdminDashboardComponent implements OnInit {
   readonly error = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.loadStats();
-    this.loadRevenue();
+    this.loadData();
   }
 
-  private loadStats(): void {
-    this.api.getStats().subscribe({
-      next: (s) => this.stats.set(s),
-      error: () => this.error.set('Failed to load stats')
-    });
-  }
+  loadData(): void {
+    this.loading.set(true);
+    this.error.set(null);
 
-  private loadRevenue(): void {
     const today = new Date();
     const from = new Date(today.getFullYear(), today.getMonth() - 1, 1);
     const to = new Date(today.getFullYear(), today.getMonth(), 0);
 
-    this.api.getRevenueChart(from.toISOString().split('T')[0], to.toISOString().split('T')[0]).subscribe({
-      next: (data) => {
-        this.revenue.set(data);
+    forkJoin({
+      stats: this.api.getStats(),
+      revenue: this.api.getRevenueChart(from.toISOString().split('T')[0], to.toISOString().split('T')[0])
+    }).subscribe({
+      next: ({ stats, revenue }) => {
+        this.stats.set(stats);
+        this.revenue.set(revenue);
         this.loading.set(false);
       },
-      error: () => {
-        this.error.set('Failed to load revenue chart');
+      error: (err) => {
+        this.error.set(err?.message ?? 'Failed to load dashboard data');
         this.loading.set(false);
       }
     });

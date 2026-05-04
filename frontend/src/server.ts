@@ -48,6 +48,18 @@ app.use((req, res, next) => {
 });
 
 /**
+ * Fallback: serve index.html for Angular routes that could not be server-rendered.
+ * This ensures client-side routing always works, even if SSR returns null.
+ */
+app.use((req, res) => {
+  res.sendFile(join(browserDistFolder, 'index.html'), (err) => {
+    if (err) {
+      res.status(500).send('Internal Server Error');
+    }
+  });
+});
+
+/**
  * Start the server if this module is the main entry point, or it is ran via PM2.
  * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
  */

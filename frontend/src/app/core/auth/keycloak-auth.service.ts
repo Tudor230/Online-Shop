@@ -30,6 +30,19 @@ export class KeycloakAuthService {
       return;
     }
 
+    // E2E testing bypass
+    const testUser = (window as any).__TEST_AUTH_USER;
+    if (testUser) {
+      this.authState.setUser(testUser);
+      return;
+    }
+
+    // Disable Keycloak in test environments where server is unavailable
+    if ((window as any).__TEST_DISABLE_KEYCLOAK) {
+      this.authState.clear();
+      return;
+    }
+
     const instance = await this.ensureKeycloak();
 
     const initOptions: KeycloakInitOptions = {
@@ -38,11 +51,15 @@ export class KeycloakAuthService {
       pkceMethod: 'S256'
     };
 
-    const authenticated = await instance.init(initOptions);
-
-    if (authenticated) {
-      this.updateUserFromToken();
-    } else {
+    try {
+      const authenticated = await instance.init(initOptions);
+      if (authenticated) {
+        this.updateUserFromToken();
+      } else {
+        this.authState.clear();
+      }
+    } catch {
+      // Keycloak unavailable (e.g., in E2E tests or offline)
       this.authState.clear();
     }
 

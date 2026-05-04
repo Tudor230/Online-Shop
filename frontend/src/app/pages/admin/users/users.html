@@ -1,7 +1,24 @@
 <div class="space-y-4">
   <div class="flex items-center justify-between">
     <h1 class="text-2xl font-bold text-text-primary">Users</h1>
+    <div class="flex items-center gap-2">
+      <a routerLink="/admin/users/new" class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover">Add User</a>
+      <input
+      type="search"
+      placeholder="Search users..."
+      class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary outline-none focus:border-primary"
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event)"
+    />
   </div>
+
+  @if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+  }
+
+  @if (actionError()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ actionError() }}</div>
+  }
 
   @if (loading()) {
     <p class="text-sm text-text-secondary">Loading...</p>
@@ -19,7 +36,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-surface-elevated">
-          @for (user of users(); track user.id) {
+          @for (user of filteredUsers(); track user.id) {
             <tr class="transition-colors hover:bg-surface-elevated/50">
               <td class="px-4 py-3 text-text-primary">{{ user.email }}</td>
               <td class="px-4 py-3 text-text-primary">{{ user.firstName }} {{ user.lastName }}</td>
@@ -37,6 +54,7 @@
               </td>
               <td class="px-4 py-3 text-text-secondary">{{ user.createdAt | date:'short' }}</td>
               <td class="px-4 py-3 text-right">
+                <a [routerLink]="['/admin/users', user.id, 'edit']" class="mr-2 text-xs text-text-secondary hover:text-text-primary">Edit</a>
                 <button
                   class="mr-2 text-xs text-text-secondary hover:text-text-primary"
                   (click)="toggleActive(user)"
@@ -50,6 +68,10 @@
                   Delete
                 </button>
               </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="px-4 py-6 text-center text-sm text-text-secondary">No users found.</td>
             </tr>
           }
         </tbody>
