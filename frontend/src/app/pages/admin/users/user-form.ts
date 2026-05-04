@@ -48,7 +48,7 @@ export class AdminUserFormComponent implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err?.message ?? 'Failed to load user');
+        this.error.set(err?.error?.message ?? err?.message ?? 'Failed to load user');
         this.loading.set(false);
       }
     });
@@ -74,7 +74,7 @@ export class AdminUserFormComponent implements OnInit {
       }).subscribe({
         next: () => this.router.navigate(['/admin/users']),
         error: (err) => {
-          this.error.set(err?.message ?? 'Failed to update user');
+          this.error.set(err?.error?.message ?? err?.message ?? 'Failed to update user');
           this.saving.set(false);
         }
       });
@@ -88,7 +88,7 @@ export class AdminUserFormComponent implements OnInit {
       }).subscribe({
         next: () => this.router.navigate(['/admin/users']),
         error: (err) => {
-          this.error.set(err?.message ?? 'Failed to create user');
+          this.error.set(err?.error?.message ?? err?.message ?? 'Failed to create user');
           this.saving.set(false);
         }
       });

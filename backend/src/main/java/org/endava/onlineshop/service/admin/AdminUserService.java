@@ -43,6 +43,25 @@ public class AdminUserService {
     public AdminUserDetailDto getUser(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        try {
+            java.util.Map<String, Object> kcUser = keycloakAdminService.getUserDetails(id);
+            if (kcUser.containsKey("firstName") && kcUser.get("firstName") != null) {
+                user.setFirstName(kcUser.get("firstName").toString());
+            }
+            if (kcUser.containsKey("lastName") && kcUser.get("lastName") != null) {
+                user.setLastName(kcUser.get("lastName").toString());
+            }
+            if (kcUser.containsKey("email") && kcUser.get("email") != null) {
+                user.setEmail(kcUser.get("email").toString());
+            }
+            if (kcUser.containsKey("enabled") && kcUser.get("enabled") != null) {
+                user.setIsActive((Boolean) kcUser.get("enabled"));
+            }
+        } catch (Exception e) {
+            // Fallback to local DB values if Keycloak fetch fails
+        }
+
         return toDetailDto(user);
     }
 
@@ -57,8 +76,7 @@ public class AdminUserService {
                 request.email(),
                 request.firstName(),
                 request.lastName(),
-                request.password(),
-                role
+                request.password()
         );
 
         User user = new User();
@@ -95,7 +113,6 @@ public class AdminUserService {
 
         if (request.role() != null) {
             user.setRole(request.role());
-            keycloakAdminService.syncUserRole(id, request.role());
         }
 
         if (request.isActive() != null) {
@@ -124,6 +141,48 @@ public class AdminUserService {
                 securityUtils.getCurrentUserEmail().orElse("system"),
                 action, entityType, entityId, details
         );
+    }
+
+    @Transactional
+    public java.util.Map<String, Integer> syncUsersFromKeycloak() {
+        int created = 0;
+        int updated = 0;
+
+        java.util.List<java.util.Map<String, Object>> kcUsers = keycloakAdminService.getAllUsers();
+        for (java.util.Map<String, Object> kcUser : kcUsers) {
+            String kcId = (String) kcUser.get("id");
+            String email = (String) kcUser.get("email");
+            String firstName = (String) kcUser.get("firstName");
+            String lastName = (String) kcUser.get("lastName");
+            Boolean enabled = (Boolean) kcUser.get("enabled");
+
+            if (kcId == null || email == null) continue;
+
+            UUID userId = UUID.fromString(kcId);
+
+            java.util.Optional<User> existing = userRepository.findById(userId);
+            if (existing.isPresent()) {
+                User user = existing.get();
+                user.setEmail(email);
+                user.setFirstName(firstName != null ? firstName : "");
+                user.setLastName(lastName != null ? lastName : "");
+                user.setIsActive(enabled != null ? enabled : true);
+                userRepository.save(user);
+                updated++;
+            } else {
+                User user = new User();
+                user.setId(userId);
+                user.setEmail(email);
+                user.setFirstName(firstName != null ? firstName : "");
+                user.setLastName(lastName != null ? lastName : "");
+                user.setRole(Role.CUSTOMER);
+                user.setIsActive(enabled != null ? enabled : true);
+                userRepository.save(user);
+                created++;
+            }
+        }
+
+        return java.util.Map.of("created", created, "updated", updated);
     }
 
     private AdminUserListDto toListDto(User user) {

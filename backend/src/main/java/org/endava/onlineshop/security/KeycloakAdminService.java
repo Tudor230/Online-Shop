@@ -1,9 +1,7 @@
 package org.endava.onlineshop.security;
 
 import org.endava.onlineshop.exception.BadRequestException;
-import org.endava.onlineshop.model.enums.Role;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,19 +12,13 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
 public class KeycloakAdminService {
-
-    private static final Set<String> MANAGED_REALM_ROLES = Set.of("ADMIN", "SUPPORT", "CUSTOMER");
 
     private final RestClient restClient;
 
@@ -46,8 +38,19 @@ public class KeycloakAdminService {
         this.restClient = restClientBuilder.build();
     }
 
-    public UUID createUser(String email, String firstName, String lastName, String password, Role role) {
+    public UUID createUser(String email, String firstName, String lastName, String password) {
         String accessToken = obtainAdminAccessToken();
+
+        // Check if user already exists in Keycloak
+        Optional<UUID> existingId = findUserIdByUsername(email, accessToken);
+        if (existingId.isPresent()) {
+            updateUserDetails(existingId.get(), Map.of(
+                    "firstName", firstName,
+                    "lastName", lastName
+            ), accessToken);
+            return existingId.get();
+        }
+
         String createUserUri = "%s/admin/realms/%s/users".formatted(keycloakServerUrl, keycloakRealm);
         URI validatedUri = validateAbsoluteUri(createUserUri, "create-user");
 
@@ -63,7 +66,7 @@ public class KeycloakAdminService {
                             "lastName", lastName,
                             "enabled", true,
                             "emailVerified", true,
-                            "credentials", java.util.List.of(Map.of(
+                            "credentials", List.of(Map.of(
                                     "type", "password",
                                     "value", password,
                                     "temporary", false
@@ -73,10 +76,9 @@ public class KeycloakAdminService {
                     .toBodilessEntity();
 
             UUID keycloakUserId = extractCreatedUserId(response, email, accessToken);
-            syncUserRole(keycloakUserId, role, accessToken);
             return keycloakUserId;
         } catch (RestClientResponseException ex) {
-            throw new BadRequestException("Failed to create user in Keycloak: " + ex.getMessage());
+            throw new BadRequestException("Failed to create user in Keycloak: " + ex.getResponseBodyAsString());
         }
     }
 
@@ -107,34 +109,49 @@ public class KeycloakAdminService {
         ), accessToken);
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> getAllUsers() {
+        String accessToken = obtainAdminAccessToken();
+        String usersUri = "%s/admin/realms/%s/users".formatted(keycloakServerUrl, keycloakRealm);
+        URI validatedUri = validateAbsoluteUri(usersUri, "list-users");
+
+        try {
+            List<Map<String, Object>> users = restClient.get()
+                    .uri(validatedUri)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .retrieve()
+                    .body(List.class);
+            return users != null ? users : List.of();
+        } catch (RestClientResponseException ex) {
+            throw new BadRequestException("Failed to list Keycloak users: " + ex.getResponseBodyAsString());
+        }
+    }
+
+    public Map<String, Object> getUserDetails(UUID userId) {
+        String accessToken = obtainAdminAccessToken();
+        String userUri = "%s/admin/realms/%s/users/%s".formatted(keycloakServerUrl, keycloakRealm, userId);
+        URI validatedUri = validateAbsoluteUri(userUri, "get-user");
+
+        try {
+            Map<String, Object> user = restClient.get()
+                    .uri(validatedUri)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .retrieve()
+                    .body(Map.class);
+
+            if (user == null) {
+                throw new BadRequestException("Keycloak user not found: " + userId);
+            }
+
+            return user;
+        } catch (RestClientResponseException ex) {
+            throw new BadRequestException("Failed to fetch Keycloak user: " + ex.getResponseBodyAsString());
+        }
+    }
+
     public void updateUserEnabled(UUID userId, boolean enabled) {
         String accessToken = obtainAdminAccessToken();
         updateUserDetails(userId, Map.of("enabled", enabled), accessToken);
-    }
-
-    public void syncUserRole(UUID userId, Role role) {
-        String accessToken = obtainAdminAccessToken();
-        syncUserRole(userId, role, accessToken);
-    }
-
-    private void syncUserRole(UUID userId, Role role, String accessToken) {
-        Role desiredRole = role != null ? role : Role.CUSTOMER;
-        Set<String> currentRoles = getUserRealmRoleNames(userId, accessToken).stream()
-                .filter(MANAGED_REALM_ROLES::contains)
-                .collect(java.util.stream.Collectors.toSet());
-
-        Set<String> desiredRoles = Set.of(desiredRole.name());
-        Set<String> toRemove = new HashSet<>(currentRoles);
-        toRemove.removeAll(desiredRoles);
-        Set<String> toAdd = new HashSet<>(desiredRoles);
-        toAdd.removeAll(currentRoles);
-
-        if (!toRemove.isEmpty()) {
-            removeRealmRoles(userId, toRemove, accessToken);
-        }
-        if (!toAdd.isEmpty()) {
-            addRealmRoles(userId, toAdd, accessToken);
-        }
     }
 
     private void updateUserDetails(UUID userId, Map<String, Object> updates, String accessToken) {
@@ -154,7 +171,7 @@ public class KeycloakAdminService {
                     .retrieve()
                     .toBodilessEntity();
         } catch (RestClientResponseException ex) {
-            throw new BadRequestException("Failed to sync profile update to Keycloak");
+            throw new BadRequestException("Failed to sync profile update to Keycloak: " + ex.getResponseBodyAsString());
         }
     }
 
@@ -180,7 +197,7 @@ public class KeycloakAdminService {
 
             return accessToken;
         } catch (RestClientResponseException ex) {
-            throw new BadRequestException("Failed to obtain Keycloak admin token");
+            throw new BadRequestException("Failed to obtain Keycloak admin token: " + ex.getResponseBodyAsString());
         }
     }
 
@@ -251,106 +268,6 @@ public class KeycloakAdminService {
             return Optional.empty();
         } catch (RestClientResponseException ex) {
             throw new BadRequestException("Failed to lookup Keycloak user: " + ex.getMessage());
-        }
-    }
-
-    private Set<String> getUserRealmRoleNames(UUID userId, String accessToken) {
-        String rolesUri = "%s/admin/realms/%s/users/%s/role-mappings/realm".formatted(keycloakServerUrl, keycloakRealm, userId);
-        URI validatedUri = validateAbsoluteUri(rolesUri, "user-role-mappings");
-
-        try {
-            List<Map<String, Object>> roles = restClient.get()
-                    .uri(validatedUri)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .retrieve()
-                    .body(List.class);
-
-            if (roles == null) {
-                return Set.of();
-            }
-
-            Set<String> roleNames = new HashSet<>();
-            for (Map<String, Object> role : roles) {
-                Object name = role.get("name");
-                if (name instanceof String roleName && !roleName.isBlank()) {
-                    roleNames.add(roleName.toUpperCase());
-                }
-            }
-            return roleNames;
-        } catch (RestClientResponseException ex) {
-            throw new BadRequestException("Failed to fetch Keycloak user roles: " + ex.getMessage());
-        }
-    }
-
-    private void addRealmRoles(UUID userId, Collection<String> roleNames, String accessToken) {
-        List<Map<String, Object>> roles = fetchRealmRoles(roleNames, accessToken);
-        if (roles.isEmpty()) {
-            return;
-        }
-
-        String roleMappingUri = "%s/admin/realms/%s/users/%s/role-mappings/realm".formatted(keycloakServerUrl, keycloakRealm, userId);
-        URI validatedUri = validateAbsoluteUri(roleMappingUri, "add-user-roles");
-
-        try {
-            restClient.post()
-                    .uri(validatedUri)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(roles)
-                    .retrieve()
-                    .toBodilessEntity();
-        } catch (RestClientResponseException ex) {
-            throw new BadRequestException("Failed to assign Keycloak roles: " + ex.getMessage());
-        }
-    }
-
-    private void removeRealmRoles(UUID userId, Collection<String> roleNames, String accessToken) {
-        List<Map<String, Object>> roles = fetchRealmRoles(roleNames, accessToken);
-        if (roles.isEmpty()) {
-            return;
-        }
-
-        String roleMappingUri = "%s/admin/realms/%s/users/%s/role-mappings/realm".formatted(keycloakServerUrl, keycloakRealm, userId);
-        URI validatedUri = validateAbsoluteUri(roleMappingUri, "remove-user-roles");
-
-        try {
-            restClient.method(HttpMethod.DELETE)
-                    .uri(validatedUri)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(roles)
-                    .retrieve()
-                    .toBodilessEntity();
-        } catch (RestClientResponseException ex) {
-            throw new BadRequestException("Failed to remove Keycloak roles: " + ex.getMessage());
-        }
-    }
-
-    private List<Map<String, Object>> fetchRealmRoles(Collection<String> roleNames, String accessToken) {
-        List<Map<String, Object>> roles = new ArrayList<>();
-        for (String roleName : roleNames) {
-            roles.add(fetchRealmRole(roleName, accessToken));
-        }
-        return roles;
-    }
-
-    private Map<String, Object> fetchRealmRole(String roleName, String accessToken) {
-        String roleUri = "%s/admin/realms/%s/roles/%s".formatted(keycloakServerUrl, keycloakRealm, roleName);
-        URI validatedUri = validateAbsoluteUri(roleUri, "realm-role");
-
-        try {
-            Map<String, Object> role = restClient.get()
-                    .uri(validatedUri)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .retrieve()
-                    .body(Map.class);
-
-            if (role == null) {
-                throw new BadRequestException("Keycloak role not found: " + roleName);
-            }
-            return role;
-        } catch (RestClientResponseException ex) {
-            throw new BadRequestException("Failed to fetch Keycloak role: " + roleName);
         }
     }
 

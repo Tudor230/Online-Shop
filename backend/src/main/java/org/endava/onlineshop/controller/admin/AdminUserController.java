@@ -48,4 +48,9 @@ public class AdminUserController {
     public void deleteUser(@PathVariable UUID id) {
         adminUserService.deleteUser(id);
     }
+
+    @PostMapping("/sync")
+    public java.util.Map<String, Integer> syncUsers() {
+        return adminUserService.syncUsersFromKeycloak();
+    }
 }

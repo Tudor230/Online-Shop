@@ -21,6 +21,7 @@ export class AdminUsersComponent implements OnInit {
   readonly error = signal<string | null>(null);
   readonly actionError = signal<string | null>(null);
   readonly searchQuery = signal('');
+  readonly syncing = signal(false);
 
   ngOnInit(): void {
     this.loadUsers();
@@ -71,6 +72,22 @@ export class AdminUsersComponent implements OnInit {
     this.api.deleteUser(id).subscribe({
       next: () => this.loadUsers(),
       error: (err) => this.actionError.set(err?.message ?? 'Failed to delete user')
+    });
+  }
+
+  syncFromKeycloak(): void {
+    this.syncing.set(true);
+    this.actionError.set(null);
+    this.api.syncUsers().subscribe({
+      next: (result) => {
+        this.syncing.set(false);
+        this.loadUsers();
+        alert(`Sync complete: ${result.created} created, ${result.updated} updated`);
+      },
+      error: (err) => {
+        this.syncing.set(false);
+        this.actionError.set(err?.error?.message ?? err?.message ?? 'Failed to sync users');
+      }
     });
   }
 

@@ -61,6 +61,10 @@ export class AdminApiService {
     return this.http.delete<void>(`${this.baseUrl}/users/${id}`);
   }
 
+  syncUsers(): Observable<{ created: number; updated: number }> {
+    return this.http.post<{ created: number; updated: number }>(`${this.baseUrl}/users/sync`, {});
+  }
+
   // Products
   getProducts(page = 0, size = 20): Observable<PageResponse<AdminProductList>> {
     const params = new HttpParams().set('page', page).set('size', size);

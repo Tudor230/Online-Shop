@@ -3,6 +3,14 @@
     <h1 class="text-2xl font-bold text-text-primary">Users</h1>
     <div class="flex items-center gap-2">
       <a routerLink="/admin/users/new" class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover">Add User</a>
+      <button
+        class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary transition-colors hover:bg-surface-elevated disabled:opacity-50"
+        [disabled]="syncing()"
+        (click)="syncFromKeycloak()"
+        title="Sync users from Keycloak"
+      >
+        {{ syncing() ? 'Syncing...' : 'Sync from Keycloak' }}
+      </button>
       <input
       type="search"
       placeholder="Search users..."
