@@ -6,6 +6,7 @@ import { catchError, map, of, startWith } from 'rxjs';
 import { CartFacadeService } from '../../core/cart/cart-facade.service';
 import { ProductApiService } from '../../core/products/product-api.service';
 import { type ProductSummary } from '../../core/products/product.types';
+import { WishlistFacadeService } from '../../core/wishlist/wishlist-facade.service';
 import { ProductCardComponent } from '../../shared/product-card/product-card';
 
 @Component({
@@ -18,6 +19,7 @@ export class ProductGridComponent {
   private readonly router = inject(Router);
   private readonly productApiService = inject(ProductApiService);
   private readonly cartFacadeService = inject(CartFacadeService);
+  private readonly wishlistFacadeService = inject(WishlistFacadeService);
 
   private readonly productListState = toSignal(
     this.productApiService.getProducts().pipe(
@@ -40,5 +42,11 @@ export class ProductGridComponent {
     this.cartFacadeService.addItem(productId);
   }
 
-  saveProductToWishlist(_productId: string): void {}
+  saveProductToWishlist(productId: string): void {
+    this.wishlistFacadeService.toggleItem(productId);
+  }
+
+  isProductWishlisted(productId: string): boolean {
+    return this.wishlistFacadeService.isInWishlist(productId);
+  }
 }

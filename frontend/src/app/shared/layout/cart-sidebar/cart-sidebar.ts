@@ -17,6 +17,7 @@ export class CartSidebarComponent {
   @Output() incrementRequested = new EventEmitter<string>();
   @Output() decrementRequested = new EventEmitter<string>();
   @Output() removeRequested = new EventEmitter<string>();
+  @Output() itemSelected = new EventEmitter<string>();
 
   onCloseRequested(): void {
     this.closeRequested.emit();
@@ -32,5 +33,9 @@ export class CartSidebarComponent {
 
   onRemoveRequested(productId: string): void {
     this.removeRequested.emit(productId);
+  }
+
+  onItemSelected(productId: string): void {
+    this.itemSelected.emit(productId);
   }
 }

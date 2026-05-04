@@ -33,6 +33,7 @@
       @for (product of products(); track product.id) {
         <app-product-card
           [product]="product"
+          [isWishlisted]="isProductWishlisted(product.id)"
           (selected)="openProductDetails(product.id)"
           (addToCart)="addProductToCart(product.id)"
           (saveToWishlist)="saveProductToWishlist(product.id)"

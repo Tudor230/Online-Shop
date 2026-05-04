@@ -9,10 +9,16 @@
   <button
     type="button"
     aria-label="Save to wishlist"
-    class="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-surface-default text-text-primary opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+    [attr.aria-pressed]="isWishlisted"
+    class="absolute right-4 top-4 z-10 grid h-10 w-10 cursor-pointer place-items-center rounded-full bg-surface-default transition-all duration-200"
+    [ngClass]="
+      isWishlisted
+        ? 'text-red-400 opacity-100'
+        : 'text-text-primary opacity-80 hover:opacity-100'
+    "
     (click)="onSaveToWishlist($event)"
   >
-    ♡
+    {{ isWishlisted ? '♥' : '♡' }}
   </button>
 
   <div

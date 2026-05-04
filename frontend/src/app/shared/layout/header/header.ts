@@ -1,8 +1,9 @@
 import { Component, ElementRef, HostListener, ViewChild, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthStateService } from '../../../core/auth/auth-state.service';
 import { CartFacadeService } from '../../../core/cart/cart-facade.service';
 import { KeycloakAuthService } from '../../../core/auth/keycloak-auth.service';
+import { WishlistFacadeService } from '../../../core/wishlist/wishlist-facade.service';
 import { CartSidebarComponent } from '../cart-sidebar/cart-sidebar';
 
 @Component({
@@ -15,8 +16,10 @@ export class HeaderComponent {
   @ViewChild('profileMenu') private profileMenu?: ElementRef<HTMLDetailsElement>;
 
   private readonly keycloakAuthService = inject(KeycloakAuthService);
+  private readonly router = inject(Router);
   readonly authState = inject(AuthStateService);
   readonly cartFacade = inject(CartFacadeService);
+  readonly wishlistFacade = inject(WishlistFacadeService);
 
   async login(): Promise<void> {
     await this.keycloakAuthService.login();
@@ -61,5 +64,14 @@ export class HeaderComponent {
 
   removeCartItem(productId: string): void {
     this.cartFacade.removeItem(productId);
+  }
+
+  openCartProduct(productId: string): void {
+    this.closeCartSidebar();
+    void this.router.navigate(['/product', productId]);
+  }
+
+  openWishlist(): void {
+    void this.router.navigate(['/wishlist']);
   }
 }

@@ -10,6 +10,7 @@ import { ProductSummary } from '../../core/products/product.types';
 })
 export class ProductCardComponent {
   @Input({ required: true }) product!: ProductSummary;
+  @Input() isWishlisted = false;
   @Output() selected = new EventEmitter<void>();
   @Output() addToCart = new EventEmitter<void>();
   @Output() saveToWishlist = new EventEmitter<void>();
