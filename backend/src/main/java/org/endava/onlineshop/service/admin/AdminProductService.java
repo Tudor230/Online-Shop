@@ -8,6 +8,7 @@ import org.endava.onlineshop.model.entities.ProductInventory;
 import org.endava.onlineshop.repository.CategoryRepository;
 import org.endava.onlineshop.repository.ProductInventoryRepository;
 import org.endava.onlineshop.repository.ProductRepository;
+import org.endava.onlineshop.security.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,21 @@ public class AdminProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductInventoryRepository productInventoryRepository;
+    private final AdminAuditLogService auditLogService;
+    private final SecurityUtils securityUtils;
 
     public AdminProductService(
             ProductRepository productRepository,
             CategoryRepository categoryRepository,
-            ProductInventoryRepository productInventoryRepository
+            ProductInventoryRepository productInventoryRepository,
+            AdminAuditLogService auditLogService,
+            SecurityUtils securityUtils
     ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.productInventoryRepository = productInventoryRepository;
+        this.auditLogService = auditLogService;
+        this.securityUtils = securityUtils;
     }
 
     @Transactional(readOnly = true)
@@ -67,15 +74,14 @@ public class AdminProductService {
             product.setCategories(new java.util.HashSet<>(categories));
         }
 
-        Product savedProduct = productRepository.save(product);
-
         ProductInventory inventory = new ProductInventory();
-        inventory.setProductId(savedProduct.getId());
         inventory.setQuantityAvailable(request.initialQuantity() != null ? request.initialQuantity() : 0);
         inventory.setLowStockThreshold(request.lowStockThreshold() != null ? request.lowStockThreshold() : 5);
-        productInventoryRepository.save(inventory);
 
-        savedProduct.setInventory(inventory);
+        product.setInventory(inventory);
+        Product savedProduct = productRepository.save(product);
+
+        audit("CREATE", "PRODUCT", savedProduct.getId().toString(), "Created product " + savedProduct.getName());
         return toDetailDto(savedProduct);
     }
 
@@ -102,14 +108,16 @@ public class AdminProductService {
             product.setCategories(new java.util.HashSet<>(categories));
         }
 
-        ProductInventory inventory = productInventoryRepository.findByProductId(id).orElse(null);
-        if (inventory != null) {
-            if (request.quantityAvailable() != null) inventory.setQuantityAvailable(request.quantityAvailable());
-            if (request.lowStockThreshold() != null) inventory.setLowStockThreshold(request.lowStockThreshold());
-            productInventoryRepository.save(inventory);
+        ProductInventory inventory = product.getInventory();
+        if (inventory == null) {
+            inventory = new ProductInventory();
+            product.setInventory(inventory);
         }
+        if (request.quantityAvailable() != null) inventory.setQuantityAvailable(request.quantityAvailable());
+        if (request.lowStockThreshold() != null) inventory.setLowStockThreshold(request.lowStockThreshold());
 
         Product savedProduct = productRepository.save(product);
+        audit("UPDATE", "PRODUCT", savedProduct.getId().toString(), "Updated product " + savedProduct.getName());
         return toDetailDto(savedProduct);
     }
 
@@ -118,11 +126,13 @@ public class AdminProductService {
         if (!productRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
         }
+        audit("DELETE", "PRODUCT", id.toString(), "Deleted product " + id);
         productRepository.deleteById(id);
     }
 
     @Transactional
     public void bulkDeleteProducts(List<UUID> ids) {
+        audit("BULK_DELETE", "PRODUCT", "MULTIPLE", "Bulk deleted " + ids.size() + " products: " + ids.toString());
         productRepository.deleteAllById(ids);
     }
 
@@ -131,6 +141,7 @@ public class AdminProductService {
         List<Product> products = productRepository.findAllById(ids);
         products.forEach(p -> p.setIsActive(true));
         productRepository.saveAll(products);
+        audit("BULK_ACTIVATE", "PRODUCT", "MULTIPLE", "Bulk activated " + ids.size() + " products: " + ids.toString());
     }
 
     @Transactional
@@ -138,6 +149,15 @@ public class AdminProductService {
         List<Product> products = productRepository.findAllById(ids);
         products.forEach(p -> p.setIsActive(false));
         productRepository.saveAll(products);
+        audit("BULK_DEACTIVATE", "PRODUCT", "MULTIPLE", "Bulk deactivated " + ids.size() + " products: " + ids.toString());
+    }
+
+    private void audit(String action, String entityType, String entityId, String details) {
+        auditLogService.log(
+                securityUtils.getCurrentUserId().orElse(null),
+                securityUtils.getCurrentUserEmail().orElse("system"),
+                action, entityType, entityId, details
+        );
     }
 
     private AdminProductListDto toListDto(Product product) {

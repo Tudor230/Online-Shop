@@ -7,6 +7,7 @@ import org.endava.onlineshop.model.entities.OrderItem;
 import org.endava.onlineshop.model.entities.OrderStatusHistory;
 import org.endava.onlineshop.model.enums.OrderStatus;
 import org.endava.onlineshop.repository.OrderRepository;
+import org.endava.onlineshop.security.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -33,9 +34,15 @@ public class AdminOrderService {
     );
 
     private final OrderRepository orderRepository;
+    private final AdminAuditLogService auditLogService;
+    private final SecurityUtils securityUtils;
 
-    public AdminOrderService(OrderRepository orderRepository) {
+    public AdminOrderService(OrderRepository orderRepository,
+                             AdminAuditLogService auditLogService,
+                             SecurityUtils securityUtils) {
         this.orderRepository = orderRepository;
+        this.auditLogService = auditLogService;
+        this.securityUtils = securityUtils;
     }
 
     @Transactional(readOnly = true)
@@ -70,7 +77,17 @@ public class AdminOrderService {
 
         order.setCurrentStatus(next);
         Order saved = orderRepository.save(order);
+        audit("UPDATE_STATUS", "ORDER", saved.getId().toString(),
+                "Changed order %s status from %s to %s".formatted(saved.getOrderNumber(), current, next));
         return toDetailDto(saved);
+    }
+
+    private void audit(String action, String entityType, String entityId, String details) {
+        auditLogService.log(
+                securityUtils.getCurrentUserId().orElse(null),
+                securityUtils.getCurrentUserEmail().orElse("system"),
+                action, entityType, entityId, details
+        );
     }
 
     private AdminOrderListDto toListDto(Order order) {

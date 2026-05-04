@@ -6,6 +6,7 @@ import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.model.enums.Role;
 import org.endava.onlineshop.repository.UserRepository;
 import org.endava.onlineshop.security.KeycloakAdminService;
+import org.endava.onlineshop.security.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,17 @@ public class AdminUserService {
 
     private final UserRepository userRepository;
     private final KeycloakAdminService keycloakAdminService;
+    private final AdminAuditLogService auditLogService;
+    private final SecurityUtils securityUtils;
 
-    public AdminUserService(UserRepository userRepository, KeycloakAdminService keycloakAdminService) {
+    public AdminUserService(UserRepository userRepository,
+                            KeycloakAdminService keycloakAdminService,
+                            AdminAuditLogService auditLogService,
+                            SecurityUtils securityUtils) {
         this.userRepository = userRepository;
         this.keycloakAdminService = keycloakAdminService;
+        this.auditLogService = auditLogService;
+        this.securityUtils = securityUtils;
     }
 
     @Transactional(readOnly = true)
@@ -44,18 +52,25 @@ public class AdminUserService {
             throw new BadRequestException("User with this email already exists");
         }
 
-        UUID userId = UUID.randomUUID();
-        keycloakAdminService.createUser(userId, request.email(), request.firstName(), request.lastName(), request.password());
+        Role role = request.role() != null ? request.role() : Role.CUSTOMER;
+        UUID keycloakUserId = keycloakAdminService.createUser(
+                request.email(),
+                request.firstName(),
+                request.lastName(),
+                request.password(),
+                role
+        );
 
         User user = new User();
-        user.setId(userId);
+        user.setId(keycloakUserId);
         user.setEmail(request.email());
         user.setFirstName(request.firstName());
         user.setLastName(request.lastName());
-        user.setRole(request.role() != null ? request.role() : Role.CUSTOMER);
+        user.setRole(role);
         user.setIsActive(true);
 
         User saved = userRepository.save(user);
+        audit("CREATE", "USER", saved.getId().toString(), "Created user " + saved.getEmail());
         return toDetailDto(saved);
     }
 
@@ -67,23 +82,29 @@ public class AdminUserService {
         if (request.firstName() != null) {
             String firstName = request.firstName().trim();
             user.setFirstName(firstName);
-            if (request.lastName() != null) {
-                String lastName = request.lastName().trim();
-                user.setLastName(lastName);
-                keycloakAdminService.updateUserNames(id, firstName, lastName);
-            } else {
-                keycloakAdminService.updateUserNames(id, firstName, user.getLastName());
-            }
-        } else if (request.lastName() != null) {
-            String lastName = request.lastName().trim();
-            user.setLastName(lastName);
-            keycloakAdminService.updateUserNames(id, user.getFirstName(), lastName);
         }
 
-        if (request.role() != null) user.setRole(request.role());
-        if (request.isActive() != null) user.setIsActive(request.isActive());
+        if (request.lastName() != null) {
+            String lastName = request.lastName().trim();
+            user.setLastName(lastName);
+        }
+
+        if (request.firstName() != null || request.lastName() != null) {
+            keycloakAdminService.updateUserNames(id, user.getFirstName(), user.getLastName());
+        }
+
+        if (request.role() != null) {
+            user.setRole(request.role());
+            keycloakAdminService.syncUserRole(id, request.role());
+        }
+
+        if (request.isActive() != null) {
+            user.setIsActive(request.isActive());
+            keycloakAdminService.updateUserEnabled(id, request.isActive());
+        }
 
         User saved = userRepository.save(user);
+        audit("UPDATE", "USER", saved.getId().toString(), "Updated user " + saved.getEmail());
         return toDetailDto(saved);
     }
 
@@ -93,7 +114,16 @@ public class AdminUserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         keycloakAdminService.deleteUser(id);
+        audit("DELETE", "USER", id.toString(), "Deleted user " + id);
         userRepository.deleteById(id);
+    }
+
+    private void audit(String action, String entityType, String entityId, String details) {
+        auditLogService.log(
+                securityUtils.getCurrentUserId().orElse(null),
+                securityUtils.getCurrentUserEmail().orElse("system"),
+                action, entityType, entityId, details
+        );
     }
 
     private AdminUserListDto toListDto(User user) {

@@ -5,6 +5,7 @@ import org.endava.onlineshop.model.dto.admin.AdminCategoryCreateRequestDto;
 import org.endava.onlineshop.model.dto.admin.AdminCategoryDto;
 import org.endava.onlineshop.model.entities.Category;
 import org.endava.onlineshop.repository.CategoryRepository;
+import org.endava.onlineshop.security.SecurityUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +18,15 @@ import java.util.UUID;
 public class AdminCategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final AdminAuditLogService auditLogService;
+    private final SecurityUtils securityUtils;
 
-    public AdminCategoryService(CategoryRepository categoryRepository) {
+    public AdminCategoryService(CategoryRepository categoryRepository,
+                                 AdminAuditLogService auditLogService,
+                                 SecurityUtils securityUtils) {
         this.categoryRepository = categoryRepository;
+        this.auditLogService = auditLogService;
+        this.securityUtils = securityUtils;
     }
 
     @Transactional(readOnly = true)
@@ -48,6 +55,7 @@ public class AdminCategoryService {
         category.setSlug(request.slug());
 
         Category saved = categoryRepository.save(category);
+        audit("CREATE", "CATEGORY", saved.getId().toString(), "Created category " + saved.getName());
         return toDto(saved);
     }
 
@@ -69,6 +77,7 @@ public class AdminCategoryService {
         if (request.parentId() != null) category.setParentId(request.parentId());
 
         Category saved = categoryRepository.save(category);
+        audit("UPDATE", "CATEGORY", saved.getId().toString(), "Updated category " + saved.getName());
         return toDto(saved);
     }
 
@@ -77,7 +86,16 @@ public class AdminCategoryService {
         if (!categoryRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
         }
+        audit("DELETE", "CATEGORY", id.toString(), "Deleted category " + id);
         categoryRepository.deleteById(id);
+    }
+
+    private void audit(String action, String entityType, String entityId, String details) {
+        auditLogService.log(
+                securityUtils.getCurrentUserId().orElse(null),
+                securityUtils.getCurrentUserEmail().orElse("system"),
+                action, entityType, entityId, details
+        );
     }
 
     private AdminCategoryDto toDto(Category category) {
