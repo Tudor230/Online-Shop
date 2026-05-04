@@ -97,10 +97,16 @@
           <button
             type="button"
             aria-label="Save to wishlist"
-            class="rounded-full bg-surface-elevated px-4 py-3 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-default"
+            [attr.aria-pressed]="isWishlisted"
+            class="rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-200"
+            [ngClass]="
+              isWishlisted
+                ? 'bg-red-500/15 text-red-300 hover:bg-red-500/20'
+                : 'bg-surface-elevated text-text-primary hover:bg-surface-default'
+            "
             (click)="onSaveToWishlist()"
           >
-            ♡ Save
+            {{ isWishlisted ? '♥ Saved' : '♡ Save' }}
           </button>
         </div>
 

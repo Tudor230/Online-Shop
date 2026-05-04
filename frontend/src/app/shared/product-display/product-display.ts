@@ -15,6 +15,7 @@ export class ProductDisplayComponent {
   @Input({ required: true }) product: ProductDetails | null = null;
   @Input({ required: true }) selectedImageId = '';
   @Input({ required: true }) selectedImageIndex = 0;
+  @Input({ required: true }) isWishlisted = false;
 
   @Output() backRequested = new EventEmitter<void>();
   @Output() imageSelected = new EventEmitter<number>();

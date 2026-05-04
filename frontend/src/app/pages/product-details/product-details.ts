@@ -5,6 +5,7 @@ import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import { CartFacadeService } from '../../core/cart/cart-facade.service';
 import { ProductApiService } from '../../core/products/product-api.service';
 import { ProductDetails } from '../../core/products/product.types';
+import { WishlistFacadeService } from '../../core/wishlist/wishlist-facade.service';
 import { ProductDisplayComponent } from '../../shared/product-display/product-display';
 
 @Component({
@@ -18,6 +19,7 @@ export class ProductDetailsComponent {
   private readonly router = inject(Router);
   private readonly productApiService = inject(ProductApiService);
   private readonly cartFacadeService = inject(CartFacadeService);
+  private readonly wishlistFacadeService = inject(WishlistFacadeService);
 
   readonly selectedImageIndex = signal(0);
 
@@ -52,6 +54,13 @@ export class ProductDetailsComponent {
       currentProduct.imageId
     );
   });
+  readonly isWishlisted = computed(() => {
+    const currentProduct = this.product();
+    if (!currentProduct) {
+      return false;
+    }
+    return this.wishlistFacadeService.isInWishlist(currentProduct.id);
+  });
 
   constructor() {
     effect(() => {
@@ -76,5 +85,11 @@ export class ProductDetailsComponent {
     this.cartFacadeService.addItem(currentProduct.id);
   }
 
-  saveToWishlist(): void {}
+  saveToWishlist(): void {
+    const currentProduct = this.product();
+    if (!currentProduct) {
+      return;
+    }
+    this.wishlistFacadeService.toggleItem(currentProduct.id);
+  }
 }
