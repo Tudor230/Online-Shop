@@ -7,10 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:ci": "ng test --watch=false",
     "serve:ssr:frontend": "node dist/frontend/server/server.mjs"
   },
   "private": true,
-  "packageManager": "npm@11.7.0",
   "dependencies": {
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
