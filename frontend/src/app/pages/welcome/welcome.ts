@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { mockProducts, type Product } from '../../../assets/data/mock-products';
 import { Background3dComponent } from '../../shared/background-3d/background-3d';
 import { LandingHeaderComponent } from '../../shared/landing-header/landing-header';
 
@@ -19,7 +18,6 @@ export interface ValueProp {
 export class WelcomeComponent {
   private readonly router = inject(Router);
 
-  readonly products = signal<readonly Product[]>(mockProducts);
   readonly isLoading = signal<boolean>(true);
 
   readonly introOpacity = signal<number>(1);
