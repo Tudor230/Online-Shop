@@ -9,14 +9,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "shopping_cart")
@@ -26,17 +25,21 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ShoppingCart extends BaseAuditEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", nullable = false)
+  private UUID id;
 
-    @Column(name = "user_id", unique = true)
-    private UUID userId;
+  @Column(name = "user_id", unique = true)
+  private UUID userId;
 
-    @Column(name = "session_id", unique = true, length = 255)
-    private String sessionId;
+  @Column(name = "session_id", unique = true, length = 255)
+  private String sessionId;
 
-    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> items = new ArrayList<>();
+  @OneToMany(
+      mappedBy = "cart",
+      fetch = FetchType.LAZY,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
+  private List<CartItem> items = new ArrayList<>();
 }

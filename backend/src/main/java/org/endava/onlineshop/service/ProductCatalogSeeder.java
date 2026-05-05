@@ -4,22 +4,6 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.endava.onlineshop.model.entities.Category;
-import org.endava.onlineshop.model.entities.Product;
-import org.endava.onlineshop.model.entities.ProductInventory;
-import org.endava.onlineshop.repository.CategoryRepository;
-import org.endava.onlineshop.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -29,196 +13,222 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.endava.onlineshop.model.entities.Category;
+import org.endava.onlineshop.model.entities.Product;
+import org.endava.onlineshop.model.entities.ProductInventory;
+import org.endava.onlineshop.repository.CategoryRepository;
+import org.endava.onlineshop.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 // TODO: Remove before deploying to production.
 @Component
 @Profile("dev")
 public class ProductCatalogSeeder implements ApplicationRunner {
 
-    private static final String CLOUDINARY_SEED_FOLDER = "online-shop/products/seed";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductCatalogSeeder.class);
+  private static final String CLOUDINARY_SEED_FOLDER = "online-shop/products/seed";
+  private static final Logger LOGGER = LoggerFactory.getLogger(ProductCatalogSeeder.class);
 
-    private final ProductRepository productRepository;
-    private final CategoryRepository categoryRepository;
-    private final ObjectMapper objectMapper;
-    private final Resource seedResource;
-    private final ResourceLoader resourceLoader;
-    private final String cloudinaryCloudName;
-    private final String cloudinaryApiKey;
-    private final String cloudinaryApiSecret;
+  private final ProductRepository productRepository;
+  private final CategoryRepository categoryRepository;
+  private final ObjectMapper objectMapper;
+  private final Resource seedResource;
+  private final ResourceLoader resourceLoader;
+  private final String cloudinaryCloudName;
+  private final String cloudinaryApiKey;
+  private final String cloudinaryApiSecret;
 
-    public ProductCatalogSeeder(
-            ProductRepository productRepository,
-            CategoryRepository categoryRepository,
-            ObjectMapper objectMapper,
-            @Value("classpath:seed/mock-products.json") Resource seedResource,
-            ResourceLoader resourceLoader,
-            @Value("${cloudinary.cloud-name:}") String cloudinaryCloudName,
-            @Value("${cloudinary.api-key:}") String cloudinaryApiKey,
-            @Value("${cloudinary.api-secret:}") String cloudinaryApiSecret
-    ) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.objectMapper = objectMapper;
-        this.seedResource = seedResource;
-        this.resourceLoader = resourceLoader;
-        this.cloudinaryCloudName = cloudinaryCloudName;
-        this.cloudinaryApiKey = cloudinaryApiKey;
-        this.cloudinaryApiSecret = cloudinaryApiSecret;
+  public ProductCatalogSeeder(
+      ProductRepository productRepository,
+      CategoryRepository categoryRepository,
+      ObjectMapper objectMapper,
+      @Value("classpath:seed/mock-products.json") Resource seedResource,
+      ResourceLoader resourceLoader,
+      @Value("${cloudinary.cloud-name:}") String cloudinaryCloudName,
+      @Value("${cloudinary.api-key:}") String cloudinaryApiKey,
+      @Value("${cloudinary.api-secret:}") String cloudinaryApiSecret) {
+    this.productRepository = productRepository;
+    this.categoryRepository = categoryRepository;
+    this.objectMapper = objectMapper;
+    this.seedResource = seedResource;
+    this.resourceLoader = resourceLoader;
+    this.cloudinaryCloudName = cloudinaryCloudName;
+    this.cloudinaryApiKey = cloudinaryApiKey;
+    this.cloudinaryApiSecret = cloudinaryApiSecret;
+  }
+
+  @Override
+  @Transactional
+  public void run(ApplicationArguments args) {
+    if (!isCloudinaryConfigured()) {
+      LOGGER.warn(
+          "Skipping product image seeding because Cloudinary credentials are not fully configured.");
+      return;
     }
 
-    @Override
-    @Transactional
-    public void run(ApplicationArguments args) {
-        if (!isCloudinaryConfigured()) {
-            LOGGER.warn("Skipping product image seeding because Cloudinary credentials are not fully configured.");
-            return;
-        }
+    List<SeedProduct> seedProducts = loadSeedProducts();
+    Map<String, String> uploadedImageIdsByName = uploadSeedImages(seedProducts);
+    seedProducts.forEach(seedProduct -> seedProduct(seedProduct, uploadedImageIdsByName));
+  }
 
-        List<SeedProduct> seedProducts = loadSeedProducts();
-        Map<String, String> uploadedImageIdsByName = uploadSeedImages(seedProducts);
-        seedProducts.forEach(seedProduct -> seedProduct(seedProduct, uploadedImageIdsByName));
+  private boolean isCloudinaryConfigured() {
+    return cloudinaryCloudName != null
+        && !cloudinaryCloudName.isBlank()
+        && cloudinaryApiKey != null
+        && !cloudinaryApiKey.isBlank()
+        && cloudinaryApiSecret != null
+        && !cloudinaryApiSecret.isBlank();
+  }
+
+  private void seedProduct(SeedProduct seedProduct, Map<String, String> uploadedImageIdsByName) {
+    String slug = seedProduct.id();
+    Category category =
+        categoryRepository
+            .findBySlug(toSlug(seedProduct.category()))
+            .orElseGet(() -> createCategory(seedProduct.category()));
+
+    Product product = productRepository.findBySlug(slug).orElseGet(Product::new);
+    product.setSlug(slug);
+    product.setName(seedProduct.title());
+    product.setSku(toSku(slug));
+    product.setBasePrice(BigDecimal.valueOf(seedProduct.price()));
+    product.setDescription(seedProduct.description());
+    product.setIsActive(true);
+    product.setRating(seedProduct.rating());
+    product.setReviewCount(seedProduct.reviewCount());
+
+    String primaryImageId = uploadedImageIdsByName.get(seedProduct.imageName());
+    if (primaryImageId == null || primaryImageId.isBlank()) {
+      throw new IllegalStateException(
+          "Missing uploaded Cloudinary image for " + seedProduct.imageName());
     }
+    product.setImageId(primaryImageId);
 
-    private boolean isCloudinaryConfigured() {
-        return cloudinaryCloudName != null && !cloudinaryCloudName.isBlank()
-                && cloudinaryApiKey != null && !cloudinaryApiKey.isBlank()
-                && cloudinaryApiSecret != null && !cloudinaryApiSecret.isBlank();
+    List<String> galleryImageIds =
+        seedProduct.imageGalleryNames().stream()
+            .map(uploadedImageIdsByName::get)
+            .filter(imageId -> imageId != null && !imageId.isBlank())
+            .toList();
+    product.setImageGalleryIds(new ArrayList<>(galleryImageIds));
+
+    Set<Category> categories = product.getCategories();
+    categories.clear();
+    categories.add(category);
+
+    ProductInventory inventory = product.getInventory();
+    if (inventory == null) {
+      inventory = new ProductInventory();
     }
+    inventory.setQuantityAvailable(25);
+    inventory.setLowStockThreshold(5);
+    product.setInventory(inventory);
 
-    private void seedProduct(SeedProduct seedProduct, Map<String, String> uploadedImageIdsByName) {
-        String slug = seedProduct.id();
-        Category category = categoryRepository.findBySlug(toSlug(seedProduct.category()))
-                .orElseGet(() -> createCategory(seedProduct.category()));
+    productRepository.save(product);
+  }
 
-        Product product = productRepository.findBySlug(slug).orElseGet(Product::new);
-        product.setSlug(slug);
-        product.setName(seedProduct.title());
-        product.setSku(toSku(slug));
-        product.setBasePrice(BigDecimal.valueOf(seedProduct.price()));
-        product.setDescription(seedProduct.description());
-        product.setIsActive(true);
-        product.setRating(seedProduct.rating());
-        product.setReviewCount(seedProduct.reviewCount());
-
-        String primaryImageId = uploadedImageIdsByName.get(seedProduct.imageName());
-        if (primaryImageId == null || primaryImageId.isBlank()) {
-            throw new IllegalStateException("Missing uploaded Cloudinary image for " + seedProduct.imageName());
-        }
-        product.setImageId(primaryImageId);
-
-        List<String> galleryImageIds = seedProduct.imageGalleryNames().stream()
-                .map(uploadedImageIdsByName::get)
-                .filter(imageId -> imageId != null && !imageId.isBlank())
-                .toList();
-        product.setImageGalleryIds(new ArrayList<>(galleryImageIds));
-
-        Set<Category> categories = product.getCategories();
-        categories.clear();
-        categories.add(category);
-
-        ProductInventory inventory = product.getInventory();
-        if (inventory == null) {
-            inventory = new ProductInventory();
-        }
-        inventory.setQuantityAvailable(25);
-        inventory.setLowStockThreshold(5);
-        product.setInventory(inventory);
-
-        productRepository.save(product);
-    }
-
-    private Map<String, String> uploadSeedImages(List<SeedProduct> seedProducts) {
-        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+  private Map<String, String> uploadSeedImages(List<SeedProduct> seedProducts) {
+    Cloudinary cloudinary =
+        new Cloudinary(
+            ObjectUtils.asMap(
                 "cloud_name", cloudinaryCloudName,
                 "api_key", cloudinaryApiKey,
                 "api_secret", cloudinaryApiSecret,
-                "secure", true
-        ));
+                "secure", true));
 
-        Set<String> uniqueImageNames = new LinkedHashSet<>();
-        for (SeedProduct seedProduct : seedProducts) {
-            uniqueImageNames.add(seedProduct.imageName());
-            uniqueImageNames.addAll(seedProduct.imageGalleryNames());
-        }
-
-        Map<String, String> uploadedByName = new LinkedHashMap<>();
-        for (String imageName : uniqueImageNames) {
-            uploadedByName.put(imageName, uploadImage(cloudinary, imageName));
-        }
-
-        return uploadedByName;
+    Set<String> uniqueImageNames = new LinkedHashSet<>();
+    for (SeedProduct seedProduct : seedProducts) {
+      uniqueImageNames.add(seedProduct.imageName());
+      uniqueImageNames.addAll(seedProduct.imageGalleryNames());
     }
 
-    private String uploadImage(Cloudinary cloudinary, String imageName) {
-        Resource imageResource = resourceLoader.getResource("classpath:seed/images/" + imageName);
-        if (!imageResource.exists()) {
-            throw new IllegalStateException("Seed image not found: classpath:seed/images/" + imageName);
-        }
-
-        String basePublicId = stripExtension(imageName);
-        String fullPublicId = CLOUDINARY_SEED_FOLDER + "/" + basePublicId;
-
-        try (InputStream imageStream = imageResource.getInputStream()) {
-            cloudinary.uploader().upload(imageStream.readAllBytes(), ObjectUtils.asMap(
-                    "folder", CLOUDINARY_SEED_FOLDER,
-                    "public_id", basePublicId,
-                    "overwrite", false,
-                    "resource_type", "image"
-            ));
-            return fullPublicId;
-        } catch (IOException ex) {
-            throw new IllegalStateException("Failed to upload seed image to Cloudinary: " + imageName, ex);
-        }
+    Map<String, String> uploadedByName = new LinkedHashMap<>();
+    for (String imageName : uniqueImageNames) {
+      uploadedByName.put(imageName, uploadImage(cloudinary, imageName));
     }
 
+    return uploadedByName;
+  }
 
-    private String stripExtension(String fileName) {
-        int dotIndex = fileName.lastIndexOf('.');
-        if (dotIndex <= 0) {
-            return fileName;
-        }
-        return fileName.substring(0, dotIndex);
+  private String uploadImage(Cloudinary cloudinary, String imageName) {
+    Resource imageResource = resourceLoader.getResource("classpath:seed/images/" + imageName);
+    if (!imageResource.exists()) {
+      throw new IllegalStateException("Seed image not found: classpath:seed/images/" + imageName);
     }
 
-    private Category createCategory(String categoryName) {
-        Category category = new Category();
-        category.setName(categoryName);
-        category.setSlug(toSlug(categoryName));
-        return categoryRepository.save(category);
-    }
+    String basePublicId = stripExtension(imageName);
+    String fullPublicId = CLOUDINARY_SEED_FOLDER + "/" + basePublicId;
 
-    private List<SeedProduct> loadSeedProducts() {
-        try {
-            return objectMapper.readValue(seedResource.getInputStream(), new TypeReference<>() {});
-        } catch (IOException ex) {
-            throw new IllegalStateException("Failed to load product seed data", ex);
-        }
+    try (InputStream imageStream = imageResource.getInputStream()) {
+      cloudinary
+          .uploader()
+          .upload(
+              imageStream.readAllBytes(),
+              ObjectUtils.asMap(
+                  "folder",
+                  CLOUDINARY_SEED_FOLDER,
+                  "public_id",
+                  basePublicId,
+                  "overwrite",
+                  false,
+                  "resource_type",
+                  "image"));
+      return fullPublicId;
+    } catch (IOException ex) {
+      throw new IllegalStateException(
+          "Failed to upload seed image to Cloudinary: " + imageName, ex);
     }
+  }
 
-    private String toSlug(String value) {
-        return value.toLowerCase().replace(" ", "-");
+  private String stripExtension(String fileName) {
+    int dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex <= 0) {
+      return fileName;
     }
+    return fileName.substring(0, dotIndex);
+  }
 
-    private String toSku(String slug) {
-        return "SKU-" + slug.toUpperCase().replace("-", "_");
-    }
+  private Category createCategory(String categoryName) {
+    Category category = new Category();
+    category.setName(categoryName);
+    category.setSlug(toSlug(categoryName));
+    return categoryRepository.save(category);
+  }
 
-    private record SeedProduct(
-            String id,
-            String category,
-            String title,
-            double rating,
-            int reviewCount,
-            double price,
-            String description,
-            String imageName,
-            List<String> imageGalleryNames,
-            List<SeedColorOption> availableColors
-    ) {
+  private List<SeedProduct> loadSeedProducts() {
+    try {
+      return objectMapper.readValue(seedResource.getInputStream(), new TypeReference<>() {});
+    } catch (IOException ex) {
+      throw new IllegalStateException("Failed to load product seed data", ex);
     }
+  }
 
-    private record SeedColorOption(String name, String swatch) {
-    }
+  private String toSlug(String value) {
+    return value.toLowerCase().replace(" ", "-");
+  }
+
+  private String toSku(String slug) {
+    return "SKU-" + slug.toUpperCase().replace("-", "_");
+  }
+
+  private record SeedProduct(
+      String id,
+      String category,
+      String title,
+      double rating,
+      int reviewCount,
+      double price,
+      String description,
+      String imageName,
+      List<String> imageGalleryNames,
+      List<SeedColorOption> availableColors) {}
+
+  private record SeedColorOption(String name, String swatch) {}
 }
-

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<APIResponse> handleBadRequestException(BadRequestException e){
-        return ResponseHandler.errorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<APIResponse> handleBadRequestException(BadRequestException e) {
+    return ResponseHandler.errorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
+  }
 }

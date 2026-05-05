@@ -1,1 +1,3 @@
 pnpm-lock.yaml
+
+infrastructure/keycloak-config/realm-config.json

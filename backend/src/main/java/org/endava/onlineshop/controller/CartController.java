@@ -22,56 +22,50 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/cart")
 public class CartController {
 
-    private final CartService cartService;
+  private final CartService cartService;
 
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
+  public CartController(CartService cartService) {
+    this.cartService = cartService;
+  }
 
-    @GetMapping
-    public CartResponseDto getCart(
-            @AuthenticationPrincipal User user,
-            @RequestHeader(value = "X-Session-Id", required = false) String sessionId
-    ) {
-        return cartService.getCart(user, sessionId);
-    }
+  @GetMapping
+  public CartResponseDto getCart(
+      @AuthenticationPrincipal User user,
+      @RequestHeader(value = "X-Session-Id", required = false) String sessionId) {
+    return cartService.getCart(user, sessionId);
+  }
 
-    @PostMapping("/items")
-    public CartResponseDto addItem(
-            @AuthenticationPrincipal User user,
-            @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
-            @Valid @RequestBody AddCartItemRequestDto request
-    ) {
-        return cartService.addItem(user, sessionId, request);
-    }
+  @PostMapping("/items")
+  public CartResponseDto addItem(
+      @AuthenticationPrincipal User user,
+      @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
+      @Valid @RequestBody AddCartItemRequestDto request) {
+    return cartService.addItem(user, sessionId, request);
+  }
 
-    @PatchMapping("/items/{productId}")
-    public CartResponseDto updateItemQuantity(
-            @AuthenticationPrincipal User user,
-            @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
-            @PathVariable String productId,
-            @Valid @RequestBody UpdateCartItemQuantityRequestDto request
-    ) {
-        return cartService.updateItemQuantity(user, sessionId, productId, request.quantity());
-    }
+  @PatchMapping("/items/{productId}")
+  public CartResponseDto updateItemQuantity(
+      @AuthenticationPrincipal User user,
+      @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
+      @PathVariable String productId,
+      @Valid @RequestBody UpdateCartItemQuantityRequestDto request) {
+    return cartService.updateItemQuantity(user, sessionId, productId, request.quantity());
+  }
 
-    @DeleteMapping("/items/{productId}")
-    public CartResponseDto removeItem(
-            @AuthenticationPrincipal User user,
-            @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
-            @PathVariable String productId
-    ) {
-        return cartService.removeItem(user, sessionId, productId);
-    }
+  @DeleteMapping("/items/{productId}")
+  public CartResponseDto removeItem(
+      @AuthenticationPrincipal User user,
+      @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
+      @PathVariable String productId) {
+    return cartService.removeItem(user, sessionId, productId);
+  }
 
-    @PostMapping("/claim")
-    public CartResponseDto claimGuestCart(
-            @AuthenticationPrincipal User user,
-            @RequestHeader(value = "X-Session-Id") String sessionId
-    ) {
-        if (user == null) {
-            throw new BadRequestException("Authentication is required");
-        }
-        return cartService.claimGuestCart(user, sessionId);
+  @PostMapping("/claim")
+  public CartResponseDto claimGuestCart(
+      @AuthenticationPrincipal User user, @RequestHeader(value = "X-Session-Id") String sessionId) {
+    if (user == null) {
+      throw new BadRequestException("Authentication is required");
     }
+    return cartService.claimGuestCart(user, sessionId);
+  }
 }

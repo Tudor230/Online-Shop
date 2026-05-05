@@ -4,15 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record ProductDetailsDto(
-        String id,
-        String category,
-        String title,
-        double rating,
-        int reviewCount,
-        BigDecimal price,
-        String description,
-        String imageId,
-        List<String> imageGalleryIds
-) {
-}
-
+    String id,
+    String category,
+    String title,
+    double rating,
+    int reviewCount,
+    BigDecimal price,
+    String description,
+    String imageId,
+    List<String> imageGalleryIds) {}

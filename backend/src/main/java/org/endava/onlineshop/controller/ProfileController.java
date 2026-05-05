@@ -1,6 +1,7 @@
 package org.endava.onlineshop.controller;
 
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.endava.onlineshop.model.dto.profile.CreateAddressRequestDto;
 import org.endava.onlineshop.model.dto.profile.ProfileResponseDto;
 import org.endava.onlineshop.model.dto.profile.SetPrimaryAddressRequestDto;
@@ -17,60 +18,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/profile")
 public class ProfileController {
 
-    private final ProfileService profileService;
+  private final ProfileService profileService;
 
-    public ProfileController(ProfileService profileService) {
-        this.profileService = profileService;
-    }
+  public ProfileController(ProfileService profileService) {
+    this.profileService = profileService;
+  }
 
-    @GetMapping
-    public ProfileResponseDto getProfile(@AuthenticationPrincipal User user) {
-        return profileService.getProfile(user);
-    }
+  @GetMapping
+  public ProfileResponseDto getProfile(@AuthenticationPrincipal User user) {
+    return profileService.getProfile(user);
+  }
 
-    @PatchMapping
-    public ProfileResponseDto updateProfile(
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody UpdateProfileRequestDto request
-    ) {
-        return profileService.updateProfile(user, request);
-    }
+  @PatchMapping
+  public ProfileResponseDto updateProfile(
+      @AuthenticationPrincipal User user, @Valid @RequestBody UpdateProfileRequestDto request) {
+    return profileService.updateProfile(user, request);
+  }
 
-    @PostMapping("/addresses")
-    public ProfileResponseDto createAddress(
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody CreateAddressRequestDto request
-    ) {
-        return profileService.createAddress(user, request);
-    }
+  @PostMapping("/addresses")
+  public ProfileResponseDto createAddress(
+      @AuthenticationPrincipal User user, @Valid @RequestBody CreateAddressRequestDto request) {
+    return profileService.createAddress(user, request);
+  }
 
-    @PatchMapping("/primary-shipping")
-    public ProfileResponseDto setPrimaryShippingAddress(
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody SetPrimaryAddressRequestDto request
-    ) {
-        return profileService.setPrimaryShippingAddress(user, request.addressId());
-    }
+  @PatchMapping("/primary-shipping")
+  public ProfileResponseDto setPrimaryShippingAddress(
+      @AuthenticationPrincipal User user, @Valid @RequestBody SetPrimaryAddressRequestDto request) {
+    return profileService.setPrimaryShippingAddress(user, request.addressId());
+  }
 
-    @PatchMapping("/primary-billing")
-    public ProfileResponseDto setPrimaryBillingAddress(
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody SetPrimaryAddressRequestDto request
-    ) {
-        return profileService.setPrimaryBillingAddress(user, request.addressId());
-    }
+  @PatchMapping("/primary-billing")
+  public ProfileResponseDto setPrimaryBillingAddress(
+      @AuthenticationPrincipal User user, @Valid @RequestBody SetPrimaryAddressRequestDto request) {
+    return profileService.setPrimaryBillingAddress(user, request.addressId());
+  }
 
-    @DeleteMapping("/addresses/{addressId}")
-    public ProfileResponseDto deleteAddress(
-            @AuthenticationPrincipal User user,
-            @PathVariable UUID addressId
-    ) {
-        return profileService.deleteAddress(user, addressId);
-    }
+  @DeleteMapping("/addresses/{addressId}")
+  public ProfileResponseDto deleteAddress(
+      @AuthenticationPrincipal User user, @PathVariable UUID addressId) {
+    return profileService.deleteAddress(user, addressId);
+  }
 }
