@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public record OrderHistoryItemDto(
         String productSlug,
         String title,
-        String imagePlaceholder,
+        String imageId,
         int quantity,
         BigDecimal unitPrice,
         BigDecimal lineTotal

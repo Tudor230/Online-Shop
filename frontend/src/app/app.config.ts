@@ -6,6 +6,7 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { KeycloakAuthService } from './core/auth/keycloak-auth.service';
 import { authInterceptor } from './core/auth/auth.interceptor';
+import { AppConfigService } from './core/config/app-config.service';
 
 function initializeAuth(keycloakAuthService: KeycloakAuthService): () => Promise<void> {
   return () => keycloakAuthService.init();
@@ -23,6 +24,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
     provideClientHydration(withEventReplay()),
-    provideAppInitializer(() => initializeAuth(inject(KeycloakAuthService))())
+    provideAppInitializer(() => initializeAuth(inject(KeycloakAuthService))()),
+    provideAppInitializer(() => inject(AppConfigService).loadConfig()),
   ]
 };

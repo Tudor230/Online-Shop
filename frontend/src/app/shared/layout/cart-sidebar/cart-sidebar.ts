@@ -1,11 +1,13 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CartItem } from '../../../core/cart/cart.types';
+import { CloudinaryTransformOptions } from '../../../core/images/cloudinary-url.pipe';
+import { CloudinaryImageFrameComponent } from '../../cloudinary-image-frame/cloudinary-image-frame';
 
 @Component({
   selector: 'app-cart-sidebar',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe],
+  imports: [CommonModule, CurrencyPipe, CloudinaryImageFrameComponent],
   templateUrl: './cart-sidebar.html'
 })
 export class CartSidebarComponent {
@@ -17,6 +19,14 @@ export class CartSidebarComponent {
   @Output() incrementRequested = new EventEmitter<string>();
   @Output() decrementRequested = new EventEmitter<string>();
   @Output() removeRequested = new EventEmitter<string>();
+
+  readonly cartImageOptions: CloudinaryTransformOptions = {
+    width: 160,
+    height: 160,
+    crop: 'limit',
+    radius: 10
+  };
+
 
   onCloseRequested(): void {
     this.closeRequested.emit();
@@ -33,4 +43,5 @@ export class CartSidebarComponent {
   onRemoveRequested(productId: string): void {
     this.removeRequested.emit(productId);
   }
+
 }

@@ -6,7 +6,7 @@ public record CartItemDto(
         String productId,
         String title,
         BigDecimal price,
-        String imageLabel,
+        String imageId,
         Integer quantity
 ) {
 }

@@ -42,7 +42,7 @@ public class ProductService {
                 product.getRating(),
                 product.getReviewCount(),
                 product.getBasePrice(),
-                product.getImagePlaceholder()
+                product.getImageId()
         );
     }
 
@@ -55,8 +55,8 @@ public class ProductService {
                 product.getReviewCount(),
                 product.getBasePrice(),
                 product.getDescription(),
-                product.getImagePlaceholder(),
-                List.copyOf(product.getImageGallery())
+                product.getImageId(),
+                List.copyOf(product.getImageGalleryIds())
         );
     }
 
