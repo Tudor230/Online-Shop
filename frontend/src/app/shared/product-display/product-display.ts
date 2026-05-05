@@ -8,7 +8,7 @@ import { CloudinaryImageFrameComponent } from '../cloudinary-image-frame/cloudin
   selector: 'app-product-display',
   standalone: true,
   imports: [CommonModule, CurrencyPipe, CloudinaryImageFrameComponent],
-  templateUrl: './product-display.html'
+  templateUrl: './product-display.html',
 })
 export class ProductDisplayComponent {
   @Input({ required: true }) isLoading = false;
@@ -25,16 +25,15 @@ export class ProductDisplayComponent {
     width: 1200,
     height: 960,
     crop: 'limit',
-    radius: 24
+    radius: 24,
   };
 
   readonly thumbnailImageOptions: CloudinaryTransformOptions = {
     width: 240,
     height: 180,
     crop: 'limit',
-    radius: 12
+    radius: 12,
   };
-
 
   onBackRequested(): void {
     this.backRequested.emit();

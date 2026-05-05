@@ -30,4 +30,3 @@ export class AuthStateService {
     this.userState.set(null);
   }
 }
-

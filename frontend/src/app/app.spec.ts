@@ -9,7 +9,7 @@ describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter(routes)]
+      providers: [provideRouter(routes)],
     }).compileComponents();
   });
 
@@ -29,7 +29,7 @@ describe('App', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     const loginButton = Array.from(compiled.querySelectorAll('button')).find(
-      (button) => button.textContent?.trim() === 'Login'
+      (button) => button.textContent?.trim() === 'Login',
     );
 
     expect(loginButton).toBeTruthy();
@@ -44,7 +44,7 @@ describe('App', () => {
       email: 'john.doe@example.com',
       firstName: 'John',
       lastName: 'Doe',
-      role: Role.CUSTOMER
+      role: Role.CUSTOMER,
     });
 
     await router.navigateByUrl('/products');

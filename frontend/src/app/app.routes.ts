@@ -14,7 +14,7 @@ import { OrderHistoryPageComponent } from './pages/order-history/order-history';
 export const routes: Routes = [
   {
     path: '',
-    component: WelcomeComponent
+    component: WelcomeComponent,
   },
   {
     path: '',
@@ -22,38 +22,38 @@ export const routes: Routes = [
     children: [
       {
         path: 'products',
-        component: ProductGridComponent
+        component: ProductGridComponent,
       },
       {
         path: 'product/:id',
-        component: ProductDetailsComponent
+        component: ProductDetailsComponent,
       },
       {
         path: 'profile',
         canActivate: [profileAuthGuard],
-        component: ProfilePageComponent
+        component: ProfilePageComponent,
       },
       {
         path: 'shipping-and-returns',
-        component: ShippingReturnsPageComponent
+        component: ShippingReturnsPageComponent,
       },
       {
         path: 'warranty-policy',
-        component: WarrantyPolicyPageComponent
+        component: WarrantyPolicyPageComponent,
       },
       {
         path: 'privacy-policy',
-        component: PrivacyPolicyPageComponent
+        component: PrivacyPolicyPageComponent,
       },
       {
         path: 'terms',
-        component: TermsPageComponent
+        component: TermsPageComponent,
       },
       {
         path: 'orders',
         canActivate: [profileAuthGuard],
-        component: OrderHistoryPageComponent
-      }
-    ]
-  }
+        component: OrderHistoryPageComponent,
+      },
+    ],
+  },
 ];

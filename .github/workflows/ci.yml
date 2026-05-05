@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ dev ]
+    branches: [dev]
   pull_request:
-    branches: [ dev ]
+    branches: [dev]
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -63,5 +63,5 @@ jobs:
       - name: Run tests
         run: pnpm test:ci
 
-      - name: Check formatting
+      - name: Check formatting (fix with `pnpm format`)
         run: pnpm -w format:check

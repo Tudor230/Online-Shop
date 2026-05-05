@@ -2,7 +2,9 @@
   <header class="mb-6 flex flex-wrap items-center justify-between gap-3">
     <div>
       <h1 class="text-2xl font-semibold text-text-primary">Order history</h1>
-      <p class="mt-1 text-sm text-text-secondary">Track your latest purchases and shipment status.</p>
+      <p class="mt-1 text-sm text-text-secondary">
+        Track your latest purchases and shipment status.
+      </p>
     </div>
   </header>
 
@@ -51,7 +53,10 @@
               <p class="text-sm text-text-secondary">{{ order.createdAt | date: 'mediumDate' }}</p>
               <h2 class="text-base font-semibold text-text-primary">{{ order.orderNumber }}</h2>
             </div>
-            <span class="rounded-full px-3 py-1 text-xs font-semibold" [ngClass]="statusClass(order.status)">
+            <span
+              class="rounded-full px-3 py-1 text-xs font-semibold"
+              [ngClass]="statusClass(order.status)"
+            >
               {{ statusLabel(order.status) }}
             </span>
           </div>
@@ -71,8 +76,12 @@
                   <tr class="border-t border-surface-elevated/70 text-text-primary">
                     <td class="px-3 py-2">{{ item.title }}</td>
                     <td class="px-3 py-2">{{ item.quantity }}</td>
-                    <td class="px-3 py-2">{{ item.unitPrice | currency: 'USD' : 'symbol' : '1.2-2' }}</td>
-                    <td class="px-3 py-2">{{ item.lineTotal | currency: 'USD' : 'symbol' : '1.2-2' }}</td>
+                    <td class="px-3 py-2">
+                      {{ item.unitPrice | currency: 'USD' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="px-3 py-2">
+                      {{ item.lineTotal | currency: 'USD' : 'symbol' : '1.2-2' }}
+                    </td>
                   </tr>
                 }
               </tbody>
@@ -80,13 +89,27 @@
           </div>
 
           <div class="mt-4 flex flex-wrap justify-end gap-4 text-sm">
-            <span class="text-text-secondary">Subtotal: <strong class="text-text-primary">{{ order.subtotal | currency: 'USD' : 'symbol' : '1.2-2' }}</strong></span>
-            <span class="text-text-secondary">Discount: <strong class="text-text-primary">{{ order.discountAmount | currency: 'USD' : 'symbol' : '1.2-2' }}</strong></span>
-            <span class="text-text-secondary">Total: <strong class="text-text-primary">{{ order.totalAmount | currency: 'USD' : 'symbol' : '1.2-2' }}</strong></span>
+            <span class="text-text-secondary"
+              >Subtotal:
+              <strong class="text-text-primary">{{
+                order.subtotal | currency: 'USD' : 'symbol' : '1.2-2'
+              }}</strong></span
+            >
+            <span class="text-text-secondary"
+              >Discount:
+              <strong class="text-text-primary">{{
+                order.discountAmount | currency: 'USD' : 'symbol' : '1.2-2'
+              }}</strong></span
+            >
+            <span class="text-text-secondary"
+              >Total:
+              <strong class="text-text-primary">{{
+                order.totalAmount | currency: 'USD' : 'symbol' : '1.2-2'
+              }}</strong></span
+            >
           </div>
         </article>
       }
     </div>
   }
 </section>
-

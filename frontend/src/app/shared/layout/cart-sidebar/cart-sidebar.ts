@@ -8,7 +8,7 @@ import { CloudinaryImageFrameComponent } from '../../cloudinary-image-frame/clou
   selector: 'app-cart-sidebar',
   standalone: true,
   imports: [CommonModule, CurrencyPipe, CloudinaryImageFrameComponent],
-  templateUrl: './cart-sidebar.html'
+  templateUrl: './cart-sidebar.html',
 })
 export class CartSidebarComponent {
   @Input({ required: true }) isOpen = false;
@@ -24,9 +24,8 @@ export class CartSidebarComponent {
     width: 160,
     height: 160,
     crop: 'limit',
-    radius: 10
+    radius: 10,
   };
-
 
   onCloseRequested(): void {
     this.closeRequested.emit();
@@ -43,5 +42,4 @@ export class CartSidebarComponent {
   onRemoveRequested(productId: string): void {
     this.removeRequested.emit(productId);
   }
-
 }

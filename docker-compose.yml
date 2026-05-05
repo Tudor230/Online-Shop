@@ -8,11 +8,11 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: 1235
     ports:
-      - "5433:5432"
+      - '5433:5432'
     volumes:
       - shop_pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+      test: ['CMD-SHELL', 'pg_isready -d postgres']
       interval: 30s
       timeout: 10s
       retries: 5
@@ -30,7 +30,7 @@ services:
   # --- AUTH SERVICE (Keycloak) ---
   keycloak:
     image: quay.io/keycloak/keycloak:latest
-    command: ["start-dev", "--import-realm"]
+    command: ['start-dev', '--import-realm']
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
@@ -39,7 +39,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
-      - "8081:8080"
+      - '8081:8080'
     volumes:
       - ./infrastructure/keycloak-config:/opt/keycloak/data/import/
     depends_on:

@@ -17,4 +17,3 @@ export class ProductApiService {
     return this.httpClient.get<ProductDetails>(`${this.productsBaseUrl}/${productId}`);
   }
 }
-

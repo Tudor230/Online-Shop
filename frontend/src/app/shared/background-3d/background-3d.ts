@@ -8,7 +8,7 @@ import {
   OnDestroy,
   HostListener,
   Output,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import * as THREE from 'three';
@@ -17,7 +17,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 @Component({
   selector: 'app-background-3d',
   standalone: true,
-  templateUrl: './background-3d.html'
+  templateUrl: './background-3d.html',
 })
 export class Background3dComponent implements AfterViewInit, OnDestroy {
   @ViewChild('deskCanvas', { static: false }) deskCanvasRef!: ElementRef<HTMLCanvasElement>;
@@ -66,8 +66,26 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
 
   // Background parallax configs
   private readonly modelConfigs = [
-    { path: 'models/playstation_5_controller.glb', targetSize: 2.2, x: -4.5, parallaxSpeed: 0.9, scrollOffset: 0.9, baseY: 0, baseRotation: -2.5, baseTiltX: 0 },
-    { path: 'models/razer_huntsman_mini_keyboard.glb', targetSize: 2.4, x: 4.5, parallaxSpeed: 1.1, scrollOffset: 0.99, baseY: -3.0, baseRotation: -4.3, baseTiltX: 0.45 }
+    {
+      path: 'models/playstation_5_controller.glb',
+      targetSize: 2.2,
+      x: -4.5,
+      parallaxSpeed: 0.9,
+      scrollOffset: 0.9,
+      baseY: 0,
+      baseRotation: -2.5,
+      baseTiltX: 0,
+    },
+    {
+      path: 'models/razer_huntsman_mini_keyboard.glb',
+      targetSize: 2.4,
+      x: 4.5,
+      parallaxSpeed: 1.1,
+      scrollOffset: 0.99,
+      baseY: -3.0,
+      baseRotation: -4.3,
+      baseTiltX: 0.45,
+    },
   ];
 
   constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {
@@ -133,8 +151,13 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 256, 256);
       const glowTexture = new THREE.CanvasTexture(canvas2d);
-      
-      this.pcGlowMaterial = new THREE.SpriteMaterial({ map: glowTexture, transparent: true, opacity: 0, depthWrite: false });
+
+      this.pcGlowMaterial = new THREE.SpriteMaterial({
+        map: glowTexture,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+      });
       this.pcGlow = new THREE.Sprite(this.pcGlowMaterial);
       this.pcGlow.scale.set(5, 5, 1);
       this.pcScene.add(this.pcGlow);
@@ -173,7 +196,7 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
     try {
       const gltf = await loader.loadAsync('models/desk_scene.glb');
       const root = gltf.scene;
-      
+
       let deskNode: THREE.Object3D | undefined;
       let pcNode: THREE.Object3D | undefined;
       root.traverse((obj) => {
@@ -184,7 +207,10 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
       if (!deskNode || !pcNode) {
         const allNames: string[] = [];
         root.traverse((obj) => allNames.push(obj.name));
-        console.error('Could not find desk or PC in desk_scene.glb. Names found:', allNames.slice(0, 30));
+        console.error(
+          'Could not find desk or PC in desk_scene.glb. Names found:',
+          allNames.slice(0, 30),
+        );
         return;
       }
 
@@ -229,7 +255,7 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
       // Compute camera limits from the room geometry
       const roomBox = new THREE.Box3().setFromObject(this.deskGroup);
       const roomSize = roomBox.getSize(new THREE.Vector3());
-            this.roomHeight = roomSize.y;
+      this.roomHeight = roomSize.y;
 
       const deskWorldBox = new THREE.Box3().setFromObject(deskNode);
       const deskSize = deskWorldBox.getSize(new THREE.Vector3());
@@ -238,13 +264,13 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
       const fovRad = THREE.MathUtils.degToRad(this.deskCamera!.fov);
       this.cameraDistance = Math.max(
         (roomSize.y * 0.55) / (2 * Math.tan(fovRad / 2)),
-        roomSize.z * 0.4 + 1.0
+        roomSize.z * 0.4 + 1.0,
       );
 
       this.cameraCeilingY = roomBox.max.y - roomSize.y * 0.45;
       this.cameraGroundY = Math.max(
         deskBottomY - deskSize.y * 0.1,
-        roomBox.min.y + roomSize.y * 0.375
+        roomBox.min.y + roomSize.y * 0.375,
       );
       this.deskFrontZ = roomBox.max.z + 0.5;
 
@@ -310,18 +336,18 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
         const camZ = THREE.MathUtils.lerp(this.cameraDistance, this.cameraDistance * 0.8, progress);
         this.deskCamera.position.set(0, camY, camZ);
         this.deskCamera.lookAt(0, 0, 0);
-        
+
         // Desk stays still
         this.deskGroup.position.y = this.deskInitialY;
 
         // PC Transform
         // Smoother transition: use an easing function so it stops gracefully at progress = 1
         const easeProgress = Math.sin((progress * Math.PI) / 2); // easeOutSine
-        
+
         // Scale it bigger
         const currentScale = THREE.MathUtils.lerp(1, 2.0, easeProgress);
         this.pcGroup.scale.setScalar(currentScale);
-        
+
         // Rotate towards us and tilt to reveal the top
         this.pcGroup.rotation.y = this.sceneRotationY + easeProgress * Math.PI;
         this.pcGroup.rotation.x = easeProgress * 0.4;
@@ -332,18 +358,21 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
         this.pcGroup.position.set(
           this.pcStartPos.x,
           this.pcStartPos.y + lift,
-          this.pcStartPos.z + moveZ
+          this.pcStartPos.z + moveZ,
         );
 
         if (this.pcGlow && this.pcGlowMaterial && this.pcGroup) {
           this.pcGlowMaterial.opacity = easeProgress * 0.7;
-          this.pcGlow.scale.set(this.pcGlowBaseScale * currentScale, this.pcGlowBaseScale * currentScale, 1);
-          
+          this.pcGlow.scale.set(
+            this.pcGlowBaseScale * currentScale,
+            this.pcGlowBaseScale * currentScale,
+            1,
+          );
+
           const currentBox = new THREE.Box3().setFromObject(this.pcGroup);
           const center = currentBox.getCenter(new THREE.Vector3());
           this.pcGlow.position.set(center.x, center.y + 0.6, center.z - 2.0);
         }
-
       } else {
         // Phase 2: Camera stays at ground, desk stays fixed
         this.deskCamera.position.set(0, this.cameraGroundY, this.cameraDistance * 0.8);
@@ -356,7 +385,7 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
         const stickyAnimationPx = vh * 0.8;
         const stickyRawProgress = overScroll / stickyAnimationPx;
         const stickyProgress = Math.min(Math.max(stickyRawProgress, 0), 1);
-        
+
         // Easing curve: slow start, fast middle, slow end (sine ease-in-out)
         const easeInOut = (1 - Math.cos(Math.PI * stickyProgress)) / 2;
 
@@ -364,22 +393,18 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
         const targetOffsetX = isDesktop ? 1 : 0;
         const targetOffsetY = isDesktop ? -0.3 : -1.3;
 
-        const currentX = this.pcStartPos.x + (targetOffsetX * easeInOut);
-        const currentY = this.pcStartPos.y + 0.6 + ((targetOffsetY - 0.6) * easeInOut);
+        const currentX = this.pcStartPos.x + targetOffsetX * easeInOut;
+        const currentY = this.pcStartPos.y + 0.6 + (targetOffsetY - 0.6) * easeInOut;
 
         this.pcGroup.scale.setScalar(2.0);
         this.pcGroup.rotation.y = this.sceneRotationY + Math.PI;
         this.pcGroup.rotation.x = 0.4;
-        this.pcGroup.position.set(
-          currentX,
-          currentY,
-          this.pcStartPos.z + 0.5
-        );
+        this.pcGroup.position.set(currentX, currentY, this.pcStartPos.z + 0.5);
 
         if (this.pcGlow && this.pcGlowMaterial && this.pcGroup) {
           this.pcGlowMaterial.opacity = 0.7;
           this.pcGlow.scale.set(this.pcGlowBaseScale * 2.0, this.pcGlowBaseScale * 2.0, 1);
-          
+
           const currentBox = new THREE.Box3().setFromObject(this.pcGroup);
           const center = currentBox.getCenter(new THREE.Vector3());
           this.pcGlow.position.set(center.x, center.y + 0.6, center.z - 2.0);
@@ -392,7 +417,8 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
       const config = this.modelConfigs[index];
       const offsetFromAnchor = (scrollPercent - config.scrollOffset) * pageHeight;
       const worldUnitsPerViewport = 4;
-      model.position.y = config.baseY + (offsetFromAnchor / vh) * config.parallaxSpeed * worldUnitsPerViewport;
+      model.position.y =
+        config.baseY + (offsetFromAnchor / vh) * config.parallaxSpeed * worldUnitsPerViewport;
       model.rotation.y = config.baseRotation + this.scrollY * 0.001 + this.sceneRotationY;
       model.rotation.x = config.baseTiltX ?? 0;
       model.rotation.z = 0;
@@ -402,33 +428,39 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
       if (progress >= 1) {
         const overScroll = this.scrollY - deskSectionPx;
         this.deskCamera.setViewOffset(
-          window.innerWidth, window.innerHeight,
-          0, overScroll,
-          window.innerWidth, window.innerHeight
+          window.innerWidth,
+          window.innerHeight,
+          0,
+          overScroll,
+          window.innerWidth,
+          window.innerHeight,
         );
       } else {
         this.deskCamera.clearViewOffset();
       }
       this.deskRenderer.render(this.deskScene, this.deskCamera);
     }
-    
+
     if (this.bgRenderer && this.bgScene && this.bgCamera) {
       this.bgRenderer.autoClear = false;
       this.bgRenderer.clear();
       this.bgRenderer.render(this.bgScene, this.bgCamera);
       this.bgRenderer.clearDepth();
-      
+
       if (this.pcScene && this.deskCamera) {
         if (progress >= 1) {
           const overScroll = this.scrollY - deskSectionPx;
           const pcStickyPx = vh * this.pcStickyVh;
           const pcOverScroll = Math.max(0, overScroll - pcStickyPx);
-          
+
           if (pcOverScroll > 0) {
             this.deskCamera.setViewOffset(
-              window.innerWidth, window.innerHeight,
-              0, pcOverScroll,
-              window.innerWidth, window.innerHeight
+              window.innerWidth,
+              window.innerHeight,
+              0,
+              pcOverScroll,
+              window.innerWidth,
+              window.innerHeight,
             );
           } else {
             this.deskCamera.clearViewOffset();

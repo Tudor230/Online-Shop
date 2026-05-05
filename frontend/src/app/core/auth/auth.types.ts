@@ -1,7 +1,7 @@
 export enum Role {
   ADMIN = 'ADMIN',
   SUPPORT = 'SUPPORT',
-  CUSTOMER = 'CUSTOMER'
+  CUSTOMER = 'CUSTOMER',
 }
 
 export interface AuthUser {
@@ -10,4 +10,3 @@ export interface AuthUser {
   lastName: string;
   role: Role;
 }
-

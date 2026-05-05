@@ -12,7 +12,7 @@ import { ProductCardComponent } from '../../shared/product-card/product-card';
   selector: 'app-product-grid',
   standalone: true,
   imports: [CommonModule, ProductCardComponent],
-  templateUrl: './product-grid.html'
+  templateUrl: './product-grid.html',
 })
 export class ProductGridComponent {
   private readonly router = inject(Router);
@@ -23,9 +23,9 @@ export class ProductGridComponent {
     this.productApiService.getProducts().pipe(
       map((products) => ({ isLoading: false, products })),
       startWith({ isLoading: true, products: [] as ProductSummary[] }),
-      catchError(() => of({ isLoading: false, products: [] as ProductSummary[] }))
+      catchError(() => of({ isLoading: false, products: [] as ProductSummary[] })),
     ),
-    { initialValue: { isLoading: true, products: [] as ProductSummary[] } }
+    { initialValue: { isLoading: true, products: [] as ProductSummary[] } },
   );
 
   readonly isLoading = computed(() => this.productListState().isLoading);

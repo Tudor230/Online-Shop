@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { AppConfig } from './app-config.types';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AppConfigService {
   private readonly http = inject(HttpClient);

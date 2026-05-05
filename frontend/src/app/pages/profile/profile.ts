@@ -11,7 +11,7 @@ import { Address, Profile } from '../../core/profile/profile.types';
   selector: 'app-profile-page',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './profile.html'
+  templateUrl: './profile.html',
 })
 export class ProfilePageComponent {
   private readonly profileApiService = inject(ProfileApiService);
@@ -39,7 +39,7 @@ export class ProfilePageComponent {
 
   readonly profileForm = this.formBuilder.nonNullable.group({
     firstName: ['', [Validators.required, Validators.maxLength(100)]],
-    lastName: ['', [Validators.required, Validators.maxLength(100)]]
+    lastName: ['', [Validators.required, Validators.maxLength(100)]],
   });
 
   readonly addressForm = this.formBuilder.nonNullable.group({
@@ -50,7 +50,7 @@ export class ProfilePageComponent {
     city: ['', [Validators.required, Validators.maxLength(100)]],
     state: ['', [Validators.required, Validators.maxLength(100)]],
     postalCode: ['', [Validators.required, Validators.maxLength(20)]],
-    country: ['', [Validators.required, Validators.maxLength(100)]]
+    country: ['', [Validators.required, Validators.maxLength(100)]],
   });
 
   readonly addresses = computed(() => this.profile()?.addresses ?? []);
@@ -80,7 +80,7 @@ export class ProfilePageComponent {
     this.profileApiService
       .updateProfile({
         firstName: this.profileForm.controls.firstName.value,
-        lastName: this.profileForm.controls.lastName.value
+        lastName: this.profileForm.controls.lastName.value,
       })
       .pipe(finalize(() => this.isSavingProfile.set(false)))
       .subscribe({
@@ -88,7 +88,7 @@ export class ProfilePageComponent {
           this.applyProfile(profile);
           void this.refreshTokenAfterProfileUpdate();
         },
-        error: () => this.profileSaveError.set('Could not save profile details. Please try again.')
+        error: () => this.profileSaveError.set('Could not save profile details. Please try again.'),
       });
   }
 
@@ -110,7 +110,7 @@ export class ProfilePageComponent {
         city: this.addressForm.controls.city.value,
         state: this.addressForm.controls.state.value,
         postalCode: this.addressForm.controls.postalCode.value,
-        country: this.addressForm.controls.country.value
+        country: this.addressForm.controls.country.value,
       })
       .pipe(finalize(() => this.isCreatingAddress.set(false)))
       .subscribe({
@@ -124,10 +124,13 @@ export class ProfilePageComponent {
             city: '',
             state: '',
             postalCode: '',
-            country: ''
+            country: '',
           });
         },
-        error: () => this.addressCreateError.set('Could not add address. Please verify your fields and retry.')
+        error: () =>
+          this.addressCreateError.set(
+            'Could not add address. Please verify your fields and retry.',
+          ),
       });
   }
 
@@ -144,7 +147,7 @@ export class ProfilePageComponent {
       .pipe(finalize(() => this.shippingUpdateInProgressId.set(null)))
       .subscribe({
         next: (profile) => this.applyProfile(profile),
-        error: () => this.primarySelectionError.set('Could not update primary shipping address.')
+        error: () => this.primarySelectionError.set('Could not update primary shipping address.'),
       });
   }
 
@@ -161,7 +164,7 @@ export class ProfilePageComponent {
       .pipe(finalize(() => this.billingUpdateInProgressId.set(null)))
       .subscribe({
         next: (profile) => this.applyProfile(profile),
-        error: () => this.primarySelectionError.set('Could not update primary billing address.')
+        error: () => this.primarySelectionError.set('Could not update primary billing address.'),
       });
   }
 
@@ -190,7 +193,10 @@ export class ProfilePageComponent {
       .pipe(finalize(() => this.deleteInProgressId.set(null)))
       .subscribe({
         next: (profile) => this.applyProfile(profile),
-        error: () => this.deleteAddressError.set('Could not delete address. Only non-primary addresses can be removed.')
+        error: () =>
+          this.deleteAddressError.set(
+            'Could not delete address. Only non-primary addresses can be removed.',
+          ),
       });
   }
 
@@ -203,7 +209,8 @@ export class ProfilePageComponent {
       .pipe(finalize(() => this.isLoadingProfile.set(false)))
       .subscribe({
         next: (profile) => this.applyProfile(profile),
-        error: () => this.profileError.set('Could not load your profile right now. Please refresh and retry.')
+        error: () =>
+          this.profileError.set('Could not load your profile right now. Please refresh and retry.'),
       });
   }
 
@@ -211,14 +218,16 @@ export class ProfilePageComponent {
     this.profile.set(profile);
     this.profileForm.setValue({
       firstName: profile.firstName,
-      lastName: profile.lastName
+      lastName: profile.lastName,
     });
   }
 
   private async refreshTokenAfterProfileUpdate(): Promise<void> {
     const tokenRefreshed = await this.keycloakAuthService.refreshUserToken();
     if (!tokenRefreshed) {
-      this.profileSaveError.set('Profile saved, but session claims could not be refreshed. Please sign in again.');
+      this.profileSaveError.set(
+        'Profile saved, but session claims could not be refreshed. Please sign in again.',
+      );
     }
   }
 }

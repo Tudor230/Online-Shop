@@ -26,4 +26,3 @@ export interface OrderHistoryEntry {
   totalAmount: number;
   items: OrderHistoryItem[];
 }
-

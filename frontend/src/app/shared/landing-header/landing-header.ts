@@ -7,7 +7,7 @@ import { KeycloakAuthService } from '../../core/auth/keycloak-auth.service';
   selector: 'app-landing-header',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './landing-header.html'
+  templateUrl: './landing-header.html',
 })
 export class LandingHeaderComponent {
   private readonly keycloakAuthService = inject(KeycloakAuthService);

@@ -29,13 +29,19 @@
   </div>
 
   <div class="grid gap-2">
-    <p class="text-xs font-semibold uppercase tracking-wide text-primary-hover">{{ product.category }}</p>
+    <p class="text-xs font-semibold uppercase tracking-wide text-primary-hover">
+      {{ product.category }}
+    </p>
     <h3 class="text-base font-semibold text-text-primary">{{ product.title }}</h3>
-    <p class="text-sm text-text-secondary">★ {{ product.rating | number : '1.1-1' }} ({{ product.reviewCount }})</p>
+    <p class="text-sm text-text-secondary">
+      ★ {{ product.rating | number: '1.1-1' }} ({{ product.reviewCount }})
+    </p>
   </div>
 
   <div class="mt-auto flex items-center justify-between gap-3">
-    <p class="text-lg font-semibold text-text-primary">{{ product.price | currency : 'USD' : 'symbol' : '1.2-2' }}</p>
+    <p class="text-lg font-semibold text-text-primary">
+      {{ product.price | currency: 'USD' : 'symbol' : '1.2-2' }}
+    </p>
     <button
       type="button"
       aria-label="Add to cart"

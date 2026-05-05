@@ -13,7 +13,7 @@ export interface ValueProp {
   selector: 'app-welcome',
   standalone: true,
   imports: [CommonModule, RouterLink, Background3dComponent, LandingHeaderComponent],
-  templateUrl: './welcome.html'
+  templateUrl: './welcome.html',
 })
 export class WelcomeComponent {
   private readonly router = inject(Router);
@@ -27,16 +27,19 @@ export class WelcomeComponent {
   readonly valueProps = signal<readonly ValueProp[]>([
     {
       title: 'Free Delivery',
-      description: 'Complimentary shipping on orders over $50. Arrives in 2–4 business days with tracking.'
+      description:
+        'Complimentary shipping on orders over $50. Arrives in 2–4 business days with tracking.',
     },
     {
       title: '30-Day Free Returns',
-      description: 'Changed your mind? Send it back within 30 days for a full refund—no questions, no hassle.'
+      description:
+        'Changed your mind? Send it back within 30 days for a full refund—no questions, no hassle.',
     },
     {
       title: 'Secure Checkout',
-      description: 'End-to-end encryption keeps your payment details private and protected at every step.'
-    }
+      description:
+        'End-to-end encryption keeps your payment details private and protected at every step.',
+    },
   ]);
 
   @HostListener('window:scroll')

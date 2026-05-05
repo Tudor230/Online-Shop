@@ -19,4 +19,3 @@ export interface ProductDetails {
   imageId: string;
   imageGalleryIds: string[];
 }
-

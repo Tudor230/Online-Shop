@@ -23,19 +23,38 @@ export class CartApiService {
   }
 
   addItem(request: AddCartItemRequest, sessionId?: string): Observable<CartState> {
-    return this.httpClient.post<CartState>(`${this.cartBaseUrl}/items`, request, this.buildOptions(sessionId));
+    return this.httpClient.post<CartState>(
+      `${this.cartBaseUrl}/items`,
+      request,
+      this.buildOptions(sessionId),
+    );
   }
 
-  updateItemQuantity(productId: string, request: UpdateCartItemQuantityRequest, sessionId?: string): Observable<CartState> {
-    return this.httpClient.patch<CartState>(`${this.cartBaseUrl}/items/${productId}`, request, this.buildOptions(sessionId));
+  updateItemQuantity(
+    productId: string,
+    request: UpdateCartItemQuantityRequest,
+    sessionId?: string,
+  ): Observable<CartState> {
+    return this.httpClient.patch<CartState>(
+      `${this.cartBaseUrl}/items/${productId}`,
+      request,
+      this.buildOptions(sessionId),
+    );
   }
 
   removeItem(productId: string, sessionId?: string): Observable<CartState> {
-    return this.httpClient.delete<CartState>(`${this.cartBaseUrl}/items/${productId}`, this.buildOptions(sessionId));
+    return this.httpClient.delete<CartState>(
+      `${this.cartBaseUrl}/items/${productId}`,
+      this.buildOptions(sessionId),
+    );
   }
 
   claimGuestCart(sessionId: string): Observable<CartState> {
-    return this.httpClient.post<CartState>(`${this.cartBaseUrl}/claim`, {}, this.buildOptions(sessionId));
+    return this.httpClient.post<CartState>(
+      `${this.cartBaseUrl}/claim`,
+      {},
+      this.buildOptions(sessionId),
+    );
   }
 
   private buildOptions(sessionId?: string): { headers?: HttpHeaders } {
@@ -44,8 +63,8 @@ export class CartApiService {
     }
     return {
       headers: new HttpHeaders({
-        'X-Session-Id': sessionId
-      })
+        'X-Session-Id': sessionId,
+      }),
     };
   }
 }

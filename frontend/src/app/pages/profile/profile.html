@@ -30,7 +30,9 @@
     <div class="grid gap-6 lg:grid-cols-2">
       <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
         <h2 class="text-lg font-semibold text-text-primary">Personal details</h2>
-        <p class="mt-1 text-sm text-text-secondary">Update your name for checkout and delivery records.</p>
+        <p class="mt-1 text-sm text-text-secondary">
+          Update your name for checkout and delivery records.
+        </p>
 
         <form class="mt-5 space-y-4" [formGroup]="profileForm" (ngSubmit)="saveProfileDetails()">
           <label class="block text-sm text-text-secondary">
@@ -81,9 +83,15 @@
 
       <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
         <h2 class="text-lg font-semibold text-text-primary">Add address</h2>
-        <p class="mt-1 text-sm text-text-secondary">Create billing and shipping options for this account.</p>
+        <p class="mt-1 text-sm text-text-secondary">
+          Create billing and shipping options for this account.
+        </p>
 
-        <form class="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2" [formGroup]="addressForm" (ngSubmit)="addAddress()">
+        <form
+          class="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2"
+          [formGroup]="addressForm"
+          (ngSubmit)="addAddress()"
+        >
           <label class="text-sm text-text-secondary md:col-span-2">
             Recipient name
             <input
@@ -181,7 +189,9 @@
 
     <article class="mt-6 rounded-2xl border border-surface-elevated bg-surface-default p-5">
       <h2 class="text-lg font-semibold text-text-primary">Saved addresses</h2>
-      <p class="mt-1 text-sm text-text-secondary">Choose one primary address for shipping and one for billing.</p>
+      <p class="mt-1 text-sm text-text-secondary">
+        Choose one primary address for shipping and one for billing.
+      </p>
 
       @if (primarySelectionError()) {
         <p class="mt-3 text-sm text-red-300">{{ primarySelectionError() }}</p>
@@ -192,7 +202,9 @@
       }
 
       @if (!addresses().length) {
-        <div class="mt-4 rounded-xl border border-dashed border-surface-elevated p-4 text-sm text-text-secondary">
+        <div
+          class="mt-4 rounded-xl border border-dashed border-surface-elevated p-4 text-sm text-text-secondary"
+        >
           No saved addresses yet.
         </div>
       } @else {
@@ -202,10 +214,14 @@
               <div class="flex flex-wrap items-center gap-2">
                 <h3 class="text-sm font-semibold text-text-primary">{{ address.recipientName }}</h3>
                 @if (isPrimaryShipping(address.id)) {
-                  <span class="rounded-full bg-primary/20 px-2 py-1 text-xs text-primary">Primary shipping</span>
+                  <span class="rounded-full bg-primary/20 px-2 py-1 text-xs text-primary"
+                    >Primary shipping</span
+                  >
                 }
                 @if (isPrimaryBilling(address.id)) {
-                  <span class="rounded-full bg-warning/20 px-2 py-1 text-xs text-warning">Primary billing</span>
+                  <span class="rounded-full bg-warning/20 px-2 py-1 text-xs text-warning"
+                    >Primary billing</span
+                  >
                 }
               </div>
 
@@ -226,7 +242,9 @@
                 <button
                   type="button"
                   (click)="setPrimaryShipping(address)"
-                  [disabled]="isPrimaryShipping(address.id) || shippingUpdateInProgressId() === address.id"
+                  [disabled]="
+                    isPrimaryShipping(address.id) || shippingUpdateInProgressId() === address.id
+                  "
                   class="rounded-full border border-surface-elevated px-3 py-1.5 text-xs font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-default disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   @if (shippingUpdateInProgressId() === address.id) {
@@ -241,7 +259,9 @@
                 <button
                   type="button"
                   (click)="setPrimaryBilling(address)"
-                  [disabled]="isPrimaryBilling(address.id) || billingUpdateInProgressId() === address.id"
+                  [disabled]="
+                    isPrimaryBilling(address.id) || billingUpdateInProgressId() === address.id
+                  "
                   class="rounded-full border border-surface-elevated px-3 py-1.5 text-xs font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-default disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   @if (billingUpdateInProgressId() === address.id) {
@@ -254,13 +274,19 @@
                 </button>
 
                 <span
-                  [attr.title]="canDeleteAddress(address.id) ? 'Delete address' : 'You cannot delete the primary address'"
+                  [attr.title]="
+                    canDeleteAddress(address.id)
+                      ? 'Delete address'
+                      : 'You cannot delete the primary address'
+                  "
                   class="inline-flex"
                 >
                   <button
                     type="button"
                     (click)="deleteAddress(address)"
-                    [disabled]="!canDeleteAddress(address.id) || deleteInProgressId() === address.id"
+                    [disabled]="
+                      !canDeleteAddress(address.id) || deleteInProgressId() === address.id
+                    "
                     class="rounded-full border border-red-400/50 px-3 py-1.5 text-xs font-semibold text-red-300 transition-colors duration-200 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     @if (deleteInProgressId() === address.id) {

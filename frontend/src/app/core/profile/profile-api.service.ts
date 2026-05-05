@@ -6,7 +6,7 @@ import {
   CreateAddressRequest,
   Profile,
   SetPrimaryAddressRequest,
-  UpdateProfileRequest
+  UpdateProfileRequest,
 } from './profile.types';
 
 @Injectable({ providedIn: 'root' })

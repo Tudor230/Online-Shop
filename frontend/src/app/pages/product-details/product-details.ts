@@ -11,7 +11,7 @@ import { ProductDisplayComponent } from '../../shared/product-display/product-di
   selector: 'app-product-details',
   standalone: true,
   imports: [ProductDisplayComponent],
-  templateUrl: './product-details.html'
+  templateUrl: './product-details.html',
 })
 export class ProductDetailsComponent {
   private readonly route = inject(ActivatedRoute);
@@ -32,11 +32,11 @@ export class ProductDetailsComponent {
         return this.productApiService.getProductById(productId).pipe(
           map((product) => ({ isLoading: false, product })),
           startWith({ isLoading: true, product: null as ProductDetails | null }),
-          catchError(() => of({ isLoading: false, product: null as ProductDetails | null }))
+          catchError(() => of({ isLoading: false, product: null as ProductDetails | null })),
         );
-      })
+      }),
     ),
-    { initialValue: { isLoading: true, product: null as ProductDetails | null } }
+    { initialValue: { isLoading: true, product: null as ProductDetails | null } },
   );
 
   readonly isLoading = computed(() => this.productState().isLoading);

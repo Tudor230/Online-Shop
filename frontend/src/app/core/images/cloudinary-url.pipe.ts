@@ -16,13 +16,16 @@ export interface CloudinaryTransformOptions {
 @Pipe({
   name: 'cloudinaryImage',
   standalone: true,
-  pure: true
+  pure: true,
 })
 export class CloudinaryImagePipe implements PipeTransform {
   private readonly appConfigService = inject(AppConfigService);
   private cloudinary: Cloudinary | null = null;
 
-  transform(source: string | null | undefined, options: CloudinaryTransformOptions = {}): CloudinaryImage | null {
+  transform(
+    source: string | null | undefined,
+    options: CloudinaryTransformOptions = {},
+  ): CloudinaryImage | null {
     if (!source?.trim()) {
       return null;
     }
@@ -83,4 +86,3 @@ export class CloudinaryImagePipe implements PipeTransform {
 
 export const CLOUDINARY_LAZY_RESPONSIVE_PLUGINS = [lazyload(), responsive()];
 export const CLOUDINARY_RESPONSIVE_PLUGINS = [responsive()];
-

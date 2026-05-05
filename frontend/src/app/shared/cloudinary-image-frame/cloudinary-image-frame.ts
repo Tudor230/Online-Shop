@@ -1,7 +1,12 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Input, PLATFORM_ID, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CloudinaryModule } from '@cloudinary/ng';
-import { CloudinaryImagePipe, CloudinaryTransformOptions, CLOUDINARY_LAZY_RESPONSIVE_PLUGINS, CLOUDINARY_RESPONSIVE_PLUGINS } from '../../core/images/cloudinary-url.pipe';
+import {
+  CloudinaryImagePipe,
+  CloudinaryTransformOptions,
+  CLOUDINARY_LAZY_RESPONSIVE_PLUGINS,
+  CLOUDINARY_RESPONSIVE_PLUGINS,
+} from '../../core/images/cloudinary-url.pipe';
 import { Plugins } from '@cloudinary/html';
 
 const EMPTY_PLUGINS: Plugins = [];
@@ -34,7 +39,7 @@ const EMPTY_PLUGINS: Plugins = [];
     } @else {
       <ng-container [ngTemplateOutlet]="fallback" />
     }
-  `
+  `,
 })
 export class CloudinaryImageFrameComponent implements OnChanges {
   private readonly platformId = inject(PLATFORM_ID);
@@ -47,7 +52,8 @@ export class CloudinaryImageFrameComponent implements OnChanges {
   @Input() height: number | string | null = null;
   @Input() loading: 'eager' | 'lazy' | null = 'lazy';
   @Input() imageClass = 'h-full w-full object-contain';
-  @Input() fallbackClass = 'grid h-full w-full place-items-center px-3 text-center text-sm font-medium text-text-secondary';
+  @Input() fallbackClass =
+    'grid h-full w-full place-items-center px-3 text-center text-sm font-medium text-text-secondary';
   @Input() fallbackText = 'Image unavailable';
   @Input() useResponsive = false;
   @Input() useLazy = true;
@@ -78,5 +84,3 @@ export class CloudinaryImageFrameComponent implements OnChanges {
     this.imageUnavailable = true;
   }
 }
-
-

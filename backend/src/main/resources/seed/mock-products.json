@@ -8,12 +8,7 @@
     "price": 64.99,
     "description": "Custom matte shell plates with a precision fit that refresh your PS5 look in seconds.",
     "imageName": "product-01.jpg",
-    "imageGalleryNames": [
-      "product-01.jpg",
-      "product-02.jpg",
-      "product-03.jpg",
-      "product-04.jpg"
-    ],
+    "imageGalleryNames": ["product-01.jpg", "product-02.jpg", "product-03.jpg", "product-04.jpg"],
     "availableColors": [
       { "name": "Midnight", "swatch": "text-primary" },
       { "name": "Nebula Violet", "swatch": "primary" },
@@ -29,12 +24,7 @@
     "price": 79.99,
     "description": "Adaptive trigger gaming controller tuned for low-latency sessions and long comfort.",
     "imageName": "product-02.jpg",
-    "imageGalleryNames": [
-      "product-02.jpg",
-      "product-03.jpg",
-      "product-04.jpg",
-      "product-01.jpg"
-    ],
+    "imageGalleryNames": ["product-02.jpg", "product-03.jpg", "product-04.jpg", "product-01.jpg"],
     "availableColors": [
       { "name": "Cosmic Red", "swatch": "warning" },
       { "name": "Starlight Blue", "swatch": "primary-hover" },
@@ -50,12 +40,7 @@
     "price": 69.99,
     "description": "Textured wireless controller with ergonomic grip and responsive thumbstick precision.",
     "imageName": "product-03.jpg",
-    "imageGalleryNames": [
-      "product-03.jpg",
-      "product-04.jpg",
-      "product-01.jpg",
-      "product-02.jpg"
-    ],
+    "imageGalleryNames": ["product-03.jpg", "product-04.jpg", "product-01.jpg", "product-02.jpg"],
     "availableColors": [
       { "name": "Carbon Black", "swatch": "surface-elevated" },
       { "name": "Pulse Blue", "swatch": "primary" },
@@ -71,12 +56,7 @@
     "price": 89.99,
     "description": "Next-gen Joy-Cons with improved haptics and sharper motion tracking for party play.",
     "imageName": "product-04.jpg",
-    "imageGalleryNames": [
-      "product-04.jpg",
-      "product-01.jpg",
-      "product-02.jpg",
-      "product-03.jpg"
-    ],
+    "imageGalleryNames": ["product-04.jpg", "product-01.jpg", "product-02.jpg", "product-03.jpg"],
     "availableColors": [
       { "name": "Neon Left", "swatch": "primary-hover" },
       { "name": "Neon Right", "swatch": "warning" },

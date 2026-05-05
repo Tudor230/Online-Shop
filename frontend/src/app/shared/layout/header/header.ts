@@ -9,7 +9,7 @@ import { CartSidebarComponent } from '../cart-sidebar/cart-sidebar';
   selector: 'app-header',
   standalone: true,
   imports: [RouterLink, CartSidebarComponent],
-  templateUrl: './header.html'
+  templateUrl: './header.html',
 })
 export class HeaderComponent {
   @ViewChild('profileMenu') private profileMenu?: ElementRef<HTMLDetailsElement>;

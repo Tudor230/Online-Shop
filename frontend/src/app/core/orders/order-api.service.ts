@@ -13,4 +13,3 @@ export class OrderApiService {
     return this.httpClient.get<OrderHistoryEntry[]>(`${this.ordersBaseUrl}/history`);
   }
 }
-

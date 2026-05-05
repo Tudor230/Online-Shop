@@ -12,7 +12,7 @@ import { OrderHistoryEntry, OrderStatus } from '../../core/orders/order.types';
   selector: 'app-order-history-page',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './order-history.html'
+  templateUrl: './order-history.html',
 })
 export class OrderHistoryPageComponent {
   private readonly orderApiService = inject(OrderApiService);
@@ -25,7 +25,7 @@ export class OrderHistoryPageComponent {
   private readonly initialOrderHistoryState = {
     isLoading: false,
     orders: [] as OrderHistoryEntry[],
-    error: null as string | null
+    error: null as string | null,
   };
 
   private readonly orderHistoryState = toSignal(
@@ -37,20 +37,24 @@ export class OrderHistoryPageComponent {
 
         return this.orderApiService.getOrderHistory().pipe(
           map((orders) => ({ isLoading: false, orders, error: null as string | null })),
-          startWith({ isLoading: true, orders: [] as OrderHistoryEntry[], error: null as string | null }),
+          startWith({
+            isLoading: true,
+            orders: [] as OrderHistoryEntry[],
+            error: null as string | null,
+          }),
           catchError(() =>
             of({
               isLoading: false,
               orders: [] as OrderHistoryEntry[],
-              error: 'Could not load your order history. Please refresh and try again.'
-            })
-          )
+              error: 'Could not load your order history. Please refresh and try again.',
+            }),
+          ),
         );
-      })
+      }),
     ),
     {
-      initialValue: this.initialOrderHistoryState
-    }
+      initialValue: this.initialOrderHistoryState,
+    },
   );
 
   readonly isLoading = computed(() => this.orderHistoryState().isLoading);
@@ -82,4 +86,3 @@ export class OrderHistoryPageComponent {
     }
   }
 }
-

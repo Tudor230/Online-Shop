@@ -8,7 +8,7 @@ describe('GuestSessionService', () => {
   beforeEach(() => {
     localStorage.removeItem(STORAGE_KEY);
     TestBed.configureTestingModule({
-      providers: [{ provide: PLATFORM_ID, useValue: 'browser' }]
+      providers: [{ provide: PLATFORM_ID, useValue: 'browser' }],
     });
   });
 

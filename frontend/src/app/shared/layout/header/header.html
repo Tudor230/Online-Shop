@@ -1,15 +1,35 @@
-<header class="sticky top-0 z-40 border-b border-surface-elevated bg-surface-glass backdrop-blur-md">
-  <div class="mx-auto grid h-16 w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 md:px-6 lg:px-8">
-    <a routerLink="/" class="inline-flex items-center gap-2 text-text-primary" aria-label="Open homepage">
-      <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">O</span>
+<header
+  class="sticky top-0 z-40 border-b border-surface-elevated bg-surface-glass backdrop-blur-md"
+>
+  <div
+    class="mx-auto grid h-16 w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 md:px-6 lg:px-8"
+  >
+    <a
+      routerLink="/"
+      class="inline-flex items-center gap-2 text-text-primary"
+      aria-label="Open homepage"
+    >
+      <span
+        class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground"
+        >O</span
+      >
       <span class="hidden text-base font-semibold sm:inline">Online Shop</span>
     </a>
 
     <div class="hidden min-w-0 md:flex md:justify-center">
-      <form class="relative w-full max-w-sm lg:max-w-md xl:max-w-lg" role="search" aria-label="Search products">
-        <span class="pointer-events-none absolute inset-y-0 left-3 inline-flex items-center text-text-secondary" aria-hidden="true">
+      <form
+        class="relative w-full max-w-sm lg:max-w-md xl:max-w-lg"
+        role="search"
+        aria-label="Search products"
+      >
+        <span
+          class="pointer-events-none absolute inset-y-0 left-3 inline-flex items-center text-text-secondary"
+          aria-hidden="true"
+        >
           <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
-            <path d="M10 2a8 8 0 1 0 4.9 14.3l4.4 4.4 1.4-1.4-4.4-4.4A8 8 0 0 0 10 2Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z" />
+            <path
+              d="M10 2a8 8 0 1 0 4.9 14.3l4.4 4.4 1.4-1.4-4.4-4.4A8 8 0 0 0 10 2Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"
+            />
           </svg>
         </span>
         <input
@@ -28,7 +48,9 @@
         aria-label="Open wishlist"
       >
         <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
-          <path d="M12 21.35 10.55 20C5.4 15.36 2 12.28 2 8.5A4.5 4.5 0 0 1 6.5 4 5 5 0 0 1 12 7.09 5 5 0 0 1 17.5 4 4.5 4.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z" />
+          <path
+            d="M12 21.35 10.55 20C5.4 15.36 2 12.28 2 8.5A4.5 4.5 0 0 1 6.5 4 5 5 0 0 1 12 7.09 5 5 0 0 1 17.5 4 4.5 4.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z"
+          />
         </svg>
       </button>
 
@@ -39,7 +61,9 @@
         (click)="openCartSidebar()"
       >
         <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current">
-          <path d="M7 18a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm10 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2ZM7.2 14h10.7a2 2 0 0 0 2-1.6L22 5H6.2l-.3-2H2v2h2.3l1.6 10.4A2 2 0 0 0 7.2 17H20v-2H7.2Z" />
+          <path
+            d="M7 18a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm10 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2ZM7.2 14h10.7a2 2 0 0 0 2-1.6L22 5H6.2l-.3-2H2v2h2.3l1.6 10.4A2 2 0 0 0 7.2 17H20v-2H7.2Z"
+          />
         </svg>
         @if (cartFacade.cartCount() > 0) {
           <span
@@ -55,18 +79,28 @@
           <summary
             class="inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
           >
-            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-surface-elevated" aria-hidden="true">
+            <span
+              class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-surface-elevated"
+              aria-hidden="true"
+            >
               <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-current">
-                <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" />
+                <path
+                  d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z"
+                />
               </svg>
             </span>
             <span class="hidden md:inline">{{ authState.displayName() }}</span>
-            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-current text-text-secondary transition group-open:rotate-180">
+            <svg
+              viewBox="0 0 24 24"
+              class="h-3.5 w-3.5 fill-current text-text-secondary transition group-open:rotate-180"
+            >
               <path d="M7 10l5 5 5-5z" />
             </svg>
           </summary>
 
-          <div class="absolute right-0 top-[calc(100%+0.5rem)] z-50 w-44 rounded-xl border border-surface-elevated bg-surface-default p-1 shadow-lg">
+          <div
+            class="absolute right-0 top-[calc(100%+0.5rem)] z-50 w-44 rounded-xl border border-surface-elevated bg-surface-default p-1 shadow-lg"
+          >
             <a
               routerLink="/profile"
               class="block rounded-lg px-3 py-2 text-sm text-text-primary transition-colors duration-150 hover:bg-surface-elevated"

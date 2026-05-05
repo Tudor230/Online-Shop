@@ -5,7 +5,6 @@ import { RouterLink } from '@angular/router';
   selector: 'app-footer',
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './footer.html'
+  templateUrl: './footer.html',
 })
 export class FooterComponent {}
-

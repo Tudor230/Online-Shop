@@ -7,7 +7,6 @@ import { HeaderComponent } from '../header/header';
   selector: 'app-common-layout',
   standalone: true,
   imports: [HeaderComponent, RouterOutlet, FooterComponent],
-  templateUrl: './common-layout.html'
+  templateUrl: './common-layout.html',
 })
 export class CommonLayoutComponent {}
-

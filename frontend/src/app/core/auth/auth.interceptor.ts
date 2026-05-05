@@ -13,8 +13,8 @@ export const authInterceptor: HttpInterceptorFn = (request, next) => {
   return next(
     request.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+        Authorization: `Bearer ${token}`,
+      },
+    }),
   );
 };

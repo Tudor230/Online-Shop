@@ -12,7 +12,11 @@
     <div
       class="flex min-h-64 flex-col items-center justify-center gap-3 rounded-2xl border border-surface-elevated bg-surface-default p-8 text-center"
     >
-      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-surface-elevated text-text-secondary">◎</div>
+      <div
+        class="flex h-12 w-12 items-center justify-center rounded-full bg-surface-elevated text-text-secondary"
+      >
+        ◎
+      </div>
       <p class="text-base font-semibold text-text-primary">Product not found</p>
       <p class="text-sm text-text-secondary">This item may have moved or no longer exists.</p>
       <button
@@ -36,7 +40,9 @@
 
     <article class="grid items-start gap-6 md:grid-cols-2">
       <div class="grid gap-4">
-        <div class="aspect-[5/4] overflow-hidden rounded-2xl border border-surface-elevated bg-surface-default">
+        <div
+          class="aspect-[5/4] overflow-hidden rounded-2xl border border-surface-elevated bg-surface-default"
+        >
           <app-cloudinary-image-frame
             [source]="selectedImageId"
             [alt]="product.title"
@@ -81,8 +87,12 @@
 
       <div class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
         <h1 class="text-2xl font-semibold text-text-primary">{{ product.title }}</h1>
-        <p class="mt-3 text-sm text-text-secondary">★ {{ product.rating | number : '1.1-1' }} · {{ product.reviewCount }} reviews</p>
-        <p class="mt-4 text-2xl font-semibold text-text-primary">{{ product.price | currency : 'USD' : 'symbol' : '1.2-2' }}</p>
+        <p class="mt-3 text-sm text-text-secondary">
+          ★ {{ product.rating | number: '1.1-1' }} · {{ product.reviewCount }} reviews
+        </p>
+        <p class="mt-4 text-2xl font-semibold text-text-primary">
+          {{ product.price | currency: 'USD' : 'symbol' : '1.2-2' }}
+        </p>
         <p class="mt-4 text-sm leading-6 text-text-secondary">{{ product.description }}</p>
 
         <div class="mt-6 flex items-center gap-3">
@@ -116,7 +126,9 @@
             </div>
             <div>
               <p class="text-sm font-semibold text-text-primary">Secure Checkout</p>
-              <p class="text-sm text-text-secondary">Your payment information is encrypted and safe.</p>
+              <p class="text-sm text-text-secondary">
+                Your payment information is encrypted and safe.
+              </p>
             </div>
           </div>
         </div>

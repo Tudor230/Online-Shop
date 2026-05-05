@@ -8,10 +8,9 @@ import { CloudinaryImageFrameComponent } from '../cloudinary-image-frame/cloudin
   selector: 'app-product-card',
   standalone: true,
   imports: [CommonModule, CurrencyPipe, CloudinaryImageFrameComponent],
-  templateUrl: './product-card.html'
+  templateUrl: './product-card.html',
 })
 export class ProductCardComponent {
-
   @Input({ required: true }) product!: ProductSummary;
   @Output() selected = new EventEmitter<void>();
   @Output() addToCart = new EventEmitter<void>();
@@ -21,9 +20,8 @@ export class ProductCardComponent {
     width: 560,
     height: 420,
     crop: 'limit',
-    radius: 16
+    radius: 16,
   };
-
 
   onSelected(): void {
     this.selected.emit();

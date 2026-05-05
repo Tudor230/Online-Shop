@@ -21,7 +21,7 @@ export class KeycloakAuthService {
 
   constructor(
     @Inject(PLATFORM_ID) private readonly platformId: object,
-    private readonly authState: AuthStateService
+    private readonly authState: AuthStateService,
   ) {}
 
   async init(): Promise<void> {
@@ -35,7 +35,7 @@ export class KeycloakAuthService {
     const initOptions: KeycloakInitOptions = {
       onLoad: 'check-sso',
       checkLoginIframe: false,
-      pkceMethod: 'S256'
+      pkceMethod: 'S256',
     };
 
     const authenticated = await instance.init(initOptions);
@@ -109,7 +109,7 @@ export class KeycloakAuthService {
     this.keycloak = new KeycloakCtor({
       url: keycloakConfig.url,
       realm: keycloakConfig.realm,
-      clientId: keycloakConfig.clientId
+      clientId: keycloakConfig.clientId,
     });
 
     return this.keycloak;
@@ -135,7 +135,7 @@ export class KeycloakAuthService {
       email: token.email ?? '',
       firstName: token.given_name ?? '',
       lastName: token.family_name ?? '',
-      role
+      role,
     };
   }
 
@@ -155,4 +155,3 @@ export class KeycloakAuthService {
     return mappedRoles[0];
   }
 }
-

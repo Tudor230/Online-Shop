@@ -18,7 +18,9 @@ export class CartFacadeService {
   readonly cartState = signal<CartState>({ items: [], totalItems: 0 });
   readonly items = computed<CartItem[]>(() => this.cartState().items);
   readonly cartCount = computed(() => this.cartState().totalItems);
-  readonly totalPrice = computed(() => this.items().reduce((sum, item) => sum + item.quantity * item.price, 0));
+  readonly totalPrice = computed(() =>
+    this.items().reduce((sum, item) => sum + item.quantity * item.price, 0),
+  );
   private wasAuthenticated = false;
   private mutationQueue: Promise<void> = Promise.resolve();
 
@@ -33,7 +35,9 @@ export class CartFacadeService {
   }
 
   addItem(productId: string, quantity = 1): void {
-    this.applyMutation((sessionId) => this.cartApiService.addItem({ productId, quantity }, sessionId));
+    this.applyMutation((sessionId) =>
+      this.cartApiService.addItem({ productId, quantity }, sessionId),
+    );
   }
 
   incrementItemQuantity(productId: string): void {
@@ -62,7 +66,9 @@ export class CartFacadeService {
     if (quantity < 1) {
       throw new Error('Quantity must be at least 1');
     }
-    this.applyMutation((sessionId) => this.cartApiService.updateItemQuantity(productId, { quantity }, sessionId));
+    this.applyMutation((sessionId) =>
+      this.cartApiService.updateItemQuantity(productId, { quantity }, sessionId),
+    );
   }
 
   removeItem(productId: string): void {
@@ -84,7 +90,9 @@ export class CartFacadeService {
     }
 
     try {
-      const cartState = await firstValueFrom(this.cartApiService.getCart(this.getGuestSessionIfNeeded()));
+      const cartState = await firstValueFrom(
+        this.cartApiService.getCart(this.getGuestSessionIfNeeded()),
+      );
       this.cartState.set(cartState);
     } catch {
       this.cartState.set({ items: [], totalItems: 0 });
@@ -99,7 +107,9 @@ export class CartFacadeService {
       const guestSessionId = this.guestSessionService.getSessionId();
       if (guestSessionId) {
         try {
-          const cartState = await firstValueFrom(this.cartApiService.claimGuestCart(guestSessionId));
+          const cartState = await firstValueFrom(
+            this.cartApiService.claimGuestCart(guestSessionId),
+          );
           this.cartState.set(cartState);
           this.guestSessionService.clearSessionId();
           return;
