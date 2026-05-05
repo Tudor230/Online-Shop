@@ -8,7 +8,7 @@
 >
   <button
     type="button"
-    aria-label="Save to wishlist"
+    [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'"
     [attr.aria-pressed]="isWishlisted"
     class="absolute right-4 top-4 z-10 grid h-10 w-10 cursor-pointer place-items-center rounded-full bg-surface-default transition-all duration-200"
     [ngClass]="
