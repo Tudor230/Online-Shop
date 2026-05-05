@@ -59,7 +59,7 @@ public class OrderService {
         return new OrderHistoryItemDto(
                 item.getProduct().getSlug(),
                 item.getProduct().getName(),
-                item.getProduct().getImagePlaceholder(),
+                item.getProduct().getImageId(),
                 item.getQuantity(),
                 item.getUnitPriceAtPurchase(),
                 lineTotal

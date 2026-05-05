@@ -10,7 +10,7 @@ export type OrderStatus =
 export interface OrderHistoryItem {
   productSlug: string;
   title: string;
-  imagePlaceholder: string;
+  imageId: string;
   quantity: number;
   unitPrice: number;
   lineTotal: number;

@@ -9,7 +9,7 @@ public record ProductSummaryDto(
         double rating,
         int reviewCount,
         BigDecimal price,
-        String imagePlaceholder
+        String imageId
 ) {
 }
 

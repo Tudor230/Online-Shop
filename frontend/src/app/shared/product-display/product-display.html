@@ -36,20 +36,26 @@
 
     <article class="grid items-start gap-6 md:grid-cols-2">
       <div class="grid gap-4">
-        <div
-          class="aspect-[5/4] rounded-2xl border border-surface-elevated bg-surface-default p-4 grid place-items-center text-text-secondary"
-          role="img"
-          [attr.aria-label]="selectedImage"
-        >
-          <span class="text-base font-medium">{{ selectedImage }}</span>
+        <div class="aspect-[5/4] overflow-hidden rounded-2xl border border-surface-elevated bg-surface-default">
+          <app-cloudinary-image-frame
+            [source]="selectedImageId"
+            [alt]="product.title"
+            [options]="heroImageOptions"
+            width="1200"
+            height="960"
+            [useResponsive]="true"
+            imageClass="h-full w-full object-contain"
+            fallbackClass="grid h-full w-full place-items-center text-base font-medium text-text-secondary"
+            fallbackText="Image unavailable"
+          />
         </div>
 
         <div class="grid grid-cols-4 gap-3">
-          @for (image of product.imageGallery; track image; let index = $index) {
+          @for (imageId of product.imageGalleryIds; track imageId; let index = $index) {
             <button
               type="button"
               [attr.aria-label]="'Select image ' + (index + 1)"
-              class="aspect-[4/3] rounded-xl border bg-surface-default px-2 py-2 text-xs transition-colors duration-200"
+              class="aspect-[4/3] overflow-hidden rounded-xl border bg-surface-default px-2 py-2 text-xs transition-colors duration-200"
               [ngClass]="
                 selectedImageIndex === index
                   ? 'border-primary text-text-primary'
@@ -57,7 +63,17 @@
               "
               (click)="onImageSelected(index)"
             >
-              {{ image }}
+              <app-cloudinary-image-frame
+                [source]="imageId"
+                [alt]="product.title + ' image ' + (index + 1)"
+                [options]="thumbnailImageOptions"
+                width="240"
+                height="180"
+                [useLazy]="true"
+                imageClass="h-full w-full rounded-md object-contain"
+                fallbackClass="grid h-full w-full place-items-center rounded-md bg-surface-elevated text-[11px] font-medium text-text-secondary"
+                fallbackText="No image"
+              />
             </button>
           }
         </div>

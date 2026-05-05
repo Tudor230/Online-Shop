@@ -40,3 +40,5 @@ build/
 /schema/schema.sql
 /.agents
 .opencode/
+
+**/.env
