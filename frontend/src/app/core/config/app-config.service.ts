@@ -1,15 +1,15 @@
-import {Injectable, inject, PLATFORM_ID} from '@angular/core';
-import {isPlatformBrowser} from '@angular/common';
-import {HttpClient} from '@angular/common/http';
-import {firstValueFrom} from 'rxjs';
-import {AppConfig} from './app-config.types';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { AppConfig } from './app-config.types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppConfigService {
-  private http = inject(HttpClient);
-  private platformId = inject(PLATFORM_ID);
+  private readonly http = inject(HttpClient);
+  private readonly platformId = inject(PLATFORM_ID);
   private config: AppConfig | undefined;
 
   async loadConfig(): Promise<void> {
