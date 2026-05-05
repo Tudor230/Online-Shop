@@ -158,9 +158,6 @@ public class ProductCatalogSeeder implements ApplicationRunner {
 
         String basePublicId = stripExtension(imageName);
         String fullPublicId = CLOUDINARY_SEED_FOLDER + "/" + basePublicId;
-        if (isAlreadyUploaded(cloudinary, fullPublicId)) {
-            return fullPublicId;
-        }
 
         try (InputStream imageStream = imageResource.getInputStream()) {
             cloudinary.uploader().upload(imageStream.readAllBytes(), ObjectUtils.asMap(
@@ -175,18 +172,6 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         }
     }
 
-    private boolean isAlreadyUploaded(Cloudinary cloudinary, String publicId) {
-        try {
-            cloudinary.api().resource(publicId, ObjectUtils.asMap("resource_type", "image"));
-            return true;
-        } catch (Exception ex) {
-            String errorMessage = ex.getMessage();
-            if (errorMessage != null && errorMessage.toLowerCase().contains("not found")) {
-                return false;
-            }
-            throw new IllegalStateException("Failed to verify existing Cloudinary image: " + publicId, ex);
-        }
-    }
 
     private String stripExtension(String fileName) {
         int dotIndex = fileName.lastIndexOf('.');

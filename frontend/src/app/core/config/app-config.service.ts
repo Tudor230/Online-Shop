@@ -23,7 +23,8 @@ export class AppConfigService {
     }
 
     try {
-      const config$ = this.http.get<AppConfig>('/assets/config.json');
+      const configUrl = new URL('assets/config.json', document.baseURI).toString();
+      const config$ = this.http.get<AppConfig>(configUrl);
       this.config = await firstValueFrom(config$);
     } catch {
       this.config = { cloudinaryCloudName: '' };

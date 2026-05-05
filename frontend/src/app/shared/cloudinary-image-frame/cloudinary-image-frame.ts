@@ -2,6 +2,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Input, PLATFORM_ID, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CloudinaryModule } from '@cloudinary/ng';
 import { CloudinaryImagePipe, CloudinaryTransformOptions, CLOUDINARY_LAZY_RESPONSIVE_PLUGINS, CLOUDINARY_RESPONSIVE_PLUGINS } from '../../core/images/cloudinary-url.pipe';
+import { Plugins } from '@cloudinary/html';
+
+const EMPTY_PLUGINS: Plugins = [];
 
 @Component({
   selector: 'app-cloudinary-image-frame',
@@ -57,7 +60,7 @@ export class CloudinaryImageFrameComponent implements OnChanges {
 
   get resolvedPlugins() {
     if (!isPlatformBrowser(this.platformId)) {
-      return [];
+      return EMPTY_PLUGINS;
     }
 
     if (this.useResponsive) {
@@ -68,7 +71,7 @@ export class CloudinaryImageFrameComponent implements OnChanges {
       return CLOUDINARY_LAZY_RESPONSIVE_PLUGINS;
     }
 
-    return [];
+    return EMPTY_PLUGINS;
   }
 
   onImageError(): void {
