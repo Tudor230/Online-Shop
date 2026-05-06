@@ -22,8 +22,15 @@ export interface OrderHistoryEntry {
   status: OrderStatus;
   createdAt: string;
   subtotal: number;
+  shippingAmount: number;
+  taxAmount: number;
   discountAmount: number;
   totalAmount: number;
+  currencyCode: string;
   items: OrderHistoryItem[];
 }
+
+export const canPayOrder = (order: OrderHistoryEntry): boolean => order.status === 'PENDING';
+
+export const canCancelOrder = (order: OrderHistoryEntry): boolean => order.status === 'PENDING';
 

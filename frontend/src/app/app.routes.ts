@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
 import { profileAuthGuard } from './core/auth/profile-auth.guard';
+import { CheckoutCancelPageComponent } from './pages/checkout-cancel/checkout-cancel';
+import { CheckoutPageComponent } from './pages/checkout/checkout';
+import { CheckoutSuccessPageComponent } from './pages/checkout-success/checkout-success';
 import { ProductDetailsComponent } from './pages/product-details/product-details';
 import { ProductGridComponent } from './pages/product-grid/product-grid';
 import { WelcomeComponent } from './pages/welcome/welcome';
@@ -53,6 +56,21 @@ export const routes: Routes = [
         path: 'orders',
         canActivate: [profileAuthGuard],
         component: OrderHistoryPageComponent
+      },
+      {
+        path: 'checkout',
+        canActivate: [profileAuthGuard],
+        component: CheckoutPageComponent
+      },
+      {
+        path: 'checkout/success',
+        canActivate: [profileAuthGuard],
+        component: CheckoutSuccessPageComponent
+      },
+      {
+        path: 'checkout/cancel',
+        canActivate: [profileAuthGuard],
+        component: CheckoutCancelPageComponent
       }
     ]
   }

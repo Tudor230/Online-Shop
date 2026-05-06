@@ -22,6 +22,7 @@ export class HeaderComponent {
   readonly authState = inject(AuthStateService);
   readonly cartFacade = inject(CartFacadeService);
   readonly searchControl = new FormControl('', { nonNullable: true });
+  isCheckoutInProgress = false;
 
   private readonly searchTermFromRoute = toSignal(
     this.router.events.pipe(
@@ -89,5 +90,27 @@ export class HeaderComponent {
 
   removeCartItem(productId: string): void {
     this.cartFacade.removeItem(productId);
+  }
+
+  async startCheckout(): Promise<void> {
+    if (this.isCheckoutInProgress) {
+      return;
+    }
+
+    if (!this.authState.isAuthenticated()) {
+      await this.login();
+      return;
+    }
+
+    this.isCheckoutInProgress = true;
+    this.closeCartSidebar();
+    try {
+      const didNavigate = await this.router.navigate(['/checkout']);
+      if (!didNavigate) {
+        this.isCheckoutInProgress = false;
+      }
+    } catch {
+      this.isCheckoutInProgress = false;
+    }
   }
 }

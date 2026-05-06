@@ -1,5 +1,6 @@
 package org.endava.onlineshop.service;
 
+import lombok.RequiredArgsConstructor;
 import org.endava.onlineshop.exception.BadRequestException;
 import org.endava.onlineshop.model.dto.cart.AddCartItemRequestDto;
 import org.endava.onlineshop.model.dto.cart.CartItemDto;
@@ -11,37 +12,42 @@ import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.repository.CartItemRepository;
 import org.endava.onlineshop.repository.ProductRepository;
 import org.endava.onlineshop.repository.ShoppingCartRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class CartService {
+
+    private static final int CURRENCY_SCALE = 2;
 
     private final ShoppingCartRepository shoppingCartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
 
-    public CartService(
-            ShoppingCartRepository shoppingCartRepository,
-            CartItemRepository cartItemRepository,
-            ProductRepository productRepository
-    ) {
-        this.shoppingCartRepository = shoppingCartRepository;
-        this.cartItemRepository = cartItemRepository;
-        this.productRepository = productRepository;
-    }
+    @Value("${stripe.currency:RON}")
+    private String stripeCurrency;
+
+    @Value("${stripe.vat-rate:0.19}")
+    private BigDecimal vatRate;
+
+    @Value("${stripe.flat-shipping-amount:25.00}")
+    private BigDecimal flatShippingAmount;
 
     @Transactional(readOnly = true)
     public CartResponseDto getCart(User user, String sessionId) {
         CartOwner owner = resolveOwner(user, sessionId);
         return findCart(owner)
                 .map(this::toResponse)
-                .orElse(new CartResponseDto(List.of(), 0));
+                .orElse(emptyCartResponse());
     }
 
     @Transactional
@@ -202,7 +208,8 @@ public class CartService {
 
 
     private CartResponseDto toResponse(ShoppingCart cart) {
-        List<CartItemDto> items = cartItemRepository.findByCartIdOrderByCreatedAtAsc(cart.getId()).stream()
+        List<CartItem> cartItems = cartItemRepository.findByCartIdOrderByCreatedAtAsc(cart.getId());
+        List<CartItemDto> items = cartItems.stream()
                 .map(item -> new CartItemDto(
                         item.getProduct().getSlug(),
                         item.getProduct().getName(),
@@ -212,9 +219,58 @@ public class CartService {
                 ))
                 .toList();
         int totalItems = items.stream().mapToInt(CartItemDto::quantity).sum();
-        return new CartResponseDto(items, totalItems);
+        PricingSnapshot pricing = calculatePricing(cartItems);
+        return new CartResponseDto(
+                items,
+                totalItems,
+                pricing.subtotal(),
+                pricing.shippingAmount(),
+                pricing.taxAmount(),
+                pricing.totalAmount(),
+                normalizedCurrencyCode()
+        );
+    }
+
+    private CartResponseDto emptyCartResponse() {
+        BigDecimal zero = BigDecimal.ZERO.setScale(CURRENCY_SCALE, RoundingMode.HALF_UP);
+        return new CartResponseDto(List.of(), 0, zero, zero, zero, zero, normalizedCurrencyCode());
+    }
+
+    private PricingSnapshot calculatePricing(List<CartItem> cartItems) {
+        BigDecimal subtotal = BigDecimal.ZERO;
+        for (CartItem cartItem : cartItems) {
+            BigDecimal unitPrice = cartItem.getProduct().getBasePrice().setScale(CURRENCY_SCALE, RoundingMode.HALF_UP);
+            subtotal = subtotal.add(unitPrice.multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+        }
+
+        subtotal = subtotal.setScale(CURRENCY_SCALE, RoundingMode.HALF_UP);
+        if (subtotal.compareTo(BigDecimal.ZERO) == 0) {
+            BigDecimal zero = BigDecimal.ZERO.setScale(CURRENCY_SCALE, RoundingMode.HALF_UP);
+            return new PricingSnapshot(zero, zero, zero, zero);
+        }
+
+        BigDecimal shippingAmount = flatShippingAmount.setScale(CURRENCY_SCALE, RoundingMode.HALF_UP);
+        BigDecimal taxAmount = subtotal.multiply(vatRate).setScale(CURRENCY_SCALE, RoundingMode.HALF_UP);
+        BigDecimal totalAmount = subtotal.add(shippingAmount).add(taxAmount).setScale(CURRENCY_SCALE, RoundingMode.HALF_UP);
+        return new PricingSnapshot(subtotal, shippingAmount, taxAmount, totalAmount);
+    }
+
+    private String normalizedCurrencyCode() {
+        return currencyCodeOrDefault(stripeCurrency);
+    }
+
+    private String currencyCodeOrDefault(String currencyCode) {
+        return currencyCode == null ? "RON" : currencyCode.trim().toUpperCase();
     }
 
     private record CartOwner(UUID userId, String sessionId) {
+    }
+
+    private record PricingSnapshot(
+            BigDecimal subtotal,
+            BigDecimal shippingAmount,
+            BigDecimal taxAmount,
+            BigDecimal totalAmount
+    ) {
     }
 }

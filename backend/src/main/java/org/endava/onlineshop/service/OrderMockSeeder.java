@@ -110,11 +110,17 @@ public class OrderMockSeeder implements ApplicationRunner {
             }
 
             BigDecimal discount = template.discountAmount();
+            BigDecimal shippingAmount = BigDecimal.valueOf(25.00).setScale(2);
+            BigDecimal taxAmount = subtotal.multiply(BigDecimal.valueOf(0.19)).setScale(2, java.math.RoundingMode.HALF_UP);
             BigDecimal total = subtotal.subtract(discount).max(BigDecimal.ZERO);
+            total = total.add(shippingAmount).add(taxAmount);
 
             order.setSubtotal(subtotal);
             order.setDiscountAmount(discount);
+            order.setShippingAmount(shippingAmount);
+            order.setTaxAmount(taxAmount);
             order.setTotalAmount(total);
+            order.setCurrencyCode("RON");
 
             OrderStatusHistory historyItem = new OrderStatusHistory();
             historyItem.setStatus(template.status());

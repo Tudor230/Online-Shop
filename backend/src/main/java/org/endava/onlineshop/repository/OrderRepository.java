@@ -13,5 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     List<Order> findByUserIdOrderByCreatedAtDesc(UUID userId);
 
     boolean existsByUserId(UUID userId);
+
+    java.util.Optional<Order> findByStripeCheckoutSessionId(String stripeCheckoutSessionId);
 }
 

@@ -113,8 +113,10 @@
   [isOpen]="cartFacade.isSidebarOpen()"
   [items]="cartFacade.items()"
   [totalPrice]="cartFacade.totalPrice()"
+  [isCheckoutInProgress]="isCheckoutInProgress"
   (closeRequested)="closeCartSidebar()"
   (incrementRequested)="incrementCartItem($event)"
   (decrementRequested)="decrementCartItem($event)"
   (removeRequested)="removeCartItem($event)"
+  (checkoutRequested)="startCheckout()"
 />
