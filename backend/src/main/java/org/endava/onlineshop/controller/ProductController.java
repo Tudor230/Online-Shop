@@ -24,7 +24,7 @@ public class ProductController {
     @GetMapping
     public ProductSearchPageDto getProducts(
         @RequestParam(name = "q", required = false) String query,
-        @PageableDefault(size = 24) Pageable pageable
+        @PageableDefault(size = 25) Pageable pageable
     ) {
         return productService.getProducts(query, pageable);
     }

@@ -37,18 +37,24 @@
     <div class="mb-4 flex flex-col gap-3 rounded-2xl border border-surface-elevated bg-surface-default px-4 py-3 text-sm text-text-secondary md:flex-row md:items-center md:justify-between">
       <p class="font-medium text-text-primary">{{ resultRangeLabel() }}</p>
 
-      <label class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <span>Show:</span>
-        <select
-          class="rounded-full border border-surface-elevated bg-surface-default px-3 py-1 text-sm text-text-primary"
-          [value]="pageSize()"
-          (change)="changePageSize($any($event.target).value)"
-        >
-          @for (option of pageSizeOptions; track option) {
-            <option [value]="option">{{ option }}</option>
-          }
-        </select>
-      </label>
+        @for (option of pageSizeOptions; track option) {
+          <button
+            type="button"
+            class="min-w-11 rounded-full border px-3 py-1 text-sm transition-colors duration-200"
+            [ngClass]="
+              option === pageSize()
+                ? 'border-primary bg-primary text-white'
+                : 'border-surface-elevated text-text-primary hover:bg-surface-elevated'
+            "
+            [attr.aria-pressed]="option === pageSize()"
+            (click)="changePageSize(option)"
+          >
+            {{ option }}
+          </button>
+        }
+      </div>
     </div>
 
     <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5">

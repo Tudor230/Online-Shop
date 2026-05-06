@@ -10,7 +10,7 @@ export class ProductApiService {
   private readonly productsBaseUrl = `${keycloakConfig.backendApiUrl}/products`;
 
   getProducts(options: { query?: string; page?: number; size?: number } = {}): Observable<ProductSearchPage> {
-    const { query, page = 1, size = 24 } = options;
+    const { query, page = 1, size = 25 } = options;
     let params = new HttpParams().set('page', String(page)).set('size', String(size));
 
     const trimmedQuery = query?.trim() ?? '';

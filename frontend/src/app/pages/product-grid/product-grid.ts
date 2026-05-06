@@ -27,8 +27,8 @@ interface SearchParams {
   templateUrl: './product-grid.html'
 })
 export class ProductGridComponent {
-  private static readonly DEFAULT_PAGE_SIZE = 24;
-  private static readonly PAGE_SIZE_OPTIONS = [24, 48, 96] as const;
+  private static readonly DEFAULT_PAGE_SIZE = 25;
+  private static readonly PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
   private static readonly PAGE_LINK_WINDOW = 1;
 
   private readonly route = inject(ActivatedRoute);
@@ -74,12 +74,12 @@ export class ProductGridComponent {
   readonly hasError = computed(() => this.productListState().hasError);
   readonly products = computed(() => this.productListState().result.items);
   readonly isSearchActive = computed(() => this.searchParams().query.length > 0);
-  readonly currentPage = computed(() => this.productListState().result.page || 1);
+  readonly currentPage = computed(() => this.searchParams().page);
   readonly totalPages = computed(() => this.productListState().result.totalPages);
   readonly hasPreviousPage = computed(() => this.productListState().result.hasPrevious);
   readonly hasNextPage = computed(() => this.productListState().result.hasNext);
   readonly totalItems = computed(() => this.productListState().result.totalItems);
-  readonly pageSize = computed(() => this.productListState().result.size || this.searchParams().size);
+  readonly pageSize = computed(() => this.searchParams().size);
   readonly pageSizeOptions = ProductGridComponent.PAGE_SIZE_OPTIONS;
   readonly shouldShowPagination = computed(() => this.totalPages() > 1);
   readonly resultRangeLabel = computed(() => {
@@ -135,8 +135,8 @@ export class ProductGridComponent {
     this.goToPageNumber(pageLink);
   }
 
-  changePageSize(rawSize: string): void {
-    const size = this.normalizePageSize(Number(rawSize));
+  changePageSize(rawSize: number): void {
+    const size = this.normalizePageSize(rawSize);
     this.goToPage(1, size);
   }
 
