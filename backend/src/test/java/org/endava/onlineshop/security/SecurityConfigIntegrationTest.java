@@ -68,6 +68,12 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
+    void shouldAllowAnonymousAccessToProductSearchViaQueryParameter() throws Exception {
+        mockMvc.perform(get("/api/products").param("q", "wireless mouse"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void shouldAllowAnonymousAccessToCartEndpoints() throws Exception {
         mockMvc.perform(get("/api/cart"))
                 .andExpect(status().isNotFound());

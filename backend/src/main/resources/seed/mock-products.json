@@ -1,7 +1,7 @@
 [
   {
     "id": "ps5-console-shell",
-    "category": "Console Mods",
+    "category": "Electronics > Video Games > PlayStation > Console Mods",
     "title": "PS5 Console Shell",
     "rating": 4.8,
     "reviewCount": 312,
@@ -22,7 +22,7 @@
   },
   {
     "id": "ps5-controller",
-    "category": "Controllers",
+    "category": "Electronics > Video Games > PlayStation > Controllers",
     "title": "PS5 Controller",
     "rating": 4.7,
     "reviewCount": 524,
@@ -43,7 +43,7 @@
   },
   {
     "id": "xbox-controller",
-    "category": "Controllers",
+    "category": "Electronics > Video Games > Xbox > Controllers",
     "title": "Xbox Controller",
     "rating": 4.6,
     "reviewCount": 409,
@@ -64,7 +64,7 @@
   },
   {
     "id": "switch-2-joy-cons",
-    "category": "Handheld Gear",
+    "category": "Electronics > Video Games > Nintendo > Handheld Gear",
     "title": "Switch 2 Joy-Cons",
     "rating": 4.9,
     "reviewCount": 268,

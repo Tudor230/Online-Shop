@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.util.UUID;
 
@@ -29,10 +30,13 @@ public class Category extends BaseAuditEntity {
     @Column(name = "parent_id")
     private UUID parentId;
 
-    @Column(name = "name", nullable = false, unique = true, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "slug", nullable = false, unique = true, length = 120)
+    @Column(name = "slug", nullable = false, length = 120)
     private String slug;
 
+    @Column(name = "path", columnDefinition = "ltree", nullable = false, unique = true, insertable = false, updatable = false)
+    @ColumnTransformer(read = "path::text")
+    private String path;
 }

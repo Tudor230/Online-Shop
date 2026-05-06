@@ -1,9 +1,13 @@
 package org.endava.onlineshop.service;
 
 import org.endava.onlineshop.model.dto.product.ProductDetailsDto;
+import org.endava.onlineshop.model.dto.product.ProductSearchPageDto;
 import org.endava.onlineshop.model.dto.product.ProductSummaryDto;
+import org.endava.onlineshop.model.entities.Category;
 import org.endava.onlineshop.model.entities.Product;
 import org.endava.onlineshop.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +19,30 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductEmbeddingService productEmbeddingService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ProductEmbeddingService productEmbeddingService) {
         this.productRepository = productRepository;
+        this.productEmbeddingService = productEmbeddingService;
     }
 
     @Transactional(readOnly = true)
-    public List<ProductSummaryDto> getActiveProducts() {
-        return productRepository.findByIsActiveTrueOrderByNameAsc().stream()
-                .map(this::toSummaryDto)
-                .toList();
+    public ProductSearchPageDto getProducts(String query, Pageable pageable) {
+        Page<Product> page = productEmbeddingService.findActiveProducts(query, pageable);
+
+        List<ProductSummaryDto> items = page.getContent().stream()
+            .map(this::toSummaryDto)
+            .toList();
+
+        return new ProductSearchPageDto(
+            items,
+            page.getNumber() + 1,
+            page.getSize(),
+            page.getTotalElements(),
+            page.getTotalPages(),
+            page.hasPrevious(),
+            page.hasNext()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -62,10 +80,9 @@ public class ProductService {
 
     private String extractPrimaryCategory(Product product) {
         return product.getCategories().stream()
-                .map(category -> category.getName())
+                .map(Category::getName)
                 .sorted()
                 .findFirst()
                 .orElse("Uncategorized");
     }
 }
-

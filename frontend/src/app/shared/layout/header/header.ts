@@ -1,5 +1,8 @@
-import { Component, ElementRef, HostListener, ViewChild, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, ElementRef, HostListener, ViewChild, effect, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { filter, map, startWith } from 'rxjs';
 import { AuthStateService } from '../../../core/auth/auth-state.service';
 import { CartFacadeService } from '../../../core/cart/cart-facade.service';
 import { KeycloakAuthService } from '../../../core/auth/keycloak-auth.service';
@@ -8,15 +11,40 @@ import { CartSidebarComponent } from '../cart-sidebar/cart-sidebar';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, CartSidebarComponent],
+  imports: [RouterLink, ReactiveFormsModule, CartSidebarComponent],
   templateUrl: './header.html'
 })
 export class HeaderComponent {
   @ViewChild('profileMenu') private profileMenu?: ElementRef<HTMLDetailsElement>;
 
+  private readonly router = inject(Router);
   private readonly keycloakAuthService = inject(KeycloakAuthService);
   readonly authState = inject(AuthStateService);
   readonly cartFacade = inject(CartFacadeService);
+  readonly searchControl = new FormControl('', { nonNullable: true });
+
+  private readonly searchTermFromRoute = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      startWith(null),
+      map(() => (this.router.parseUrl(this.router.url).queryParams['q'] ?? '').trim())
+    ),
+    { initialValue: '' }
+  );
+
+  constructor() {
+    effect(() => {
+      this.searchControl.setValue(this.searchTermFromRoute(), { emitEvent: false });
+    });
+  }
+
+  submitSearch(event: Event): void {
+    event.preventDefault();
+    const query = this.searchControl.value.trim();
+    void this.router.navigate(['/products'], {
+      queryParams: query ? { q: query } : {}
+    });
+  }
 
   async login(): Promise<void> {
     await this.keycloakAuthService.login();

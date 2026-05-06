@@ -1,7 +1,7 @@
 services:
   # --- APP DATABASE (PostgreSQL for Spring Boot) ---
   shop-db:
-    image: postgres:16
+    image: pgvector/pgvector:pg16
     restart: always
     environment:
       POSTGRES_DB: online-shop
