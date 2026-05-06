@@ -19,7 +19,6 @@ export class HeaderComponent {
   @ViewChild('profileMenu') private profileMenu?: ElementRef<HTMLDetailsElement>;
 
   private readonly keycloakAuthService = inject(KeycloakAuthService);
-  private readonly router = inject(Router);
   readonly authState = inject(AuthStateService);
   readonly cartFacade = inject(CartFacadeService);
   readonly wishlistFacade = inject(WishlistFacadeService);
