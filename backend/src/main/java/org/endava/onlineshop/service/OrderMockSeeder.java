@@ -16,6 +16,7 @@ import org.endava.onlineshop.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ import java.util.UUID;
 
 // TODO: Remove before deploying to production.
 @Component
-@Profile("dev")
+@ConditionalOnProperty(name = "seeders.enabled", havingValue = "true")
 public class OrderMockSeeder implements ApplicationRunner {
 
     private final OrderRepository orderRepository;
