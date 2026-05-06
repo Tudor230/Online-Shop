@@ -1,14 +1,15 @@
 package org.endava.onlineshop.controller;
 
 import org.endava.onlineshop.model.dto.product.ProductDetailsDto;
-import org.endava.onlineshop.model.dto.product.ProductSummaryDto;
+import org.endava.onlineshop.model.dto.product.ProductSearchPageDto;
 import org.endava.onlineshop.service.ProductService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/products")
@@ -21,8 +22,11 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductSummaryDto> getProducts() {
-        return productService.getActiveProducts();
+    public ProductSearchPageDto getProducts(
+        @RequestParam(name = "q", required = false) String query,
+        @PageableDefault(size = 25) Pageable pageable
+    ) {
+        return productService.getProducts(query, pageable);
     }
 
     @GetMapping("/{slug}")
@@ -30,4 +34,3 @@ public class ProductController {
         return productService.getProductBySlug(slug);
     }
 }
-

@@ -79,6 +79,9 @@ public class Product extends BaseAuditEntity {
     )
     private Set<Category> categories = new HashSet<>();
 
+    @Column(name = "category_text")
+    private String categoryText;
+
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ProductInventory inventory;
 

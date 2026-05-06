@@ -20,3 +20,13 @@ export interface ProductDetails {
   imageGalleryIds: string[];
 }
 
+export interface ProductSearchPage {
+  items: ProductSummary[];
+  page: number;
+  size: number;
+  totalItems: number;
+  totalPages: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}
+

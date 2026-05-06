@@ -12,6 +12,7 @@ import org.endava.onlineshop.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -24,15 +25,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 // TODO: Remove before deploying to production.
 @Component
-@Profile("dev")
+@ConditionalOnProperty(name = "seeders.enabled", havingValue = "true")
 public class ProductCatalogSeeder implements ApplicationRunner {
 
     private static final String CLOUDINARY_SEED_FOLDER = "online-shop/products/seed";
@@ -46,6 +49,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
     private final String cloudinaryCloudName;
     private final String cloudinaryApiKey;
     private final String cloudinaryApiSecret;
+    private final ProductEmbeddingService productEmbeddingService;
 
     public ProductCatalogSeeder(
             ProductRepository productRepository,
@@ -55,7 +59,8 @@ public class ProductCatalogSeeder implements ApplicationRunner {
             ResourceLoader resourceLoader,
             @Value("${cloudinary.cloud-name:}") String cloudinaryCloudName,
             @Value("${cloudinary.api-key:}") String cloudinaryApiKey,
-            @Value("${cloudinary.api-secret:}") String cloudinaryApiSecret
+            @Value("${cloudinary.api-secret:}") String cloudinaryApiSecret,
+            ProductEmbeddingService productEmbeddingService
     ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
@@ -65,6 +70,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         this.cloudinaryCloudName = cloudinaryCloudName;
         this.cloudinaryApiKey = cloudinaryApiKey;
         this.cloudinaryApiSecret = cloudinaryApiSecret;
+        this.productEmbeddingService = productEmbeddingService;
     }
 
     @Override
@@ -88,8 +94,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
 
     private void seedProduct(SeedProduct seedProduct, Map<String, String> uploadedImageIdsByName) {
         String slug = seedProduct.id();
-        Category category = categoryRepository.findBySlug(toSlug(seedProduct.category()))
-                .orElseGet(() -> createCategory(seedProduct.category()));
+        List<Category> categoryHierarchy = resolveOrCreateCategoryHierarchy(seedProduct.category());
 
         Product product = productRepository.findBySlug(slug).orElseGet(Product::new);
         product.setSlug(slug);
@@ -115,7 +120,8 @@ public class ProductCatalogSeeder implements ApplicationRunner {
 
         Set<Category> categories = product.getCategories();
         categories.clear();
-        categories.add(category);
+        categories.addAll(categoryHierarchy);
+        product.setCategoryText(productEmbeddingService.buildCategoryText(categories));
 
         ProductInventory inventory = product.getInventory();
         if (inventory == null) {
@@ -125,7 +131,8 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         inventory.setLowStockThreshold(5);
         product.setInventory(inventory);
 
-        productRepository.save(product);
+        Product savedProduct = productRepository.saveAndFlush(product);
+        productEmbeddingService.upsertProductEmbedding(savedProduct);
     }
 
     private Map<String, String> uploadSeedImages(List<SeedProduct> seedProducts) {
@@ -181,11 +188,61 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         return fileName.substring(0, dotIndex);
     }
 
-    private Category createCategory(String categoryName) {
+    private List<Category> resolveOrCreateCategoryHierarchy(String categoryHierarchyText) {
+        List<String> levels = parseCategoryHierarchy(categoryHierarchyText);
+        List<Category> hierarchy = new ArrayList<>();
+        UUID parentId = null;
+        String parentPath = null;
+
+        for (String level : levels) {
+            String normalizedName = level.trim();
+            String slug = toSlug(normalizedName);
+            String path = appendPath(parentPath, slug);
+
+            Category category = categoryRepository.findByParentIdAndSlug(parentId, slug).orElse(null);
+            if (category == null) {
+                category = createCategory(normalizedName, slug, parentId, path);
+            }
+
+            if (category.getPath() == null || category.getPath().isBlank()) {
+                category.setPath(path);
+                category = categoryRepository.saveAndFlush(category);
+            }
+
+            hierarchy.add(category);
+            parentId = category.getId();
+            parentPath = category.getPath();
+        }
+
+        return hierarchy;
+    }
+
+    private List<String> parseCategoryHierarchy(String categoryHierarchyText) {
+        List<String> hierarchy = Arrays.stream((categoryHierarchyText == null ? "" : categoryHierarchyText)
+                        .replace('/', '>')
+                        .split(">"))
+                .map(String::trim)
+                .filter(level -> !level.isBlank())
+                .toList();
+
+        return hierarchy.isEmpty() ? List.of("Uncategorized") : hierarchy;
+    }
+
+    private String appendPath(String parentPath, String slug) {
+        String node = slug.replace('-', '_');
+        if (parentPath == null || parentPath.isBlank()) {
+            return node;
+        }
+        return parentPath + "." + node;
+    }
+
+    private Category createCategory(String categoryName, String categorySlug, UUID parentId, String path) {
         Category category = new Category();
         category.setName(categoryName);
-        category.setSlug(toSlug(categoryName));
-        return categoryRepository.save(category);
+        category.setSlug(categorySlug);
+        category.setParentId(parentId);
+        category.setPath(path);
+        return categoryRepository.saveAndFlush(category);
     }
 
     private List<SeedProduct> loadSeedProducts() {
