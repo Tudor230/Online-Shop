@@ -66,7 +66,7 @@ public class WishlistService {
                         item.getProductSlug(),
                         item.getProductName(),
                         item.getProductPrice(),
-                        item.getImagePlaceholder(),
+                        item.getImageId(),
                         item.getAddedAt()
                 ))
                 .toList();

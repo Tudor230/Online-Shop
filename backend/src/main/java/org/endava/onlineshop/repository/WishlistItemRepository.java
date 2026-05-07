@@ -17,12 +17,12 @@ public interface WishlistItemRepository extends JpaRepository<WishlistItem, Wish
                    p.slug AS productSlug,
                    p.name AS productName,
                    p.basePrice AS productPrice,
-                   p.imagePlaceholder AS imagePlaceholder,
+                   p.imageId AS imageId,
                    wi.createdAt AS addedAt
-             FROM WishlistItem wi
-             JOIN Product p ON p.id = wi.productId
-             WHERE wi.userId = :userId
-             ORDER BY wi.createdAt DESC
+              FROM WishlistItem wi
+              JOIN Product p ON p.id = wi.productId
+              WHERE wi.userId = :userId
+              ORDER BY wi.createdAt DESC
              """)
     List<WishlistItemView> findItemViewsByUserId(@Param("userId") UUID userId);
 
@@ -39,7 +39,7 @@ public interface WishlistItemRepository extends JpaRepository<WishlistItem, Wish
 
         BigDecimal getProductPrice();
 
-        String getImagePlaceholder();
+        String getImageId();
 
         Instant getAddedAt();
     }
