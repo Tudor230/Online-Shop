@@ -19,7 +19,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Address extends BaseAuditEntity {
+public class Address extends AuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -8,22 +8,22 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.annotations.Immutable;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "wishlist_item")
 @IdClass(WishlistItemId.class)
+@Immutable
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class WishlistItem {
+public class WishlistItem extends CreationAuditedEntity {
 
     @Id
     @Column(name = "user_id", nullable = false)
@@ -33,9 +33,6 @@ public class WishlistItem {
     @Column(name = "product_id", nullable = false)
     private UUID productId;
 
-    @Column(name = "added_at", nullable = false, updatable = false)
-    private Instant addedAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false, nullable = false)
     private User user;
@@ -43,4 +40,9 @@ public class WishlistItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", insertable = false, updatable = false, nullable = false)
     private Product product;
+
+    public WishlistItem(UUID userId, UUID productId) {
+        this.userId = userId;
+        this.productId = productId;
+    }
 }

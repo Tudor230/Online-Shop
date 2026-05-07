@@ -29,7 +29,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Order extends BaseAuditEntity {
+public class Order extends AuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
