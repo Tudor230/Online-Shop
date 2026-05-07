@@ -18,7 +18,6 @@ import { CartSidebarComponent } from '../cart-sidebar/cart-sidebar';
 export class HeaderComponent {
   @ViewChild('profileMenu') private profileMenu?: ElementRef<HTMLDetailsElement>;
 
-  private readonly router = inject(Router);
   private readonly keycloakAuthService = inject(KeycloakAuthService);
   private readonly router = inject(Router);
   readonly authState = inject(AuthStateService);
