@@ -25,7 +25,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductInventory extends BaseAuditEntity {
+public class ProductInventory extends AuditedEntity {
 
     @Id
     @Column(name = "product_id", nullable = false)
@@ -45,4 +45,3 @@ public class ProductInventory extends BaseAuditEntity {
     @Column(name = "last_restocked_at")
     private Instant lastRestockedAt;
 }
-

@@ -22,7 +22,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartItem extends BaseAuditEntity {
+public class CartItem extends AuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

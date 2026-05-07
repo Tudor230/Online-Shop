@@ -12,7 +12,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,10 +39,7 @@ public class WishlistService {
                 .orElseThrow(() -> new BadRequestException("Product not found"));
 
         if (!wishlistItemRepository.existsByUserIdAndProductId(userId, product.getId())) {
-            WishlistItem wishlistItem = new WishlistItem();
-            wishlistItem.setUserId(userId);
-            wishlistItem.setProductId(product.getId());
-            wishlistItem.setAddedAt(Instant.now());
+            WishlistItem wishlistItem = new WishlistItem(userId, product.getId());
             try {
                 wishlistItemRepository.saveAndFlush(wishlistItem);
             } catch (DataIntegrityViolationException ignored) {

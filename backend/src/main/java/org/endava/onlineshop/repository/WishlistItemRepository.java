@@ -13,17 +13,17 @@ import java.util.UUID;
 
 public interface WishlistItemRepository extends JpaRepository<WishlistItem, WishlistItemId> {
     @Query("""
-            select wi.productId as productId,
-                   p.slug as productSlug,
-                   p.name as productName,
-                   p.basePrice as productPrice,
-                   p.imagePlaceholder as imagePlaceholder,
-                   wi.addedAt as addedAt
-            from WishlistItem wi
-            join Product p on p.id = wi.productId
-            where wi.userId = :userId
-            order by wi.addedAt desc
-            """)
+            SELECT wi.productId AS productId,
+                   p.slug AS productSlug,
+                   p.name AS productName,
+                   p.basePrice AS productPrice,
+                   p.imagePlaceholder AS imagePlaceholder,
+                   wi.createdAt AS addedAt
+             FROM WishlistItem wi
+             JOIN Product p ON p.id = wi.productId
+             WHERE wi.userId = :userId
+             ORDER BY wi.createdAt DESC
+             """)
     List<WishlistItemView> findItemViewsByUserId(@Param("userId") UUID userId);
 
     boolean existsByUserIdAndProductId(UUID userId, UUID productId);

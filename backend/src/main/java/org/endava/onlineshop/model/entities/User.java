@@ -17,7 +17,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseAuditEntity {
+public class User extends AuditedEntity {
 
     @Id
     @Column(name = "id", nullable = false)
@@ -46,4 +46,3 @@ public class User extends BaseAuditEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 }
-
