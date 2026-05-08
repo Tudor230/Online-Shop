@@ -26,13 +26,13 @@ public class WishlistController {
         return wishlistService.getWishlist(user);
     }
 
-    @PostMapping("/items/{productId}")
-    public WishlistResponseDto addItem(@AuthenticationPrincipal User user, @PathVariable String productId) {
-        return wishlistService.addItem(user, productId);
+    @PostMapping("/items/{productSlug}")
+    public WishlistResponseDto addItem(@AuthenticationPrincipal User user, @PathVariable String productSlug) {
+        return wishlistService.addItem(user, productSlug);
     }
 
-    @DeleteMapping("/items/{productId}")
-    public WishlistResponseDto removeItem(@AuthenticationPrincipal User user, @PathVariable String productId) {
-        return wishlistService.removeItem(user, productId);
+    @DeleteMapping("/items/{productSlug}")
+    public WishlistResponseDto removeItem(@AuthenticationPrincipal User user, @PathVariable String productSlug) {
+        return wishlistService.removeItem(user, productSlug);
     }
 }

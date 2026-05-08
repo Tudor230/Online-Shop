@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 public record WishlistItemDto(
-        String productId,
+        String productSlug,
         String title,
         BigDecimal price,
         String imageLabel,
-        Instant addedAt
+        Instant createdAt
 ) {
 }

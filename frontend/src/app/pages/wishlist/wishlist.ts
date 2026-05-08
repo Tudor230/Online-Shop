@@ -15,15 +15,15 @@ export class WishlistPageComponent {
   private readonly cartFacade = inject(CartFacadeService);
   readonly wishlistFacade = inject(WishlistFacadeService);
 
-  openProduct(productId: string): void {
-    void this.router.navigate(['/product', productId]);
+  openProduct(productSlug: string): void {
+    void this.router.navigate(['/product', productSlug]);
   }
 
-  removeFromWishlist(productId: string): void {
-    this.wishlistFacade.removeItem(productId);
+  removeFromWishlist(productSlug: string): void {
+    this.wishlistFacade.removeItem(productSlug);
   }
 
-  addToCart(productId: string): void {
-    this.cartFacade.addItem(productId);
+  addToCart(productSlug: string): void {
+    this.cartFacade.addItem(productSlug);
   }
 }

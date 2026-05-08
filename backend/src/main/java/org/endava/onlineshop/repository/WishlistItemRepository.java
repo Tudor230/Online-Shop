@@ -18,7 +18,7 @@ public interface WishlistItemRepository extends JpaRepository<WishlistItem, Wish
                    p.name AS productName,
                    p.basePrice AS productPrice,
                    p.imageId AS imageId,
-                   wi.createdAt AS addedAt
+                   wi.createdAt AS createdAt
               FROM WishlistItem wi
               JOIN Product p ON p.id = wi.productId
               WHERE wi.userId = :userId
@@ -41,6 +41,6 @@ public interface WishlistItemRepository extends JpaRepository<WishlistItem, Wish
 
         String getImageId();
 
-        Instant getAddedAt();
+        Instant getCreatedAt();
     }
 }

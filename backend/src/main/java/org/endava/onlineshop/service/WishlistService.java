@@ -33,9 +33,9 @@ public class WishlistService {
     }
 
     @Transactional
-    public WishlistResponseDto addItem(User user, String productId) {
+    public WishlistResponseDto addItem(User user, String productSlug) {
         UUID userId = requireAuthenticatedUserId(user);
-        Product product = productRepository.findBySlugAndIsActiveTrue(productId)
+        Product product = productRepository.findBySlugAndIsActiveTrue(productSlug)
                 .orElseThrow(() -> new BadRequestException("Product not found"));
 
         if (!wishlistItemRepository.existsByUserIdAndProductId(userId, product.getId())) {
@@ -51,9 +51,9 @@ public class WishlistService {
     }
 
     @Transactional
-    public WishlistResponseDto removeItem(User user, String productId) {
+    public WishlistResponseDto removeItem(User user, String productSlug) {
         UUID userId = requireAuthenticatedUserId(user);
-        Product product = productRepository.findBySlug(productId)
+        Product product = productRepository.findBySlug(productSlug)
                 .orElseThrow(() -> new BadRequestException("Product not found"));
 
         wishlistItemRepository.deleteByUserIdAndProductId(userId, product.getId());
@@ -67,7 +67,7 @@ public class WishlistService {
                         item.getProductName(),
                         item.getProductPrice(),
                         item.getImageId(),
-                        item.getAddedAt()
+                        item.getCreatedAt()
                 ))
                 .toList();
         return new WishlistResponseDto(items, items.size());
