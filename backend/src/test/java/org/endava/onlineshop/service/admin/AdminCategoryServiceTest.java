@@ -56,8 +56,8 @@ class AdminCategoryServiceTest {
     void setUp() {
         categoryId = UUID.randomUUID();
         adminId = UUID.randomUUID();
-        when(securityUtils.getCurrentUserId()).thenReturn(Optional.of(adminId));
-        when(securityUtils.getCurrentUserEmail()).thenReturn(Optional.of("admin@test.com"));
+        lenient().when(securityUtils.getCurrentUserId()).thenReturn(Optional.of(adminId));
+        lenient().when(securityUtils.getCurrentUserEmail()).thenReturn(Optional.of("admin@test.com"));
     }
 
     @Test
