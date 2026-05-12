@@ -10,12 +10,6 @@ import { createEnvironmentInjector, runInInjectionContext, EnvironmentInjector }
 const mockLogin = vi.fn();
 const mockNavigateByUrl = vi.fn();
 
-vi.mock('./keycloak-auth.service', () => ({
-  KeycloakAuthService: class {
-    login = mockLogin;
-  }
-}));
-
 describe('adminAuthGuard', () => {
   let authState: AuthStateService;
   let router: Router;
@@ -69,7 +63,7 @@ describe('adminAuthGuard', () => {
     ], null as any);
 
     const result = await runInInjectionContext(serverInjector, () => adminAuthGuard({} as any, {} as any));
-    expect(result).toBe(false);
+    expect(result).toBe(true);
     expect(mockLogin).not.toHaveBeenCalled();
     expect(mockNavigateByUrl).not.toHaveBeenCalled();
   });

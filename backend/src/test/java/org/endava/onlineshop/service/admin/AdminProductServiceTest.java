@@ -71,7 +71,7 @@ class AdminProductServiceTest {
 
         adminProductService.updateProduct(productId, request);
 
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof ProductDetailsChangedEvent ev && ev.productId().equals(productId)));
         verify(eventPublisher, never()).publishEvent(any(ProductCategoriesChangedEvent.class));
     }
@@ -86,7 +86,7 @@ class AdminProductServiceTest {
 
         adminProductService.updateProduct(productId, request);
 
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof ProductDetailsChangedEvent ev && ev.productId().equals(productId)));
         verify(eventPublisher, never()).publishEvent(any(ProductCategoriesChangedEvent.class));
     }
@@ -102,7 +102,7 @@ class AdminProductServiceTest {
 
         adminProductService.updateProduct(productId, request);
 
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof ProductCategoriesChangedEvent ev && ev.productId().equals(productId)));
         verify(eventPublisher, never()).publishEvent(any(ProductDetailsChangedEvent.class));
     }
@@ -118,9 +118,9 @@ class AdminProductServiceTest {
 
         adminProductService.updateProduct(productId, request);
 
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof ProductCategoriesChangedEvent ev && ev.productId().equals(productId)));
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof ProductDetailsChangedEvent ev && ev.productId().equals(productId)));
     }
 

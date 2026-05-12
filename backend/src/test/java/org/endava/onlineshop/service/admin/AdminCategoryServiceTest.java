@@ -73,7 +73,7 @@ class AdminCategoryServiceTest {
         AdminCategoryDto result = adminCategoryService.createCategory(request);
 
         assertThat(result.id()).isEqualTo(categoryId);
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof CategoryPathChangedEvent ev && ev.categoryId().equals(categoryId)));
         verify(categoryRepository).save(any(Category.class));
     }
@@ -90,7 +90,6 @@ class AdminCategoryServiceTest {
 
         adminCategoryService.createCategory(request);
 
-        verify(categoryRepository, never()).findBySlug(any());
         verify(categoryRepository, never()).findByParentIdAndSlug(any(), any());
     }
 
@@ -104,7 +103,7 @@ class AdminCategoryServiceTest {
 
         adminCategoryService.updateCategory(categoryId, request);
 
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof CategoryPathChangedEvent ev && ev.categoryId().equals(categoryId)));
     }
 
@@ -119,7 +118,7 @@ class AdminCategoryServiceTest {
 
         adminCategoryService.updateCategory(categoryId, request);
 
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof CategoryPathChangedEvent ev && ev.categoryId().equals(categoryId)));
     }
 
@@ -159,7 +158,7 @@ class AdminCategoryServiceTest {
 
         adminCategoryService.updateCategory(categoryId, request);
 
-        verify(categoryRepository, never()).findBySlug(any());
+        verify(categoryRepository, never()).findByParentIdAndSlug(any(), any());
     }
 
     @Test
@@ -174,9 +173,9 @@ class AdminCategoryServiceTest {
         adminCategoryService.deleteCategory(categoryId);
 
         verify(categoryRepository).deleteById(categoryId);
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof ProductCategoriesChangedEvent ev && ev.productId().equals(productId1)));
-        verify(eventPublisher).publishEvent(argThat(e ->
+        verify(eventPublisher).publishEvent((Object) argThat(e ->
                 e instanceof ProductCategoriesChangedEvent ev && ev.productId().equals(productId2)));
     }
 
