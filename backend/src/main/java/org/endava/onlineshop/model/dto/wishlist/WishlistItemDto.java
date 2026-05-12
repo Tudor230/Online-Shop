@@ -7,7 +7,7 @@ public record WishlistItemDto(
         String productSlug,
         String title,
         BigDecimal price,
-        String imageLabel,
+        String imageId,
         Instant createdAt
 ) {
 }

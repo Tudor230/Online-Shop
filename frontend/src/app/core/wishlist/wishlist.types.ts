@@ -2,7 +2,7 @@ export interface WishlistItem {
   productSlug: string;
   title: string;
   price: number;
-  imageLabel: string;
+  imageId: string;
   createdAt: string;
 }
 
