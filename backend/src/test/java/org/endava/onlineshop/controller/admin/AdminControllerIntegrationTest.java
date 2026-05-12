@@ -1,10 +1,12 @@
 package org.endava.onlineshop.controller.admin;
 
+import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.security.AuthenticatedUserSyncFilter;
 import org.endava.onlineshop.security.AuthenticatedUserSyncService;
 import org.endava.onlineshop.security.JwtRoleConverter;
 import org.endava.onlineshop.security.SecurityConfig;
 import org.endava.onlineshop.service.admin.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -67,6 +70,16 @@ class AdminControllerIntegrationTest {
 
     @MockBean
     private AdminAuditLogService adminAuditLogService;
+
+    @MockBean
+    private AuthenticatedUserSyncService authenticatedUserSyncService;
+
+    @BeforeEach
+    void setUp() {
+        when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(
+                userWithId(UUID.randomUUID())
+        );
+    }
 
     // =================== Dashboard ===================
 
@@ -375,13 +388,15 @@ class AdminControllerIntegrationTest {
                 .authorities(jwtRoleConverter);
     }
 
+    private static User userWithId(UUID userId) {
+        User user = new User();
+        user.setId(userId);
+        user.setEmail("admin@test.com");
+        return user;
+    }
+
     @TestConfiguration
     static class TestBeans {
-        @Bean
-        AuthenticatedUserSyncService authenticatedUserSyncService() {
-            return Mockito.mock(AuthenticatedUserSyncService.class);
-        }
-
         @Bean
         AuthenticatedUserSyncFilter authenticatedUserSyncFilter(AuthenticatedUserSyncService authenticatedUserSyncService) {
             return new AuthenticatedUserSyncFilter(authenticatedUserSyncService);

@@ -1,15 +1,18 @@
 package org.endava.onlineshop.security;
 
+import org.endava.onlineshop.model.entities.User;
+import org.endava.onlineshop.model.enums.Role;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,9 +28,6 @@ class SecurityUtilsTest {
     @Mock
     private Authentication authentication;
 
-    @Mock
-    private Jwt jwt;
-
     private final SecurityUtils securityUtils = new SecurityUtils();
 
     @Test
@@ -35,52 +35,45 @@ class SecurityUtilsTest {
         SecurityContextHolder.setContext(securityContext);
         when(securityContext.getAuthentication()).thenReturn(null);
 
-        Optional<Jwt> result = securityUtils.getCurrentJwt();
+        Optional<User> result = securityUtils.getCurrentUser();
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    void shouldReturnEmptyWhenNotJwtAuthentication() {
+    void shouldReturnEmptyWhenNotUserAuthentication() {
         SecurityContextHolder.setContext(securityContext);
         when(securityContext.getAuthentication()).thenReturn(authentication);
 
-        Optional<Jwt> result = securityUtils.getCurrentJwt();
+        Optional<User> result = securityUtils.getCurrentUser();
 
         assertThat(result).isEmpty();
     }
 
     @Test
-    void shouldReturnJwtWhenAuthenticated() {
+    void shouldReturnUserWhenAuthenticated() {
         UUID userId = UUID.randomUUID();
-        JwtAuthenticationToken jwtAuth = mock(JwtAuthenticationToken.class);
-        when(jwtAuth.getToken()).thenReturn(jwt);
-        when(jwt.getClaimAsString("sub")).thenReturn(userId.toString());
-        when(jwt.getClaimAsString("email")).thenReturn("admin@test.com");
+        User user = new User();
+        user.setId(userId);
+        user.setEmail("admin@test.com");
+        user.setFirstName("Admin");
+        user.setLastName("User");
+        user.setRole(Role.ADMIN);
+
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        UserAuthenticationToken userAuth = new UserAuthenticationToken(user, authorities);
 
         SecurityContextHolder.setContext(securityContext);
-        when(securityContext.getAuthentication()).thenReturn(jwtAuth);
+        when(securityContext.getAuthentication()).thenReturn(userAuth);
 
-        Optional<Jwt> jwtResult = securityUtils.getCurrentJwt();
-        assertThat(jwtResult).isPresent();
+        Optional<User> userResult = securityUtils.getCurrentUser();
+        assertThat(userResult).isPresent();
+        assertThat(userResult.get().getEmail()).isEqualTo("admin@test.com");
 
         Optional<UUID> userIdResult = securityUtils.getCurrentUserId();
         assertThat(userIdResult).isPresent().hasValue(userId);
 
         Optional<String> emailResult = securityUtils.getCurrentUserEmail();
         assertThat(emailResult).isPresent().hasValue("admin@test.com");
-    }
-
-    @Test
-    void shouldReturnEmptyUserIdWhenInvalidJwt() {
-        JwtAuthenticationToken jwtAuth = mock(JwtAuthenticationToken.class);
-        when(jwtAuth.getToken()).thenReturn(jwt);
-        when(jwt.getClaimAsString("sub")).thenReturn("invalid-uuid");
-
-        SecurityContextHolder.setContext(securityContext);
-        when(securityContext.getAuthentication()).thenReturn(jwtAuth);
-
-        Optional<UUID> result = securityUtils.getCurrentUserId();
-        assertThat(result).isEmpty();
     }
 }

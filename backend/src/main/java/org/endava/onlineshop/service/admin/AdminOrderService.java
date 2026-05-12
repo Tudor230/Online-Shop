@@ -113,7 +113,7 @@ public class AdminOrderService {
     private AdminOrderItemDto toItemDto(OrderItem item) {
         return new AdminOrderItemDto(
                 item.getProduct().getId(), item.getProduct().getName(),
-                item.getProduct().getImagePlaceholder(), item.getQuantity(),
+                item.getProduct().getImageId(), item.getQuantity(),
                 item.getUnitPriceAtPurchase()
         );
     }

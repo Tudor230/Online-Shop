@@ -66,8 +66,8 @@ public class AdminProductService {
         product.setSlug(request.slug());
         product.setDescription(request.description());
         product.setBasePrice(request.basePrice());
-        product.setImagePlaceholder(request.imagePlaceholder());
-        product.setImageGallery(request.imageGallery() != null ? request.imageGallery() : new java.util.ArrayList<>());
+        product.setImageId(request.imagePlaceholder());
+        product.setImageGalleryIds(request.imageGallery() != null ? request.imageGallery() : new java.util.ArrayList<>());
 
         if (request.categoryIds() != null && !request.categoryIds().isEmpty()) {
             List<Category> categories = categoryRepository.findAllById(request.categoryIds());
@@ -101,8 +101,8 @@ public class AdminProductService {
         if (request.description() != null) product.setDescription(request.description());
         if (request.basePrice() != null) product.setBasePrice(request.basePrice());
         if (request.isActive() != null) product.setIsActive(request.isActive());
-        if (request.imagePlaceholder() != null) product.setImagePlaceholder(request.imagePlaceholder());
-        if (request.imageGallery() != null) product.setImageGallery(request.imageGallery());
+        if (request.imagePlaceholder() != null) product.setImageId(request.imagePlaceholder());
+        if (request.imageGallery() != null) product.setImageGalleryIds(request.imageGallery());
         if (request.categoryIds() != null) {
             List<Category> categories = categoryRepository.findAllById(request.categoryIds());
             product.setCategories(new java.util.HashSet<>(categories));
@@ -167,7 +167,7 @@ public class AdminProductService {
         return new AdminProductListDto(
                 product.getId(), product.getSku(), product.getName(), product.getSlug(),
                 product.getBasePrice(), product.getIsActive(), product.getRating(),
-                product.getReviewCount(), product.getImagePlaceholder(), qty, threshold,
+                product.getReviewCount(), product.getImageId(), qty, threshold,
                 categories, product.getCreatedAt(), product.getUpdatedAt()
         );
     }
@@ -182,8 +182,8 @@ public class AdminProductService {
         return new AdminProductDetailDto(
                 product.getId(), product.getSku(), product.getName(), product.getSlug(),
                 product.getDescription(), product.getBasePrice(), product.getIsActive(),
-                product.getRating(), product.getReviewCount(), product.getImagePlaceholder(),
-                List.copyOf(product.getImageGallery()), categories, inventory,
+                product.getRating(), product.getReviewCount(), product.getImageId(),
+                List.copyOf(product.getImageGalleryIds()), categories, inventory,
                 product.getCreatedAt(), product.getUpdatedAt()
         );
     }
