@@ -47,9 +47,9 @@ export class ProductDetailsComponent {
       return '';
     }
     return (
-      currentProduct.imageGallery[this.selectedImageIndex()] ??
-      currentProduct.imageGallery[0] ??
-      currentProduct.imagePlaceholder
+      currentProduct.imageGalleryIds[this.selectedImageIndex()] ??
+      currentProduct.imageGalleryIds[0] ??
+      currentProduct.imageId
     );
   });
 

@@ -1,22 +1,26 @@
 package org.endava.onlineshop.security;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.endava.onlineshop.model.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -31,11 +35,25 @@ class SecurityConfigIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private JpaMetamodelMappingContext jpaMetamodelMappingContext;
+
+    @MockitoBean
+    private AuthenticatedUserSyncService authenticatedUserSyncService;
 
     @Autowired
     private JwtRoleConverter jwtRoleConverter;
+
+    @Test
+    void shouldSwapJwtPrincipalToUserPrincipalForAuthenticationPrincipalInjection() throws Exception {
+        UUID userId = UUID.fromString("00000000-0000-0000-0000-000000000123");
+        when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(userWithId(userId));
+
+        mockMvc.perform(get("/test/current-user-id")
+                        .with(jwt().jwt(token -> token.subject(userId.toString()))))
+                .andExpect(status().isOk())
+                .andExpect(content().string(userId.toString()));
+    }
 
     @Test
     void shouldRejectUnauthenticatedRequests() throws Exception {
@@ -46,6 +64,12 @@ class SecurityConfigIntegrationTest {
     @Test
     void shouldAllowAnonymousAccessToProductEndpoints() throws Exception {
         mockMvc.perform(get("/api/products"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldAllowAnonymousAccessToProductSearchViaQueryParameter() throws Exception {
+        mockMvc.perform(get("/api/products").param("q", "wireless mouse"))
                 .andExpect(status().isNotFound());
     }
 
@@ -73,6 +97,8 @@ class SecurityConfigIntegrationTest {
 
     @Test
     void shouldAllowAuthenticatedRequests() throws Exception {
+        when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(userWithId(UUID.randomUUID()));
+
         mockMvc.perform(get("/test/authenticated")
                         .with(jwt()))
                 .andExpect(status().isOk())
@@ -81,6 +107,8 @@ class SecurityConfigIntegrationTest {
 
     @Test
     void shouldAllowAdminEndpointWhenRealmRoleIsPresent() throws Exception {
+        when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(userWithId(UUID.randomUUID()));
+
         mockMvc.perform(get("/test/admin")
                         .with(jwt()
                                 .jwt(token -> token.claim("realm_access", Map.of("roles", List.of("ADMIN"))))
@@ -91,6 +119,8 @@ class SecurityConfigIntegrationTest {
 
     @Test
     void shouldAllowAdminEndpointWhenClientRoleIsPresent() throws Exception {
+        when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(userWithId(UUID.randomUUID()));
+
         mockMvc.perform(get("/test/admin")
                         .with(jwt()
                                 .jwt(token -> token.claim("resource_access", Map.of(
@@ -103,6 +133,8 @@ class SecurityConfigIntegrationTest {
 
     @Test
     void shouldReturnForbiddenWhenRequiredRoleIsMissing() throws Exception {
+        when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(userWithId(UUID.randomUUID()));
+
         mockMvc.perform(get("/test/admin")
                         .with(jwt()
                                 .jwt(token -> token.claim("realm_access", Map.of("roles", List.of("CUSTOMER"))))
@@ -111,7 +143,28 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
+    void shouldReturnUnauthorizedWhenUserSyncFails() throws Exception {
+        when(authenticatedUserSyncService.syncUser(any(Jwt.class)))
+                .thenThrow(new BadCredentialsException("Invalid authentication subject"));
+
+        mockMvc.perform(get("/test/authenticated")
+                        .with(jwt()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedWhenUserSyncReturnsNull() throws Exception {
+        when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(null);
+
+        mockMvc.perform(get("/test/authenticated")
+                        .with(jwt()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void shouldAllowPostWithoutCsrfWhenAuthenticated() throws Exception {
+        when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(userWithId(UUID.randomUUID()));
+
         mockMvc.perform(post("/test/echo")
                         .with(jwt())
                         .contentType(MediaType.TEXT_PLAIN)
@@ -120,12 +173,14 @@ class SecurityConfigIntegrationTest {
                 .andExpect(content().string("hello"));
     }
 
+    private static User userWithId(UUID userId) {
+        User user = new User();
+        user.setId(userId);
+        return user;
+    }
+
     @TestConfiguration
     static class TestBeans {
-        @Bean
-        AuthenticatedUserSyncService authenticatedUserSyncService() {
-            return Mockito.mock(AuthenticatedUserSyncService.class);
-        }
 
         @Bean
         AuthenticatedUserSyncFilter authenticatedUserSyncFilter(AuthenticatedUserSyncService authenticatedUserSyncService) {

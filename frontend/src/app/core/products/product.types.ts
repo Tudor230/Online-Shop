@@ -5,7 +5,7 @@ export interface ProductSummary {
   rating: number;
   reviewCount: number;
   price: number;
-  imagePlaceholder: string;
+  imageId: string;
 }
 
 export interface ProductDetails {
@@ -16,7 +16,17 @@ export interface ProductDetails {
   reviewCount: number;
   price: number;
   description: string;
-  imagePlaceholder: string;
-  imageGallery: string[];
+  imageId: string;
+  imageGalleryIds: string[];
+}
+
+export interface ProductSearchPage {
+  items: ProductSummary[];
+  page: number;
+  size: number;
+  totalItems: number;
+  totalPages: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
 }
 

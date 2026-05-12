@@ -28,12 +28,18 @@
           @for (item of items; track item.productId) {
             <article class="border-b border-surface-elevated py-4">
               <div class="grid grid-cols-[88px_minmax(0,1fr)_auto] items-start gap-3">
-                <div
-                  class="grid h-20 w-20 place-items-center rounded-lg bg-surface-elevated text-sm font-medium text-text-secondary"
-                  role="img"
-                  [attr.aria-label]="item.imageLabel"
-                >
-                  {{ item.imageLabel }}
+                <div class="h-20 w-20 overflow-hidden rounded-lg bg-surface-elevated">
+                  <app-cloudinary-image-frame
+                    [source]="item.imageId"
+                    [alt]="item.title"
+                    [options]="cartImageOptions"
+                    width="160"
+                    height="160"
+                    [useLazy]="true"
+                    imageClass="h-full w-full object-contain"
+                    fallbackClass="grid h-full w-full place-items-center px-1 text-center text-[11px] font-medium text-text-secondary"
+                    fallbackText="Image unavailable"
+                  />
                 </div>
 
                 <div class="min-w-0">

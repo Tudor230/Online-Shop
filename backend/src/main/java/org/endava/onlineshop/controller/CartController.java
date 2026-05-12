@@ -5,9 +5,9 @@ import org.endava.onlineshop.exception.BadRequestException;
 import org.endava.onlineshop.model.dto.cart.AddCartItemRequestDto;
 import org.endava.onlineshop.model.dto.cart.CartResponseDto;
 import org.endava.onlineshop.model.dto.cart.UpdateCartItemQuantityRequestDto;
+import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.service.CartService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,48 +30,48 @@ public class CartController {
 
     @GetMapping
     public CartResponseDto getCart(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal User user,
             @RequestHeader(value = "X-Session-Id", required = false) String sessionId
     ) {
-        return cartService.getCart(jwt, sessionId);
+        return cartService.getCart(user, sessionId);
     }
 
     @PostMapping("/items")
     public CartResponseDto addItem(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal User user,
             @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
             @Valid @RequestBody AddCartItemRequestDto request
     ) {
-        return cartService.addItem(jwt, sessionId, request);
+        return cartService.addItem(user, sessionId, request);
     }
 
     @PatchMapping("/items/{productId}")
     public CartResponseDto updateItemQuantity(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal User user,
             @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
             @PathVariable String productId,
             @Valid @RequestBody UpdateCartItemQuantityRequestDto request
     ) {
-        return cartService.updateItemQuantity(jwt, sessionId, productId, request.quantity());
+        return cartService.updateItemQuantity(user, sessionId, productId, request.quantity());
     }
 
     @DeleteMapping("/items/{productId}")
     public CartResponseDto removeItem(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal User user,
             @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
             @PathVariable String productId
     ) {
-        return cartService.removeItem(jwt, sessionId, productId);
+        return cartService.removeItem(user, sessionId, productId);
     }
 
     @PostMapping("/claim")
     public CartResponseDto claimGuestCart(
-            @AuthenticationPrincipal Jwt jwt,
+            @AuthenticationPrincipal User user,
             @RequestHeader(value = "X-Session-Id") String sessionId
     ) {
-        if (jwt == null) {
+        if (user == null) {
             throw new BadRequestException("Authentication is required");
         }
-        return cartService.claimGuestCart(jwt, sessionId);
+        return cartService.claimGuestCart(user, sessionId);
     }
 }

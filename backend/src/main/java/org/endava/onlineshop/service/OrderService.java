@@ -7,37 +7,29 @@ import org.endava.onlineshop.model.entities.OrderItem;
 import org.endava.onlineshop.model.entities.Order;
 import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.repository.OrderRepository;
-import org.endava.onlineshop.repository.UserRepository;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
     private final ObjectProvider<OrderMockSeeder> orderMockSeederProvider;
 
     public OrderService(
             OrderRepository orderRepository,
-            UserRepository userRepository,
             ObjectProvider<OrderMockSeeder> orderMockSeederProvider
     ) {
         this.orderRepository = orderRepository;
-        this.userRepository = userRepository;
         this.orderMockSeederProvider = orderMockSeederProvider;
     }
 
     @Transactional
-    public List<OrderHistoryEntryDto> getOrderHistory(Jwt jwt) {
-        User user = getCurrentUser(jwt);
-
+    public List<OrderHistoryEntryDto> getOrderHistory(User user) {
         OrderMockSeeder orderMockSeeder = orderMockSeederProvider.getIfAvailable();
         if (orderMockSeeder != null) {
             orderMockSeeder.seedForUserIfMissing(user);
@@ -48,23 +40,6 @@ public class OrderService {
                 .toList();
     }
 
-    private User getCurrentUser(Jwt jwt) {
-        UUID userId = parseUserId(jwt.getSubject());
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new BadRequestException("Authenticated user not found"));
-    }
-
-    private UUID parseUserId(String subject) {
-        if (subject == null || subject.isBlank()) {
-            throw new BadRequestException("Invalid authentication subject");
-        }
-
-        try {
-            return UUID.fromString(subject);
-        } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("Invalid authentication subject");
-        }
-    }
 
     private OrderHistoryEntryDto toOrderHistoryDto(Order order) {
         return new OrderHistoryEntryDto(
@@ -84,7 +59,7 @@ public class OrderService {
         return new OrderHistoryItemDto(
                 item.getProduct().getSlug(),
                 item.getProduct().getName(),
-                item.getProduct().getImagePlaceholder(),
+                item.getProduct().getImageId(),
                 item.getQuantity(),
                 item.getUnitPriceAtPurchase(),
                 lineTotal

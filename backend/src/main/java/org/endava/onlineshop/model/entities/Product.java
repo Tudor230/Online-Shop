@@ -63,13 +63,13 @@ public class Product extends BaseAuditEntity {
     @Column(name = "review_count", nullable = false)
     private Integer reviewCount = 0;
 
-    @Column(name = "image_placeholder", nullable = false, length = 255)
-    private String imagePlaceholder;
+    @Column(name = "image_id", nullable = false, length = 500)
+    private String imageId;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_image_gallery", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "image_label", nullable = false, length = 255)
-    private List<String> imageGallery = new ArrayList<>();
+    @Column(name = "image_id", nullable = false, length = 500)
+    private List<String> imageGalleryIds = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -78,6 +78,9 @@ public class Product extends BaseAuditEntity {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<Category> categories = new HashSet<>();
+
+    @Column(name = "category_text")
+    private String categoryText;
 
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ProductInventory inventory;

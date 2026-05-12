@@ -15,12 +15,17 @@
     ♡
   </button>
 
-  <div
-    class="aspect-[4/3] rounded-xl bg-surface-elevated text-text-secondary grid place-items-center"
-    role="img"
-    [attr.aria-label]="product.imagePlaceholder"
-  >
-    <span class="text-sm font-medium">{{ product.imagePlaceholder }}</span>
+  <div class="aspect-[4/3] overflow-hidden rounded-xl bg-surface-elevated">
+    <app-cloudinary-image-frame
+      [source]="product.imageId"
+      [alt]="product.title"
+      [options]="productImageOptions"
+      width="560"
+      height="420"
+      imageClass="h-full w-full object-contain"
+      fallbackClass="grid h-full w-full place-items-center text-sm font-medium text-text-secondary"
+      fallbackText="Image unavailable"
+    />
   </div>
 
   <div class="grid gap-2">

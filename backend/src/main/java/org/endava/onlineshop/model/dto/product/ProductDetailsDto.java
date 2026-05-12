@@ -11,8 +11,8 @@ public record ProductDetailsDto(
         int reviewCount,
         BigDecimal price,
         String description,
-        String imagePlaceholder,
-        List<String> imageGallery
+        String imageId,
+        List<String> imageGalleryIds
 ) {
 }
 
