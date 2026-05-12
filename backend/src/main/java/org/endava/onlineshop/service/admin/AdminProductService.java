@@ -1,5 +1,7 @@
 package org.endava.onlineshop.service.admin;
 
+import org.endava.onlineshop.events.ProductCategoriesChangedEvent;
+import org.endava.onlineshop.events.ProductDetailsChangedEvent;
 import org.endava.onlineshop.exception.BadRequestException;
 import org.endava.onlineshop.model.dto.admin.*;
 import org.endava.onlineshop.model.entities.Category;
@@ -9,6 +11,7 @@ import org.endava.onlineshop.repository.CategoryRepository;
 import org.endava.onlineshop.repository.ProductInventoryRepository;
 import org.endava.onlineshop.repository.ProductRepository;
 import org.endava.onlineshop.security.SecurityUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,19 +30,22 @@ public class AdminProductService {
     private final ProductInventoryRepository productInventoryRepository;
     private final AdminAuditLogService auditLogService;
     private final SecurityUtils securityUtils;
+    private final ApplicationEventPublisher eventPublisher;
 
     public AdminProductService(
             ProductRepository productRepository,
             CategoryRepository categoryRepository,
             ProductInventoryRepository productInventoryRepository,
             AdminAuditLogService auditLogService,
-            SecurityUtils securityUtils
+            SecurityUtils securityUtils,
+            ApplicationEventPublisher eventPublisher
     ) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.productInventoryRepository = productInventoryRepository;
         this.auditLogService = auditLogService;
         this.securityUtils = securityUtils;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional(readOnly = true)
@@ -90,15 +96,24 @@ public class AdminProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 
+        boolean detailsChanged = false;
+        boolean categoriesChanged = false;
+
         if (request.sku() != null) product.setSku(request.sku());
-        if (request.name() != null) product.setName(request.name());
+        if (request.name() != null && !request.name().equals(product.getName())) {
+            product.setName(request.name());
+            detailsChanged = true;
+        }
         if (request.slug() != null && !request.slug().equals(product.getSlug())) {
             if (productRepository.existsBySlug(request.slug())) {
                 throw new BadRequestException("Product slug already exists");
             }
             product.setSlug(request.slug());
         }
-        if (request.description() != null) product.setDescription(request.description());
+        if (request.description() != null && !request.description().equals(product.getDescription())) {
+            product.setDescription(request.description());
+            detailsChanged = true;
+        }
         if (request.basePrice() != null) product.setBasePrice(request.basePrice());
         if (request.isActive() != null) product.setIsActive(request.isActive());
         if (request.imagePlaceholder() != null) product.setImageId(request.imagePlaceholder());
@@ -106,6 +121,7 @@ public class AdminProductService {
         if (request.categoryIds() != null) {
             List<Category> categories = categoryRepository.findAllById(request.categoryIds());
             product.setCategories(new java.util.HashSet<>(categories));
+            categoriesChanged = true;
         }
 
         ProductInventory inventory = product.getInventory();
@@ -118,6 +134,14 @@ public class AdminProductService {
 
         Product savedProduct = productRepository.save(product);
         audit("UPDATE", "PRODUCT", savedProduct.getId().toString(), "Updated product " + savedProduct.getName());
+
+        if (categoriesChanged) {
+            eventPublisher.publishEvent(new ProductCategoriesChangedEvent(savedProduct.getId()));
+        }
+        if (detailsChanged) {
+            eventPublisher.publishEvent(new ProductDetailsChangedEvent(savedProduct.getId()));
+        }
+
         return toDetailDto(savedProduct);
     }
 

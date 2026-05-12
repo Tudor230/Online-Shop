@@ -8,7 +8,5 @@ import java.util.UUID;
 
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
     Optional<Category> findByParentIdAndSlug(UUID parentId, String slug);
-
-    Optional<Category> findBySlug(String slug);
 }
 
