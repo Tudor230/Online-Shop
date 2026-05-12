@@ -23,7 +23,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItem extends BaseAuditEntity {
+public class OrderItem extends AuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -44,4 +44,3 @@ public class OrderItem extends BaseAuditEntity {
     @Column(name = "unit_price_at_purchase", nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPriceAtPurchase;
 }
-

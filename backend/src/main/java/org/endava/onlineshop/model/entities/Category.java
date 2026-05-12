@@ -20,7 +20,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category extends BaseAuditEntity {
+public class Category extends AuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

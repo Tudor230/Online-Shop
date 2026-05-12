@@ -6,6 +6,7 @@ import { filter, map, startWith } from 'rxjs';
 import { AuthStateService } from '../../../core/auth/auth-state.service';
 import { CartFacadeService } from '../../../core/cart/cart-facade.service';
 import { KeycloakAuthService } from '../../../core/auth/keycloak-auth.service';
+import { WishlistFacadeService } from '../../../core/wishlist/wishlist-facade.service';
 import { CartSidebarComponent } from '../cart-sidebar/cart-sidebar';
 
 @Component({
@@ -17,10 +18,11 @@ import { CartSidebarComponent } from '../cart-sidebar/cart-sidebar';
 export class HeaderComponent {
   @ViewChild('profileMenu') private profileMenu?: ElementRef<HTMLDetailsElement>;
 
-  private readonly router = inject(Router);
   private readonly keycloakAuthService = inject(KeycloakAuthService);
+  private readonly router = inject(Router);
   readonly authState = inject(AuthStateService);
   readonly cartFacade = inject(CartFacadeService);
+  readonly wishlistFacade = inject(WishlistFacadeService);
   readonly searchControl = new FormControl('', { nonNullable: true });
 
   private readonly searchTermFromRoute = toSignal(
@@ -89,5 +91,14 @@ export class HeaderComponent {
 
   removeCartItem(productId: string): void {
     this.cartFacade.removeItem(productId);
+  }
+
+  openCartProduct(productId: string): void {
+    this.closeCartSidebar();
+    void this.router.navigate(['/product', productId]);
+  }
+
+  openWishlist(): void {
+    void this.router.navigate(['/wishlist']);
   }
 }

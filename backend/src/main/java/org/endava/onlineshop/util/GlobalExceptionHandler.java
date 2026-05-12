@@ -1,6 +1,7 @@
 package org.endava.onlineshop.util;
 
 import org.endava.onlineshop.exception.BadRequestException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -28,5 +29,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<APIResponse> handleMessageNotReadable(HttpMessageNotReadableException e){
         return ResponseHandler.errorResponse("Invalid request body: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<APIResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        String message = e.getMostSpecificCause() != null && e.getMostSpecificCause().getMessage() != null
+                ? e.getMostSpecificCause().getMessage()
+                : "Data integrity violation";
+        return ResponseHandler.errorResponse(message, HttpStatus.CONFLICT);
     }
 }

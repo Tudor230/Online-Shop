@@ -11,6 +11,7 @@ import { TermsPageComponent } from './pages/terms/terms';
 import { WarrantyPolicyPageComponent } from './pages/warranty-policy/warranty-policy';
 import { CommonLayoutComponent } from './shared/layout/common-layout/common-layout';
 import { OrderHistoryPageComponent } from './pages/order-history/order-history';
+import { WishlistPageComponent } from './pages/wishlist/wishlist';
 
 export const routes: Routes = [
   {
@@ -54,6 +55,11 @@ export const routes: Routes = [
         path: 'orders',
         canActivate: [profileAuthGuard],
         component: OrderHistoryPageComponent
+      },
+      {
+        path: 'wishlist',
+        canActivate: [profileAuthGuard],
+        component: WishlistPageComponent
       }
     ]
   },
