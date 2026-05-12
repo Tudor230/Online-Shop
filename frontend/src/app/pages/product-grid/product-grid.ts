@@ -6,6 +6,7 @@ import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import { CartFacadeService } from '../../core/cart/cart-facade.service';
 import { ProductApiService } from '../../core/products/product-api.service';
 import { type ProductSearchPage, type ProductSummary } from '../../core/products/product.types';
+import { WishlistFacadeService } from '../../core/wishlist/wishlist-facade.service';
 import { ProductCardComponent } from '../../shared/product-card/product-card';
 
 interface ProductListState {
@@ -35,6 +36,7 @@ export class ProductGridComponent {
   private readonly router = inject(Router);
   private readonly productApiService = inject(ProductApiService);
   private readonly cartFacadeService = inject(CartFacadeService);
+  private readonly wishlistFacadeService = inject(WishlistFacadeService);
 
   private readonly searchParams = toSignal(
     this.route.queryParamMap.pipe(
@@ -103,6 +105,13 @@ export class ProductGridComponent {
     this.cartFacadeService.addItem(productId);
   }
 
+  saveProductToWishlist(productId: string): void {
+    this.wishlistFacadeService.toggleItem(productId);
+  }
+
+  isProductWishlisted(productId: string): boolean {
+    return this.wishlistFacadeService.isInWishlist(productId);
+  }
   goToPreviousPage(): void {
     if (!this.hasPreviousPage()) {
       return;
@@ -205,6 +214,4 @@ export class ProductGridComponent {
       hasNext: false
     };
   }
-
-  saveProductToWishlist(_productId: string): void {}
 }

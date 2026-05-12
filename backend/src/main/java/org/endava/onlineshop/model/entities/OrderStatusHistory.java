@@ -27,7 +27,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderStatusHistory extends BaseAuditEntity {
+public class OrderStatusHistory extends AuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -46,4 +46,3 @@ public class OrderStatusHistory extends BaseAuditEntity {
     @Column(name = "notes", length = 255)
     private String notes;
 }
-

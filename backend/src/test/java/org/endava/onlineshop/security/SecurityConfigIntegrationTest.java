@@ -96,6 +96,12 @@ class SecurityConfigIntegrationTest {
     }
 
     @Test
+    void shouldRejectUnauthenticatedWishlistRequests() throws Exception {
+        mockMvc.perform(get("/api/wishlist"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void shouldAllowAuthenticatedRequests() throws Exception {
         when(authenticatedUserSyncService.syncUser(any(Jwt.class))).thenReturn(userWithId(UUID.randomUUID()));
 

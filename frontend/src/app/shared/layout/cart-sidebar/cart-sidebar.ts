@@ -19,6 +19,7 @@ export class CartSidebarComponent {
   @Output() incrementRequested = new EventEmitter<string>();
   @Output() decrementRequested = new EventEmitter<string>();
   @Output() removeRequested = new EventEmitter<string>();
+  @Output() itemSelected = new EventEmitter<string>();
 
   readonly cartImageOptions: CloudinaryTransformOptions = {
     width: 160,
@@ -44,4 +45,7 @@ export class CartSidebarComponent {
     this.removeRequested.emit(productId);
   }
 
+  onItemSelected(productId: string): void {
+    this.itemSelected.emit(productId);
+  }
 }
