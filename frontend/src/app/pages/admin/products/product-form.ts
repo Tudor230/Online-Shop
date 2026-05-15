@@ -100,25 +100,20 @@ export class AdminProductFormComponent implements OnInit {
       .map(s => s.trim())
       .filter(s => s.length > 0);
 
-    const request = {
-      sku: this.sku(),
-      name: this.name(),
-      slug: this.slug(),
-      description: this.description() || undefined,
-      basePrice: this.basePrice(),
-      categoryIds: this.selectedCategoryIds(),
-      imagePlaceholder: this.imagePlaceholder(),
-      imageGallery: gallery.length > 0 ? gallery : undefined,
-      initialQuantity: this.initialQuantity(),
-      lowStockThreshold: this.lowStockThreshold(),
-    };
-
     const id = this.productId();
     if (id) {
       this.api.updateProduct(id, {
-        ...request,
+        sku: this.sku(),
+        name: this.name(),
+        slug: this.slug(),
+        description: this.description() || undefined,
+        basePrice: this.basePrice(),
+        categoryIds: this.selectedCategoryIds(),
+        imagePlaceholder: this.imagePlaceholder(),
+        imageGallery: gallery.length > 0 ? gallery : undefined,
         isActive: this.isActive(),
         quantityAvailable: this.initialQuantity(),
+        lowStockThreshold: this.lowStockThreshold(),
       }).subscribe({
         next: () => this.router.navigate(['/admin/products']),
         error: (err) => {
@@ -127,7 +122,18 @@ export class AdminProductFormComponent implements OnInit {
         }
       });
     } else {
-      this.api.createProduct(request).subscribe({
+      this.api.createProduct({
+        sku: this.sku(),
+        name: this.name(),
+        slug: this.slug(),
+        description: this.description() || undefined,
+        basePrice: this.basePrice(),
+        categoryIds: this.selectedCategoryIds(),
+        imagePlaceholder: this.imagePlaceholder(),
+        imageGallery: gallery.length > 0 ? gallery : undefined,
+        initialQuantity: this.initialQuantity(),
+        lowStockThreshold: this.lowStockThreshold(),
+      }).subscribe({
         next: () => this.router.navigate(['/admin/products']),
         error: (err) => {
           this.error.set(err?.message ?? 'Failed to create product');

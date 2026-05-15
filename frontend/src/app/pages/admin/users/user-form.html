@@ -15,22 +15,22 @@
       <div class="grid gap-4 sm:grid-cols-2">
         <div>
           <label for="firstName" class="mb-1 block text-xs font-medium text-text-secondary">First Name *</label>
-          <input id="firstName" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="firstName" />
+          <input id="firstName" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="firstName()" (ngModelChange)="firstName.set($event)" />
         </div>
         <div>
           <label for="lastName" class="mb-1 block text-xs font-medium text-text-secondary">Last Name *</label>
-          <input id="lastName" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="lastName" />
+          <input id="lastName" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="lastName()" (ngModelChange)="lastName.set($event)" />
         </div>
       </div>
 
       @if (!userId()) {
         <div>
           <label for="email" class="mb-1 block text-xs font-medium text-text-secondary">Email *</label>
-          <input id="email" type="email" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="email" />
+          <input id="email" type="email" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="email()" (ngModelChange)="email.set($event)" />
         </div>
         <div>
           <label for="password" class="mb-1 block text-xs font-medium text-text-secondary">Password *</label>
-          <input id="password" type="password" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="password" />
+          <input id="password" type="password" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="password()" (ngModelChange)="password.set($event)" />
         </div>
       } @else {
         <div>
@@ -42,7 +42,7 @@
       <div class="grid gap-4 sm:grid-cols-2">
         <div>
           <label for="role" class="mb-1 block text-xs font-medium text-text-secondary">Role</label>
-          <select id="role" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [(ngModel)]="role">
+          <select id="role" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="role()" (ngModelChange)="role.set($event)">
             <option value="CUSTOMER">Customer</option>
             <option value="SUPPORT">Support</option>
             <option value="ADMIN">Admin</option>

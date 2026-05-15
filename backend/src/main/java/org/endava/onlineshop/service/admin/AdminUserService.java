@@ -44,25 +44,34 @@ public class AdminUserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        String email = user.getEmail();
+        Boolean isActive = user.getIsActive();
+
         try {
             java.util.Map<String, Object> kcUser = keycloakAdminService.getUserDetails(id);
             if (kcUser.containsKey("firstName") && kcUser.get("firstName") != null) {
-                user.setFirstName(kcUser.get("firstName").toString());
+                firstName = kcUser.get("firstName").toString();
             }
             if (kcUser.containsKey("lastName") && kcUser.get("lastName") != null) {
-                user.setLastName(kcUser.get("lastName").toString());
+                lastName = kcUser.get("lastName").toString();
             }
             if (kcUser.containsKey("email") && kcUser.get("email") != null) {
-                user.setEmail(kcUser.get("email").toString());
+                email = kcUser.get("email").toString();
             }
             if (kcUser.containsKey("enabled") && kcUser.get("enabled") != null) {
-                user.setIsActive((Boolean) kcUser.get("enabled"));
+                isActive = (Boolean) kcUser.get("enabled");
             }
         } catch (Exception e) {
             // Fallback to local DB values if Keycloak fetch fails
         }
 
-        return toDetailDto(user);
+        return new AdminUserDetailDto(
+                user.getId(), email, firstName, lastName,
+                user.getRole(), isActive, user.getDefaultShippingAddressId(),
+                user.getDefaultBillingAddressId(), user.getCreatedAt(), user.getUpdatedAt()
+        );
     }
 
     @Transactional

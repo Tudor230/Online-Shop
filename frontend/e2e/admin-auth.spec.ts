@@ -105,9 +105,9 @@ test.describe('Admin Panel with Real Keycloak Auth', () => {
     await expect(authPage.sidebar).toBeVisible({ timeout: 15000 });
 
     // Try to navigate to users page (admin-only)
-    await page.goto('http://localhost:4200/admin/users');
+    await page.goto('/admin/users');
 
     // Should be redirected away (guard redirects to home)
-    await expect(page).toHaveURL('http://localhost:4200/');
+    await expect(page).toHaveURL('/');
   });
 });

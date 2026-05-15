@@ -27,8 +27,9 @@ export class AdminDashboardComponent implements OnInit {
     this.error.set(null);
 
     const today = new Date();
-    const from = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-    const to = new Date(today.getFullYear(), today.getMonth(), 0);
+    const to = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const from = new Date(today);
+    from.setDate(from.getDate() - 30);
 
     forkJoin({
       stats: this.api.getStats(),

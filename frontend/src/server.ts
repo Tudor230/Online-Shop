@@ -49,9 +49,20 @@ app.use((req, res, next) => {
 
 /**
  * Fallback: serve index.html for Angular routes that could not be server-rendered.
- * This ensures client-side routing always works, even if SSR returns null.
+ * Only serves index.html for GET requests that accept text/html.
+ * This ensures client-side routing always works, even if SSR returns null,
+ * while preventing API and asset errors from being swallowed.
  */
 app.use((req, res) => {
+  if (req.method !== 'GET') {
+    res.status(405).send('Method Not Allowed');
+    return;
+  }
+  const accept = req.headers['accept'] ?? '';
+  if (!accept.includes('text/html') && accept !== '*/*') {
+    res.status(404).send('Not Found');
+    return;
+  }
   res.sendFile(join(browserDistFolder, 'index.html'), (err) => {
     if (err) {
       res.status(500).send('Internal Server Error');
