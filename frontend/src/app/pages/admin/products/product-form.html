@@ -1,0 +1,88 @@
+<div class="mx-auto max-w-2xl space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-text-primary">{{ productId() ? 'Edit' : 'New' }} Product</h1>
+    <button class="text-sm text-text-secondary hover:text-text-primary" (click)="cancel()">Back to Products</button>
+  </div>
+
+  @if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <p class="text-sm text-text-secondary">Loading...</p>
+  } @else {
+    <div class="space-y-4 rounded-xl border border-surface-elevated bg-surface-default p-5">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="sku" class="mb-1 block text-xs font-medium text-text-secondary">SKU *</label>
+          <input id="sku" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="sku()" (ngModelChange)="sku.set($event)" />
+        </div>
+        <div>
+          <label for="slug" class="mb-1 block text-xs font-medium text-text-secondary">Slug *</label>
+          <input id="slug" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="slug()" (ngModelChange)="slug.set($event)" />
+        </div>
+      </div>
+
+      <div>
+        <label for="name" class="mb-1 block text-xs font-medium text-text-secondary">Name *</label>
+        <input id="name" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="name()" (ngModelChange)="name.set($event)" />
+      </div>
+
+      <div>
+        <label for="description" class="mb-1 block text-xs font-medium text-text-secondary">Description</label>
+        <textarea id="description" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" rows="3" [ngModel]="description()" (ngModelChange)="description.set($event)"></textarea>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div>
+          <label for="basePrice" class="mb-1 block text-xs font-medium text-text-secondary">Base Price *</label>
+          <input id="basePrice" type="number" min="0" step="0.01" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="basePrice()" (ngModelChange)="basePrice.set($event)" />
+        </div>
+        <div>
+          <label for="initialQuantity" class="mb-1 block text-xs font-medium text-text-secondary">Initial Quantity</label>
+          <input id="initialQuantity" type="number" min="0" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="initialQuantity()" (ngModelChange)="initialQuantity.set($event)" />
+        </div>
+        <div>
+          <label for="lowStockThreshold" class="mb-1 block text-xs font-medium text-text-secondary">Low Stock Threshold</label>
+          <input id="lowStockThreshold" type="number" min="0" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="lowStockThreshold()" (ngModelChange)="lowStockThreshold.set($event)" />
+        </div>
+      </div>
+
+      <div>
+        <label for="imagePlaceholder" class="mb-1 block text-xs font-medium text-text-secondary">Image Placeholder URL *</label>
+        <input id="imagePlaceholder" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="imagePlaceholder()" (ngModelChange)="imagePlaceholder.set($event)" />
+      </div>
+
+      <div>
+        <label for="imageGallery" class="mb-1 block text-xs font-medium text-text-secondary">Image Gallery URLs (one per line)</label>
+        <textarea id="imageGallery" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" rows="3" [ngModel]="imageGallery()" (ngModelChange)="imageGallery.set($event)"></textarea>
+      </div>
+
+      <div>
+        <label class="mb-1 block text-xs font-medium text-text-secondary">Categories</label>
+        <div class="flex flex-wrap gap-2">
+          @for (cat of categories(); track cat.id) {
+            <label class="inline-flex items-center gap-1 rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary cursor-pointer">
+              <input type="checkbox" [checked]="selectedCategoryIds().includes(cat.id)" (change)="toggleCategory(cat.id)" />
+              {{ cat.name }}
+            </label>
+          }
+        </div>
+      </div>
+
+      @if (productId()) {
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="isActive" [checked]="isActive()" (change)="isActive.set(!isActive())" />
+          <label for="isActive" class="text-sm text-text-primary">Active</label>
+        </div>
+      }
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button class="rounded-lg border border-surface-elevated bg-surface-default px-4 py-2 text-sm text-text-primary hover:bg-surface-elevated" (click)="cancel()">Cancel</button>
+        <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50" [disabled]="saving()" (click)="save()">
+          {{ saving() ? 'Saving...' : (productId() ? 'Update' : 'Create') }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

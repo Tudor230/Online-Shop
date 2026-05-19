@@ -35,6 +35,12 @@ public class ProductSearchIndexMaintenanceService {
     }
 
     @Transactional
+    public void updateProductEmbedding(UUID productId) {
+        productRepository.findById(productId)
+                .ifPresent(productEmbeddingService::upsertProductEmbedding);
+    }
+
+    @Transactional
     public void reindexProductsForCategory(UUID categoryId) {
         int page = 0;
 

@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable, isDevMode, PLATFORM_ID } from '@angular/core';
 import type Keycloak from 'keycloak-js';
 import type { KeycloakInitOptions, KeycloakTokenParsed } from 'keycloak-js';
 import { isPlatformBrowser } from '@angular/common';
@@ -30,6 +30,21 @@ export class KeycloakAuthService {
       return;
     }
 
+    if (isDevMode()) {
+      // E2E testing bypass
+      const testUser = (window as any).__TEST_AUTH_USER;
+      if (testUser) {
+        this.authState.setUser(testUser);
+        return;
+      }
+
+      // Disable Keycloak in test environments where server is unavailable
+      if ((window as any).__TEST_DISABLE_KEYCLOAK) {
+        this.authState.clear();
+        return;
+      }
+    }
+
     const instance = await this.ensureKeycloak();
 
     const initOptions: KeycloakInitOptions = {
@@ -38,11 +53,15 @@ export class KeycloakAuthService {
       pkceMethod: 'S256'
     };
 
-    const authenticated = await instance.init(initOptions);
-
-    if (authenticated) {
-      this.updateUserFromToken();
-    } else {
+    try {
+      const authenticated = await instance.init(initOptions);
+      if (authenticated) {
+        this.updateUserFromToken();
+      } else {
+        this.authState.clear();
+      }
+    } catch {
+      // Keycloak unavailable (e.g., in E2E tests or offline)
       this.authState.clear();
     }
 

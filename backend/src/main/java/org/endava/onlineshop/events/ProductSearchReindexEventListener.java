@@ -26,5 +26,11 @@ public class ProductSearchReindexEventListener {
     public void onCategoryPathChanged(CategoryPathChangedEvent event) {
         productSearchIndexMaintenanceService.reindexProductsForCategory(event.categoryId());
     }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onProductDetailsChanged(ProductDetailsChangedEvent event) {
+        productSearchIndexMaintenanceService.updateProductEmbedding(event.productId());
+    }
 }
 
