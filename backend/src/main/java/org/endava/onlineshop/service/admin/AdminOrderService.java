@@ -7,6 +7,7 @@ import org.endava.onlineshop.model.entities.OrderItem;
 import org.endava.onlineshop.model.entities.OrderStatusHistory;
 import org.endava.onlineshop.model.enums.OrderStatus;
 import org.endava.onlineshop.repository.OrderRepository;
+import org.endava.onlineshop.service.InventoryService;
 import org.endava.onlineshop.security.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,13 +37,16 @@ public class AdminOrderService {
     private final OrderRepository orderRepository;
     private final AdminAuditLogService auditLogService;
     private final SecurityUtils securityUtils;
+    private final InventoryService inventoryService;
 
     public AdminOrderService(OrderRepository orderRepository,
                              AdminAuditLogService auditLogService,
-                             SecurityUtils securityUtils) {
+                             SecurityUtils securityUtils,
+                             InventoryService inventoryService) {
         this.orderRepository = orderRepository;
         this.auditLogService = auditLogService;
         this.securityUtils = securityUtils;
+        this.inventoryService = inventoryService;
     }
 
     @Transactional(readOnly = true)
@@ -75,6 +79,9 @@ public class AdminOrderService {
         history.setNotes(request.notes());
         order.addStatusHistory(history);
 
+        if (current == OrderStatus.PENDING && next == OrderStatus.CANCELLED) {
+            inventoryService.releaseItems(order.getItems());
+        }
         order.setCurrentStatus(next);
         Order saved = orderRepository.save(order);
         audit("UPDATE_STATUS", "ORDER", saved.getId().toString(),

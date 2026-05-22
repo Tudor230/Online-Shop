@@ -23,6 +23,7 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final InventoryService inventoryService;
     private final ObjectProvider<OrderMockSeeder> orderMockSeederProvider;
 
 
@@ -52,6 +53,7 @@ public class OrderService {
             throw new BadRequestException("Only pending orders can be cancelled");
         }
 
+        inventoryService.releaseItems(order.getItems());
         order.setCurrentStatus(OrderStatus.CANCELLED);
 
         OrderStatusHistory history = new OrderStatusHistory();

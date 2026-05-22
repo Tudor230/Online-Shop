@@ -55,6 +55,7 @@ public class StripeCheckoutService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final StripeWebhookEventRepository stripeWebhookEventRepository;
+    private final InventoryService inventoryService;
 
     @Value("${stripe.secret-key}")
     private String stripeSecretKey;
@@ -133,6 +134,7 @@ public class StripeCheckoutService {
             orderItems.add(orderItem);
         }
         orderItemRepository.saveAll(orderItems);
+        inventoryService.reserveItems(orderItems);
 
         SessionCreateParams params = buildSessionParams(savedOrder, user, shippingAddress, billingAddress, cartItems, pricing);
 
@@ -247,7 +249,7 @@ public class StripeCheckoutService {
             return;
         }
 
-        if (order.getCurrentStatus() == OrderStatus.PAID) {
+        if (order.getCurrentStatus() != OrderStatus.PENDING) {
             return;
         }
 
@@ -261,7 +263,7 @@ public class StripeCheckoutService {
         order.addStatusHistory(history);
 
         orderRepository.save(order);
-        
+
     }
 
     private PricingSnapshot calculatePricing(List<CartItem> cartItems) {
