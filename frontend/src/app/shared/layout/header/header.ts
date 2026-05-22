@@ -26,6 +26,15 @@ export class HeaderComponent {
   readonly searchControl = new FormControl('', { nonNullable: true });
   isCheckoutInProgress = false;
 
+  private readonly currentUrlFromRoute = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      startWith(null),
+      map(() => this.router.url)
+    ),
+    { initialValue: this.router.url }
+  );
+
   private readonly searchTermFromRoute = toSignal(
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
@@ -38,6 +47,13 @@ export class HeaderComponent {
   constructor() {
     effect(() => {
       this.searchControl.setValue(this.searchTermFromRoute(), { emitEvent: false });
+    });
+
+    effect(() => {
+      this.currentUrlFromRoute();
+      if (this.isCheckoutInProgress) {
+        this.isCheckoutInProgress = false;
+      }
     });
   }
 

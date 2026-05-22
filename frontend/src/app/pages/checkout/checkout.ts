@@ -1,6 +1,6 @@
 import { CommonModule, CurrencyPipe, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -20,7 +20,7 @@ import { Address, Profile } from '../../core/profile/profile.types';
   imports: [CommonModule, FormsModule, RouterLink, CurrencyPipe],
   templateUrl: './checkout.html'
 })
-export class CheckoutPageComponent {
+export class CheckoutPageComponent implements OnDestroy {
   private readonly authState = inject(AuthStateService);
   private readonly keycloakAuthService = inject(KeycloakAuthService);
   private readonly profileApiService = inject(ProfileApiService);
@@ -30,6 +30,8 @@ export class CheckoutPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
+
+  private pageShowHandler: (() => void) | null = null;
 
   readonly isAuthenticated = this.authState.isAuthenticated;
   readonly isLoading = signal(true);
@@ -86,7 +88,20 @@ export class CheckoutPageComponent {
   readonly totalAmount = computed(() => this.pendingOrder()?.totalAmount ?? this.cartSummary()?.totalAmount ?? this.subtotal());
 
   constructor() {
+    if (this.isBrowser) {
+      this.pageShowHandler = () => {
+        this.isSubmitting.set(false);
+        this.submitError.set(null);
+      };
+      window.addEventListener('pageshow', this.pageShowHandler);
+    }
     void this.loadCheckoutData();
+  }
+
+  ngOnDestroy(): void {
+    if (this.pageShowHandler && this.isBrowser) {
+      window.removeEventListener('pageshow', this.pageShowHandler);
+    }
   }
 
   async login(): Promise<void> {
