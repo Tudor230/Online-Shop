@@ -1,7 +1,14 @@
-<div class="flex min-h-[calc(100vh-4rem)]">
+<div class="flex min-h-screen">
   <!-- Sidebar -->
-  <aside class="w-60 shrink-0 border-r border-surface-elevated bg-surface-default">
+  <aside class="flex min-h-screen w-60 shrink-0 flex-col border-r border-surface-elevated bg-surface-default">
     <nav class="flex flex-col gap-1 p-3">
+      <a
+        routerLink="/products"
+        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-surface-elevated hover:text-text-primary"
+      >
+        <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M10 6 4 12l6 6 1.4-1.4L7.8 13H20v-2H7.8l3.6-3.6z"/></svg>
+        Back to shop
+      </a>
       <a
         routerLink="/admin"
         routerLinkActive="bg-surface-elevated font-semibold text-text-primary"
