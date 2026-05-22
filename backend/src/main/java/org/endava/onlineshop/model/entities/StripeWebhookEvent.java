@@ -19,7 +19,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StripeWebhookEvent extends BaseAuditEntity {
+public class StripeWebhookEvent extends CreationAuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
