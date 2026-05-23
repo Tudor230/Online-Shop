@@ -55,14 +55,14 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderHistoryEntryDto getOrderDetails(User user, String orderSlug) {
-      OrderMockSeeder orderMockSeeder = orderMockSeederProvider.getIfAvailable();
-      if (orderMockSeeder != null) {
-        orderMockSeeder.seedForUserIfMissing(user);
-      }
+        OrderMockSeeder orderMockSeeder = orderMockSeederProvider.getIfAvailable();
+        if (orderMockSeeder != null) {
+            orderMockSeeder.seedForUserIfMissing(user);
+        }
 
-      Order order = orderRepository.findByOrderNumberAndUserId(orderSlug, user.getId())
-        .orElseThrow(() -> new BadRequestException("Order was not found"));
-      return toOrderHistoryDto(order, user.getId());
+        Order order = orderRepository.findByOrderNumberAndUserId(orderSlug, user.getId())
+                .orElseThrow(() -> new BadRequestException("Order was not found"));
+        return toOrderHistoryDto(order, user.getId());
     }
 
     @Transactional
