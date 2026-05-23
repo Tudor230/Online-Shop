@@ -57,12 +57,6 @@ public class Product extends AuditedEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
-    @Column(name = "rating", nullable = false)
-    private Double rating = 0.0;
-
-    @Column(name = "review_count", nullable = false)
-    private Integer reviewCount = 0;
-
     @Column(name = "image_id", nullable = false, length = 500)
     private String imageId;
 

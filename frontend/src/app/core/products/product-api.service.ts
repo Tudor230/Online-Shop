@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { keycloakConfig } from '../../keycloak.config';
-import { ProductDetails, ProductSearchPage } from './product.types';
+import { CreateProductReviewRequest, ProductDetails, ProductSearchPage, ProductSummary } from './product.types';
 
 @Injectable({ providedIn: 'root' })
 export class ProductApiService {
@@ -23,5 +23,9 @@ export class ProductApiService {
 
   getProductById(productId: string): Observable<ProductDetails> {
     return this.httpClient.get<ProductDetails>(`${this.productsBaseUrl}/${productId}`);
+  }
+
+  submitProductReview(productId: string, request: CreateProductReviewRequest): Observable<ProductDetails> {
+    return this.httpClient.post<ProductDetails>(`${this.productsBaseUrl}/${productId}/reviews`, request);
   }
 }

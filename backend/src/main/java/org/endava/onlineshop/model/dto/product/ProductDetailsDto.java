@@ -9,10 +9,14 @@ public record ProductDetailsDto(
         String title,
         double rating,
         int reviewCount,
+        boolean canReview,
+        boolean hasReviewed,
+        String reviewedReviewId,
         BigDecimal price,
         String description,
         String imageId,
-        List<String> imageGalleryIds
+        List<String> imageGalleryIds,
+        List<ProductReviewDto> reviews
 ) {
 }
 

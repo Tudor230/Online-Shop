@@ -36,18 +36,39 @@
 
     <article class="grid items-start gap-6 md:grid-cols-2">
       <div class="grid gap-4">
-        <div class="aspect-[5/4] overflow-hidden rounded-2xl border border-surface-elevated bg-surface-default">
-          <app-cloudinary-image-frame
-            [source]="selectedImageId"
-            [alt]="product.title"
-            [options]="heroImageOptions"
-            width="1200"
-            height="960"
-            [useResponsive]="true"
-            imageClass="h-full w-full object-contain"
-            fallbackClass="grid h-full w-full place-items-center text-base font-medium text-text-secondary"
-            fallbackText="Image unavailable"
-          />
+        <div class="relative">
+          <div class="aspect-[5/4] overflow-hidden rounded-2xl border border-surface-elevated bg-surface-default">
+            <app-cloudinary-image-frame
+              [source]="selectedImageId"
+              [alt]="product.title"
+              [options]="heroImageOptions"
+              width="1200"
+              height="960"
+              [useResponsive]="true"
+              imageClass="h-full w-full object-contain"
+              fallbackClass="grid h-full w-full place-items-center text-base font-medium text-text-secondary"
+              fallbackText="Image unavailable"
+            />
+
+            @if (product.imageGalleryIds.length > 1) {
+              <button
+                type="button"
+                aria-label="Previous image"
+                class="absolute left-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-surface-default/80 text-lg font-semibold text-text-primary shadow-lg backdrop-blur-sm transition-all duration-200 hover:-translate-y-1/2 hover:scale-105 hover:bg-surface-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                (click)="onPreviousImageRequested()"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                aria-label="Next image"
+                class="absolute right-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-surface-default/80 text-lg font-semibold text-text-primary shadow-lg backdrop-blur-sm transition-all duration-200 hover:-translate-y-1/2 hover:scale-105 hover:bg-surface-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                (click)="onNextImageRequested()"
+              >
+                ›
+              </button>
+            }
+          </div>
         </div>
 
         <div class="grid grid-cols-4 gap-3">
@@ -126,7 +147,84 @@
             </div>
           </div>
         </div>
+
+        <div id="write-review" class="mt-6 rounded-xl border border-surface-elevated bg-surface-default p-4">
+          <p class="text-sm font-semibold text-text-primary">{{ product.hasReviewed ? 'Your review' : 'Write a review' }}</p>
+
+          @if (!isAuthenticated) {
+            <p class="mt-2 text-sm text-text-secondary">Log in and purchase this product to leave a review.</p>
+          } @else if (product.hasReviewed) {
+            <p class="mt-2 text-sm text-text-secondary">
+              You already reviewed this product.
+              @if (product.reviewedReviewId) {
+                <a [routerLink]="[]" [fragment]="'review-' + product.reviewedReviewId" class="font-medium text-primary hover:underline">View your review</a>
+              }
+            </p>
+          } @else if (!product.canReview) {
+            <p class="mt-2 text-sm text-text-secondary">You can leave a review after purchasing this product.</p>
+          } @else {
+            <div class="mt-3 grid gap-3">
+              <label for="review-rating" class="text-sm font-medium text-text-primary">Rating</label>
+              <select
+                id="review-rating"
+                class="rounded-xl border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary"
+                [(ngModel)]="reviewRating"
+              >
+                <option [value]="5">5 - Excellent</option>
+                <option [value]="4">4 - Good</option>
+                <option [value]="3">3 - Average</option>
+                <option [value]="2">2 - Poor</option>
+                <option [value]="1">1 - Very poor</option>
+              </select>
+
+              <label for="review-comment" class="text-sm font-medium text-text-primary">Review</label>
+              <textarea
+                id="review-comment"
+                rows="4"
+                class="rounded-xl border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary"
+                placeholder="Share your experience with this product"
+                [(ngModel)]="reviewComment"
+              ></textarea>
+
+              @if (reviewError) {
+                <p class="text-sm text-danger">{{ reviewError }}</p>
+              }
+
+              <button
+                type="button"
+                class="w-fit rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+                [disabled]="isSubmittingReview || !reviewComment.trim().length"
+                (click)="onSubmitReview()"
+              >
+                {{ isSubmittingReview ? 'Submitting...' : 'Submit review' }}
+              </button>
+            </div>
+          }
+        </div>
       </div>
     </article>
+
+    <section class="mt-8 rounded-2xl border border-surface-elevated bg-surface-default p-6">
+      <h2 class="text-xl font-semibold text-text-primary">Customer reviews</h2>
+
+      @if (!product.reviews.length) {
+        <p class="mt-3 text-sm text-text-secondary">No reviews yet. Be the first customer to share feedback.</p>
+      } @else {
+        <div class="mt-4 grid gap-4">
+          @for (review of product.reviews; track review.id) {
+            <article [attr.id]="'review-' + review.id" class="rounded-xl border border-surface-elevated bg-surface-elevated p-4">
+              <div class="flex flex-wrap items-center gap-2 text-sm text-text-secondary">
+                <span class="font-semibold text-text-primary">{{ review.reviewerName }}</span>
+                <span>•</span>
+                <span>★ {{ review.rating }}</span>
+                <span>•</span>
+                <time [attr.datetime]="review.createdAt">{{ review.createdAt | date : 'mediumDate' }}</time>
+              </div>
+              <p class="mt-2 text-sm leading-6 text-text-primary">{{ review.comment }}</p>
+            </article>
+          }
+        </div>
+      }
+    </section>
   }
 </section>

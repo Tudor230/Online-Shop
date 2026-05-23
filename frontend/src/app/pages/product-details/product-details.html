@@ -1,11 +1,17 @@
 <app-product-display
   [isLoading]="isLoading()"
   [product]="product()"
+  [isAuthenticated]="isAuthenticated()"
+  [isSubmittingReview]="isSubmittingReview()"
+  [reviewError]="reviewError()"
   [selectedImageId]="selectedImage()"
   [selectedImageIndex]="selectedImageIndex()"
   [isWishlisted]="isWishlisted()"
   (backRequested)="goBackToGrid()"
   (imageSelected)="selectImage($event)"
+  (previousImageRequested)="selectPreviousImage()"
+  (nextImageRequested)="selectNextImage()"
   (addToCart)="addToCart()"
+  (reviewSubmitted)="submitReview($event)"
   (saveToWishlist)="saveToWishlist()"
 />

@@ -14,6 +14,7 @@ import { TermsPageComponent } from './pages/terms/terms';
 import { WarrantyPolicyPageComponent } from './pages/warranty-policy/warranty-policy';
 import { CommonLayoutComponent } from './shared/layout/common-layout/common-layout';
 import { OrderHistoryPageComponent } from './pages/order-history/order-history';
+import { OrderHistoryDetailsPageComponent } from './pages/order-history-details/order-history-details';
 import { WishlistPageComponent } from './pages/wishlist/wishlist';
 
 export const routes: Routes = [
@@ -58,6 +59,11 @@ export const routes: Routes = [
         path: 'orders',
         canActivate: [profileAuthGuard],
         component: OrderHistoryPageComponent
+      },
+      {
+        path: 'orders/:orderSlug',
+        canActivate: [profileAuthGuard],
+        component: OrderHistoryDetailsPageComponent
       },
       {
         path: 'checkout',

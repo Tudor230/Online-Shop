@@ -26,6 +26,14 @@ public class OrderController {
         return orderService.getOrderHistory(user);
     }
 
+    @GetMapping("/{orderSlug}")
+    public OrderHistoryEntryDto getOrderDetails(
+            @AuthenticationPrincipal User user,
+            @PathVariable String orderSlug
+    ) {
+        return orderService.getOrderDetails(user, orderSlug);
+    }
+
     @PatchMapping("/{orderId}/cancel")
     public OrderHistoryEntryDto cancelOrder(
             @AuthenticationPrincipal User user,

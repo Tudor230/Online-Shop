@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -103,8 +102,6 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         product.setBasePrice(BigDecimal.valueOf(seedProduct.price()));
         product.setDescription(seedProduct.description());
         product.setIsActive(true);
-        product.setRating(seedProduct.rating());
-        product.setReviewCount(seedProduct.reviewCount());
 
         String primaryImageId = uploadedImageIdsByName.get(seedProduct.imageName());
         if (primaryImageId == null || primaryImageId.isBlank()) {
@@ -265,8 +262,6 @@ public class ProductCatalogSeeder implements ApplicationRunner {
             String id,
             String category,
             String title,
-            double rating,
-            int reviewCount,
             double price,
             String description,
             String imageName,
