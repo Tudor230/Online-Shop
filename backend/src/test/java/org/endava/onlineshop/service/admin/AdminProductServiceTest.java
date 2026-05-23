@@ -10,6 +10,7 @@ import org.endava.onlineshop.model.entities.ProductInventory;
 import org.endava.onlineshop.repository.CategoryRepository;
 import org.endava.onlineshop.repository.ProductInventoryRepository;
 import org.endava.onlineshop.repository.ProductRepository;
+import org.endava.onlineshop.repository.ReviewRepository;
 import org.endava.onlineshop.security.SecurityUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,9 @@ class AdminProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private ReviewRepository reviewRepository;
 
     @Mock
     private CategoryRepository categoryRepository;
