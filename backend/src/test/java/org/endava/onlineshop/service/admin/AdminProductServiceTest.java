@@ -164,8 +164,6 @@ class AdminProductServiceTest {
         product.setBasePrice(new BigDecimal("99.99"));
         product.setIsActive(true);
         product.setImageId("placeholder");
-        product.setRating(0.0);
-        product.setReviewCount(0);
 
         ProductInventory inventory = new ProductInventory();
         inventory.setQuantityAvailable(10);
