@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.endava.onlineshop.model.dto.product.CreateProductReviewRequestDto;
 import org.endava.onlineshop.model.dto.product.ProductDetailsDto;
 import org.endava.onlineshop.model.dto.product.ProductSearchPageDto;
-import org.endava.onlineshop.model.dto.product.ProductSummaryDto;
 import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.service.ProductService;
 import org.springframework.data.domain.Pageable;
