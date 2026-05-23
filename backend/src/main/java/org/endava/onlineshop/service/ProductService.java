@@ -44,20 +44,23 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductSearchPageDto getProducts(String query, Pageable pageable) {
         Page<Product> page = productEmbeddingService.findActiveProducts(query, pageable);
+        List<Product> products = page.getContent();
 
-        Map<UUID, ProductReviewSnapshot> reviewByProductId = reviewRepository.summarizeByProductIds(
-                        page.getContent().stream().map(Product::getId).toList()
-                ).stream()
-                .collect(Collectors.toMap(
-                        ReviewRepository.ProductReviewAggregate::getProductId,
-                        aggregate -> new ProductReviewSnapshot(
-                                aggregate.getAverageRating() != null ? aggregate.getAverageRating() : 0.0d,
-                                aggregate.getReviewCount() != null ? aggregate.getReviewCount().intValue() : 0
-                        ),
-                        (left, right) -> left
-                ));
+        Map<UUID, ProductReviewSnapshot> reviewByProductId = products.isEmpty()
+                ? Map.of()
+                : reviewRepository.summarizeByProductIds(
+                                products.stream().map(Product::getId).toList()
+                        ).stream()
+                        .collect(Collectors.toMap(
+                                ReviewRepository.ProductReviewAggregate::getProductId,
+                                aggregate -> new ProductReviewSnapshot(
+                                        aggregate.getAverageRating() != null ? aggregate.getAverageRating() : 0.0d,
+                                        aggregate.getReviewCount() != null ? aggregate.getReviewCount().intValue() : 0
+                                ),
+                                (left, right) -> left
+                        ));
 
-        List<ProductSummaryDto> items = page.getContent().stream()
+        List<ProductSummaryDto> items = products.stream()
             .map(product -> toSummaryDto(product, reviewByProductId.get(product.getId())))
             .toList();
 
