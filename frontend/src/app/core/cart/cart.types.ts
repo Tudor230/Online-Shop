@@ -9,4 +9,9 @@ export interface CartItem {
 export interface CartState {
   items: CartItem[];
   totalItems: number;
+  subtotal: number;
+  shippingAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+  currencyCode: string;
 }

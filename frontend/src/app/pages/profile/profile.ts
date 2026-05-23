@@ -19,6 +19,9 @@ export class ProfilePageComponent {
   private readonly keycloakAuthService = inject(KeycloakAuthService);
   private readonly formBuilder = inject(FormBuilder);
 
+  private readonly phonePattern = /^[0-9+()\-\s]{7,20}$/;
+  private readonly postalPattern = /^[A-Za-z0-9\-\s]{3,20}$/;
+
   readonly isAuthenticated = this.authState.isAuthenticated;
   readonly profile = signal<Profile | null>(null);
 
@@ -43,14 +46,14 @@ export class ProfilePageComponent {
   });
 
   readonly addressForm = this.formBuilder.nonNullable.group({
-    recipientName: ['', [Validators.required, Validators.maxLength(200)]],
-    phoneNumber: ['', [Validators.maxLength(20)]],
-    addressLine1: ['', [Validators.required, Validators.maxLength(255)]],
+    recipientName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
+    phoneNumber: ['', [Validators.maxLength(20), Validators.pattern(this.phonePattern)]],
+    addressLine1: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
     addressLine2: ['', [Validators.maxLength(255)]],
-    city: ['', [Validators.required, Validators.maxLength(100)]],
-    state: ['', [Validators.required, Validators.maxLength(100)]],
-    postalCode: ['', [Validators.required, Validators.maxLength(20)]],
-    country: ['', [Validators.required, Validators.maxLength(100)]]
+    city: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+    state: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+    postalCode: ['', [Validators.required, Validators.pattern(this.postalPattern), Validators.maxLength(20)]],
+    country: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]]
   });
 
   readonly addresses = computed(() => this.profile()?.addresses ?? []);
@@ -220,5 +223,27 @@ export class ProfilePageComponent {
     if (!tokenRefreshed) {
       this.profileSaveError.set('Profile saved, but session claims could not be refreshed. Please sign in again.');
     }
+  }
+
+  getAddressError(controlName: keyof typeof this.addressForm.controls): string | null {
+    const control = this.addressForm.controls[controlName];
+    if (!control.touched || !control.errors) {
+      return null;
+    }
+
+    if (control.errors['required']) {
+      return 'This field is required.';
+    }
+    if (control.errors['minlength']) {
+      return 'Please enter at least two characters.';
+    }
+    if (control.errors['maxlength']) {
+      return 'Please shorten this value.';
+    }
+    if (control.errors['pattern']) {
+      return 'Please use a valid format.';
+    }
+
+    return 'Please enter a valid value.';
   }
 }

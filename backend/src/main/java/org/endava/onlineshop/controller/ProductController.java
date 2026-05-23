@@ -1,5 +1,6 @@
 package org.endava.onlineshop.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.endava.onlineshop.model.dto.product.ProductDetailsDto;
 import org.endava.onlineshop.model.dto.product.ProductSearchPageDto;
 import org.endava.onlineshop.service.ProductService;
@@ -11,15 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
 
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping
     public ProductSearchPageDto getProducts(

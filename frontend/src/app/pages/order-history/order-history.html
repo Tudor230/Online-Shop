@@ -44,6 +44,12 @@
     </div>
   } @else {
     <div class="space-y-4">
+      @if (actionError()) {
+        <div class="rounded-2xl border border-red-400/40 bg-surface-default p-4 text-sm text-red-300">
+          {{ actionError() }}
+        </div>
+      }
+
       @for (order of orders(); track order.id) {
         <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -71,8 +77,8 @@
                   <tr class="border-t border-surface-elevated/70 text-text-primary">
                     <td class="px-3 py-2">{{ item.title }}</td>
                     <td class="px-3 py-2">{{ item.quantity }}</td>
-                    <td class="px-3 py-2">{{ item.unitPrice | currency: 'USD' : 'symbol' : '1.2-2' }}</td>
-                    <td class="px-3 py-2">{{ item.lineTotal | currency: 'USD' : 'symbol' : '1.2-2' }}</td>
+                    <td class="px-3 py-2">{{ item.unitPrice | currency: order.currencyCode : 'symbol' : '1.2-2' }}</td>
+                    <td class="px-3 py-2">{{ item.lineTotal | currency: order.currencyCode : 'symbol' : '1.2-2' }}</td>
                   </tr>
                 }
               </tbody>
@@ -80,10 +86,37 @@
           </div>
 
           <div class="mt-4 flex flex-wrap justify-end gap-4 text-sm">
-            <span class="text-text-secondary">Subtotal: <strong class="text-text-primary">{{ order.subtotal | currency: 'USD' : 'symbol' : '1.2-2' }}</strong></span>
-            <span class="text-text-secondary">Discount: <strong class="text-text-primary">{{ order.discountAmount | currency: 'USD' : 'symbol' : '1.2-2' }}</strong></span>
-            <span class="text-text-secondary">Total: <strong class="text-text-primary">{{ order.totalAmount | currency: 'USD' : 'symbol' : '1.2-2' }}</strong></span>
+            <span class="text-text-secondary">Subtotal: <strong class="text-text-primary">{{ order.subtotal | currency: order.currencyCode : 'symbol' : '1.2-2' }}</strong></span>
+            <span class="text-text-secondary">Shipping: <strong class="text-text-primary">{{ order.shippingAmount | currency: order.currencyCode : 'symbol' : '1.2-2' }}</strong></span>
+            <span class="text-text-secondary">Tax: <strong class="text-text-primary">{{ order.taxAmount | currency: order.currencyCode : 'symbol' : '1.2-2' }}</strong></span>
+            <span class="text-text-secondary">Discount: <strong class="text-text-primary">{{ order.discountAmount | currency: order.currencyCode : 'symbol' : '1.2-2' }}</strong></span>
+            <span class="text-text-secondary">Total: <strong class="text-text-primary">{{ order.totalAmount | currency: order.currencyCode : 'symbol' : '1.2-2' }}</strong></span>
           </div>
+
+          @if (canPay(order) || canCancel(order)) {
+            <div class="mt-4 flex flex-wrap justify-end gap-2">
+              @if (canPay(order)) {
+                <button
+                  type="button"
+                  class="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
+                  (click)="payPendingOrder(order)"
+                >
+                  Pay now
+                </button>
+              }
+
+              @if (canCancel(order)) {
+                <button
+                  type="button"
+                  class="rounded-full border border-red-400/50 px-4 py-2 text-sm font-semibold text-red-300 transition-colors duration-200 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  [disabled]="actionLoadingOrderId() === order.id"
+                  (click)="cancelPendingOrder(order)"
+                >
+                  {{ actionLoadingOrderId() === order.id ? 'Cancelling...' : 'Cancel order' }}
+                </button>
+              }
+            </div>
+          }
         </article>
       }
     </div>

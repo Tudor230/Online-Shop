@@ -1,6 +1,7 @@
 package org.endava.onlineshop;
 
 import org.endava.onlineshop.security.KeycloakAdminService;
+import org.endava.onlineshop.service.StripeCheckoutService;
 import org.springframework.ai.google.genai.GoogleGenAiEmbeddingConnectionDetails;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
@@ -21,6 +22,9 @@ public abstract class BaseIntegrationTest {
 
     @MockitoBean
     private GoogleGenAiEmbeddingConnectionDetails googleGenAiEmbeddingConnectionDetails;
+
+    @MockitoBean
+    private StripeCheckoutService stripeCheckoutService;
 
     @Container
     @ServiceConnection

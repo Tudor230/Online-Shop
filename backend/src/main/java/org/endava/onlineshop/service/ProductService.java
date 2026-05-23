@@ -1,5 +1,6 @@
 package org.endava.onlineshop.service;
 
+import lombok.RequiredArgsConstructor;
 import org.endava.onlineshop.model.dto.product.ProductDetailsDto;
 import org.endava.onlineshop.model.dto.product.ProductSearchPageDto;
 import org.endava.onlineshop.model.dto.product.ProductSummaryDto;
@@ -15,16 +16,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductEmbeddingService productEmbeddingService;
-
-    public ProductService(ProductRepository productRepository, ProductEmbeddingService productEmbeddingService) {
-        this.productRepository = productRepository;
-        this.productEmbeddingService = productEmbeddingService;
-    }
 
     @Transactional(readOnly = true)
     public ProductSearchPageDto getProducts(String query, Pageable pageable) {

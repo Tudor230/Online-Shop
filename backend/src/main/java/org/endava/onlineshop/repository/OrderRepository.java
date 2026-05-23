@@ -32,5 +32,15 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             ORDER BY CAST(o.createdAt AS java.time.LocalDate)
             """)
     List<Object[]> findRevenueBetween(@Param("from") Instant from, @Param("to") Instant to);
+
+    @EntityGraph(attributePaths = {"items", "items.product"})
+    @Query("SELECT o FROM Order o WHERE o.currentStatus = :status AND o.createdAt <= :cutoff")
+    List<Order> findByStatusCreatedBeforeWithItems(@Param("status") OrderStatus status, @Param("cutoff") Instant cutoff);
+
+    java.util.Optional<Order> findByStripeCheckoutSessionId(String stripeCheckoutSessionId);
+
+    default List<Order> findPendingOrdersCreatedBefore(Instant cutoff) {
+        return findByStatusCreatedBeforeWithItems(OrderStatus.PENDING, cutoff);
+    }
 }
 

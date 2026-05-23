@@ -8,6 +8,16 @@ import { GuestSessionService } from './guest-session.service';
 
 @Injectable({ providedIn: 'root' })
 export class CartFacadeService {
+  private readonly emptyCartState: CartState = {
+    items: [],
+    totalItems: 0,
+    subtotal: 0,
+    shippingAmount: 0,
+    taxAmount: 0,
+    totalAmount: 0,
+    currencyCode: 'RON'
+  };
+
   private readonly authState = inject(AuthStateService);
   private readonly cartApiService = inject(CartApiService);
   private readonly guestSessionService = inject(GuestSessionService);
@@ -15,7 +25,7 @@ export class CartFacadeService {
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
   readonly isSidebarOpen = signal(false);
-  readonly cartState = signal<CartState>({ items: [], totalItems: 0 });
+  readonly cartState = signal<CartState>(this.emptyCartState);
   readonly items = computed<CartItem[]>(() => this.cartState().items);
   readonly cartCount = computed(() => this.cartState().totalItems);
   readonly totalPrice = computed(() => this.items().reduce((sum, item) => sum + item.quantity * item.price, 0));
@@ -87,7 +97,7 @@ export class CartFacadeService {
       const cartState = await firstValueFrom(this.cartApiService.getCart(this.getGuestSessionIfNeeded()));
       this.cartState.set(cartState);
     } catch {
-      this.cartState.set({ items: [], totalItems: 0 });
+      this.cartState.set(this.emptyCartState);
     }
   }
 

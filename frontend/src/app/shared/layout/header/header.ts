@@ -24,6 +24,16 @@ export class HeaderComponent {
   readonly cartFacade = inject(CartFacadeService);
   readonly wishlistFacade = inject(WishlistFacadeService);
   readonly searchControl = new FormControl('', { nonNullable: true });
+  isCheckoutInProgress = false;
+
+  private readonly currentUrlFromRoute = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      startWith(null),
+      map(() => this.router.url)
+    ),
+    { initialValue: this.router.url }
+  );
 
   private readonly searchTermFromRoute = toSignal(
     this.router.events.pipe(
@@ -37,6 +47,13 @@ export class HeaderComponent {
   constructor() {
     effect(() => {
       this.searchControl.setValue(this.searchTermFromRoute(), { emitEvent: false });
+    });
+
+    effect(() => {
+      this.currentUrlFromRoute();
+      if (this.isCheckoutInProgress) {
+        this.isCheckoutInProgress = false;
+      }
     });
   }
 
@@ -91,6 +108,28 @@ export class HeaderComponent {
 
   removeCartItem(productId: string): void {
     this.cartFacade.removeItem(productId);
+  }
+
+  async startCheckout(): Promise<void> {
+    if (this.isCheckoutInProgress) {
+      return;
+    }
+
+    if (!this.authState.isAuthenticated()) {
+      await this.login();
+      return;
+    }
+
+    this.isCheckoutInProgress = true;
+    this.closeCartSidebar();
+    try {
+      const didNavigate = await this.router.navigate(['/checkout']);
+      if (!didNavigate) {
+        this.isCheckoutInProgress = false;
+      }
+    } catch {
+      this.isCheckoutInProgress = false;
+    }
   }
 
   openCartProduct(productId: string): void {

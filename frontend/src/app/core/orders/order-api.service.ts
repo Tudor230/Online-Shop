@@ -12,5 +12,9 @@ export class OrderApiService {
   getOrderHistory(): Observable<OrderHistoryEntry[]> {
     return this.httpClient.get<OrderHistoryEntry[]>(`${this.ordersBaseUrl}/history`);
   }
+
+  cancelOrder(orderId: string): Observable<OrderHistoryEntry> {
+    return this.httpClient.patch<OrderHistoryEntry>(`${this.ordersBaseUrl}/${orderId}/cancel`, {});
+  }
 }
 
