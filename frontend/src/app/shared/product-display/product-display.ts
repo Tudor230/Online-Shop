@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { CreateProductReviewRequest, ProductDetails } from '../../core/products/product.types';
@@ -12,7 +12,7 @@ import { CloudinaryImageFrameComponent } from '../cloudinary-image-frame/cloudin
   imports: [CommonModule, CurrencyPipe, CloudinaryImageFrameComponent, DatePipe, FormsModule, RouterLink],
   templateUrl: './product-display.html'
 })
-export class ProductDisplayComponent {
+export class ProductDisplayComponent implements OnChanges {
   @Input({ required: true }) isLoading = false;
   @Input({ required: true }) product: ProductDetails | null = null;
   @Input({ required: true }) isAuthenticated = false;
@@ -21,6 +21,7 @@ export class ProductDisplayComponent {
   @Input({ required: true }) selectedImageId = '';
   @Input({ required: true }) selectedImageIndex = 0;
   @Input({ required: true }) isWishlisted = false;
+  @Input({ required: true }) reviewFormResetToken = 0;
 
   reviewRating = 5;
   reviewComment = '';
@@ -68,6 +69,16 @@ export class ProductDisplayComponent {
     this.addToCart.emit();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    const reviewFormResetTokenChange = changes['reviewFormResetToken'];
+    if (!reviewFormResetTokenChange || reviewFormResetTokenChange.firstChange) {
+      return;
+    }
+
+    this.reviewComment = '';
+    this.reviewRating = 5;
+  }
+
   onSubmitReview(): void {
     const trimmedComment = this.reviewComment.trim();
     if (!trimmedComment) {
@@ -78,9 +89,6 @@ export class ProductDisplayComponent {
       rating: this.reviewRating,
       comment: trimmedComment
     });
-
-    this.reviewComment = '';
-    this.reviewRating = 5;
   }
 
   onSaveToWishlist(): void {

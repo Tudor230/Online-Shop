@@ -95,7 +95,7 @@ public class ProductService {
     @Transactional
     public ProductDetailsDto createReview(String slug, User user, CreateProductReviewRequestDto request) {
         if (user == null) {
-            throw new BadRequestException("Authentication is required to review products");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication is required to review products");
         }
 
         Product product = productRepository.findBySlugAndIsActiveTrue(slug)

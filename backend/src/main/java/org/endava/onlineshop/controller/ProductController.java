@@ -9,6 +9,7 @@ import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.service.ProductService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,7 @@ public class ProductController {
     }
 
     @PostMapping("/{slug}/reviews")
+    @PreAuthorize("isAuthenticated()")
     public ProductDetailsDto createReview(
             @PathVariable String slug,
             @AuthenticationPrincipal User user,

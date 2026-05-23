@@ -32,6 +32,7 @@ export class ProductDetailsComponent {
   private readonly reloadToken = signal(0);
   readonly isSubmittingReview = signal(false);
   readonly reviewError = signal<string | null>(null);
+  readonly reviewFormResetToken = signal(0);
 
   private readonly productState = toSignal(
     combineLatest([
@@ -168,6 +169,7 @@ export class ProductDetailsComponent {
 
     try {
       await firstValueFrom(this.productApiService.submitProductReview(currentProduct.id, request));
+      this.reviewFormResetToken.update((currentValue) => currentValue + 1);
       this.reloadToken.update((currentValue) => currentValue + 1);
     } catch (error) {
       this.reviewError.set(this.resolveReviewErrorMessage(error));

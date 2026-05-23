@@ -104,6 +104,10 @@ public class OrderService {
                                 ),
                                 (left, right) -> left
                         ));
+        Map<UUID, Review> reviewByProductId = productIds.isEmpty()
+                ? Map.of()
+                : reviewRepository.findByUserIdAndProductIdIn(userId, productIds).stream()
+                        .collect(Collectors.toMap(review -> review.getProduct().getId(), review -> review, (left, right) -> left));
 
         return new OrderHistoryEntryDto(
                 order.getId().toString(),
@@ -117,16 +121,16 @@ public class OrderService {
                 order.getTotalAmount(),
                 order.getCurrencyCode(),
                 order.getItems().stream()
-                        .map(item -> toOrderHistoryItemDto(item, userId, order.getCurrentStatus(), reviewSnapshotByProductId))
+                        .map(item -> toOrderHistoryItemDto(item, order.getCurrentStatus(), reviewSnapshotByProductId, reviewByProductId))
                         .toList()
         );
     }
 
     private OrderHistoryItemDto toOrderHistoryItemDto(
             OrderItem item,
-            UUID userId,
             OrderStatus orderStatus,
-            Map<UUID, ProductReviewSnapshot> reviewSnapshotByProductId
+            Map<UUID, ProductReviewSnapshot> reviewSnapshotByProductId,
+            Map<UUID, Review> reviewByProductId
     ) {
         BigDecimal lineTotal = item.getUnitPriceAtPurchase().multiply(BigDecimal.valueOf(item.getQuantity()));
         String category = item.getProduct().getCategories().stream()
@@ -139,7 +143,7 @@ public class OrderService {
                 item.getProduct().getId(),
                 ProductReviewSnapshot.empty()
         );
-        Review review = reviewRepository.findByProductIdAndUserId(item.getProduct().getId(), userId).orElse(null);
+        Review review = reviewByProductId.get(item.getProduct().getId());
         boolean reviewed = review != null;
         boolean canLeaveReview = !reviewed && REVIEW_ELIGIBLE_ORDER_STATUSES.contains(orderStatus);
 

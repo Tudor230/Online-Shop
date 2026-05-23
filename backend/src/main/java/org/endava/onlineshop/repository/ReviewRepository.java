@@ -28,7 +28,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
 
     Optional<Review> findByProductIdAndUserId(UUID productId, UUID userId);
 
-    int countByProductId(UUID productId);
+    List<Review> findByUserIdAndProductIdIn(UUID userId, Collection<UUID> productIds);
 
     @Query("""
             SELECT r.product.id AS productId,
