@@ -20,7 +20,7 @@ export class WishlistFacadeService {
   readonly error = signal<string | null>(null);
   readonly items = computed<WishlistItem[]>(() => this.wishlistState().items);
   readonly count = computed(() => this.wishlistState().totalItems);
-  private readonly itemIds = computed(() => new Set(this.items().map((item) => item.productSlug)));
+  private readonly itemIds = computed(() => new Set(this.items().map((item) => item.productId)));
   private mutationQueue: Promise<void> = Promise.resolve();
 
   constructor() {
@@ -39,37 +39,37 @@ export class WishlistFacadeService {
     });
   }
 
-  isInWishlist(productSlug: string): boolean {
-    return this.itemIds().has(productSlug);
+  isInWishlist(productId: string): boolean {
+    return this.itemIds().has(productId);
   }
 
-  toggleItem(productSlug: string): void {
+  toggleItem(productId: string): void {
     if (!this.ensureAuthenticatedOrPrompt()) {
       return;
     }
 
-    if (this.isInWishlist(productSlug)) {
-      this.removeItem(productSlug);
+    if (this.isInWishlist(productId)) {
+      this.removeItem(productId);
       return;
     }
 
-    this.addItem(productSlug);
+    this.addItem(productId);
   }
 
-  addItem(productSlug: string): void {
+  addItem(productId: string): void {
     if (!this.ensureAuthenticatedOrPrompt()) {
       return;
     }
 
-    this.applyMutation(() => this.wishlistApiService.addItem(productSlug));
+    this.applyMutation(() => this.wishlistApiService.addItem(productId));
   }
 
-  removeItem(productSlug: string): void {
+  removeItem(productId: string): void {
     if (!this.ensureAuthenticatedOrPrompt()) {
       return;
     }
 
-    this.applyMutation(() => this.wishlistApiService.removeItem(productSlug));
+    this.applyMutation(() => this.wishlistApiService.removeItem(productId));
   }
 
   private async refreshWishlist(): Promise<void> {

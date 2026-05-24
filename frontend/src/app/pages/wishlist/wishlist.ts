@@ -27,11 +27,11 @@ export class WishlistPageComponent {
     void this.router.navigate(['/product', productSlug]);
   }
 
-  removeFromWishlist(productSlug: string): void {
-    this.wishlistFacade.removeItem(productSlug);
+  removeFromWishlist(productId: string): void {
+    this.wishlistFacade.removeItem(productId);
   }
 
-  addToCart(productSlug: string): void {
-    this.cartFacade.addItem(productSlug);
+  addToCart(productId: string): void {
+    this.cartFacade.addItem(productId);
   }
 }

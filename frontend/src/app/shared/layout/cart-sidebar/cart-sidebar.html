@@ -30,9 +30,9 @@
               class="cursor-pointer border-b border-surface-elevated py-4"
               role="button"
               tabindex="0"
-              (click)="onItemSelected(item.productId)"
-              (keydown.enter)="onItemSelected(item.productId)"
-              (keydown.space)="onItemSelected(item.productId); $event.preventDefault()"
+              (click)="onItemSelected(item.productSlug)"
+              (keydown.enter)="onItemSelected(item.productSlug)"
+              (keydown.space)="onItemSelected(item.productSlug); $event.preventDefault()"
             >
               <div class="grid grid-cols-[88px_minmax(0,1fr)_auto] items-start gap-3">
                 <div class="h-20 w-20 overflow-hidden rounded-lg bg-surface-elevated">

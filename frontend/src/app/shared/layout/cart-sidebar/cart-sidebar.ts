@@ -50,7 +50,7 @@ export class CartSidebarComponent {
   onCheckoutRequested(): void {
     this.checkoutRequested.emit();
   }
-  onItemSelected(productId: string): void {
-    this.itemSelected.emit(productId);
+  onItemSelected(productSlug: string): void {
+    this.itemSelected.emit(productSlug);
   }
 }

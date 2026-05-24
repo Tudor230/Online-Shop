@@ -5,6 +5,7 @@ import java.util.List;
 
 public record ProductDetailsDto(
         String id,
+        String slug,
         String category,
         String title,
         double rating,

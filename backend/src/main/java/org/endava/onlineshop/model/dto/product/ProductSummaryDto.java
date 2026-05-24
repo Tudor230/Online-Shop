@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 public record ProductSummaryDto(
         String id,
+        String slug,
         String category,
         String title,
         double rating,

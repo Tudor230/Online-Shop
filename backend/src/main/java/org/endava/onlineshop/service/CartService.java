@@ -53,7 +53,7 @@ public class CartService {
     @Transactional
     public CartResponseDto addItem(User user, String sessionId, AddCartItemRequestDto request) {
         CartOwner owner = resolveOwner(user, sessionId);
-        Product product = findActiveProductBySlug(request.productId());
+        Product product = findActiveProductById(request.productId());
         ShoppingCart cart = findOrCreateCart(owner);
 
         CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
@@ -71,11 +71,11 @@ public class CartService {
     }
 
     @Transactional
-    public CartResponseDto updateItemQuantity(User user, String sessionId, String productId, int quantity) {
+    public CartResponseDto updateItemQuantity(User user, String sessionId, UUID productId, int quantity) {
         CartOwner owner = resolveOwner(user, sessionId);
         ShoppingCart cart = findCart(owner)
                 .orElseThrow(() -> new BadRequestException("Cart was not found"));
-        Product product = findProductBySlug(productId);
+        Product product = findProductById(productId);
 
         CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
                 .orElseThrow(() -> new BadRequestException("Product is not in cart"));
@@ -86,21 +86,13 @@ public class CartService {
     }
 
     @Transactional
-    public CartResponseDto removeItem(User user, String sessionId, String productId) {
+    public CartResponseDto removeItem(User user, String sessionId, UUID productId) {
         CartOwner owner = resolveOwner(user, sessionId);
         ShoppingCart cart = findCart(owner)
                 .orElseThrow(() -> new BadRequestException("Cart was not found"));
 
-        CartItem item = null;
-        for (CartItem cartItem : cartItemRepository.findAll()) {
-            if (cartItem.getCart() != null
-                    && cartItem.getCart().getId().equals(cart.getId())
-                    && cartItem.getProduct() != null
-                    && productId.equals(cartItem.getProduct().getSlug())) {
-                item = cartItem;
-                break;
-            }
-        }
+        CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId)
+                .orElse(null);
 
         if (item == null) {
             throw new BadRequestException("Product is not in cart");
@@ -185,13 +177,17 @@ public class CartService {
         return shoppingCartRepository.findBySessionId(owner.sessionId());
     }
 
-    private Product findActiveProductBySlug(String slug) {
-        return productRepository.findBySlugAndIsActiveTrue(slug)
+    private Product findActiveProductById(UUID productId) {
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BadRequestException("Product not found"));
+        if (!Boolean.TRUE.equals(product.getIsActive())) {
+            throw new BadRequestException("Product not found");
+        }
+        return product;
     }
 
-    private Product findProductBySlug(String slug) {
-        return productRepository.findBySlug(slug)
+    private Product findProductById(UUID productId) {
+        return productRepository.findById(productId)
                 .orElseThrow(() -> new BadRequestException("Product not found"));
     }
 
@@ -211,6 +207,7 @@ public class CartService {
         List<CartItem> cartItems = cartItemRepository.findByCartIdOrderByCreatedAtAsc(cart.getId());
         List<CartItemDto> items = cartItems.stream()
                 .map(item -> new CartItemDto(
+                        item.getProduct().getId().toString(),
                         item.getProduct().getSlug(),
                         item.getProduct().getName(),
                         item.getProduct().getBasePrice(),

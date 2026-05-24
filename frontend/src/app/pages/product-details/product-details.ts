@@ -36,15 +36,15 @@ export class ProductDetailsComponent {
 
   private readonly productState = toSignal(
     combineLatest([
-      this.route.paramMap.pipe(map((params) => params.get('id'))),
+      this.route.paramMap.pipe(map((params) => params.get('slug'))),
       toObservable(this.reloadToken)
     ]).pipe(
-      switchMap(([productId]) => {
-        if (!productId) {
+      switchMap(([productSlug]) => {
+        if (!productSlug) {
           return of({ isLoading: false, product: null as ProductDetails | null });
         }
 
-        return this.productApiService.getProductById(productId).pipe(
+        return this.productApiService.getProductBySlug(productSlug).pipe(
           map((product) => ({ isLoading: false, product })),
           startWith({ isLoading: true, product: null as ProductDetails | null }),
           catchError(() => of({ isLoading: false, product: null as ProductDetails | null }))

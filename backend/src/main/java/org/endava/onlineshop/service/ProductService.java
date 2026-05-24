@@ -93,13 +93,16 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDetailsDto createReview(String slug, User user, CreateProductReviewRequestDto request) {
+    public ProductDetailsDto createReview(UUID productId, User user, CreateProductReviewRequestDto request) {
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication is required to review products");
         }
 
-        Product product = productRepository.findBySlugAndIsActiveTrue(slug)
+        Product product = productRepository.findWithCategoriesById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+        if (!Boolean.TRUE.equals(product.getIsActive())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
 
         if (!hasOrderedProduct(user, product)) {
             throw new BadRequestException("You can review this product only after purchasing it");
@@ -116,7 +119,7 @@ public class ProductService {
         review.setComment(request.comment().trim());
         reviewRepository.save(review);
 
-        return getProductBySlug(slug, user);
+        return getProductBySlug(product.getSlug(), user);
     }
 
     private ProductSummaryDto toSummaryDto(Product product, ProductReviewSnapshot reviewSnapshot) {
@@ -125,6 +128,7 @@ public class ProductService {
                 : new ProductReviewSnapshot(0.0d, 0);
 
         return new ProductSummaryDto(
+                product.getId().toString(),
                 product.getSlug(),
                 extractPrimaryCategory(product),
                 product.getName(),
@@ -151,6 +155,7 @@ public class ProductService {
                 .orElse(0.0d);
 
         return new ProductDetailsDto(
+                product.getId().toString(),
                 product.getSlug(),
                 extractPrimaryCategory(product),
                 product.getName(),

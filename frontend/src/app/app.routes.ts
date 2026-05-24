@@ -31,7 +31,7 @@ export const routes: Routes = [
         component: ProductGridComponent
       },
       {
-        path: 'product/:id',
+        path: 'product/:slug',
         component: ProductDetailsComponent
       },
       {

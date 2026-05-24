@@ -13,11 +13,11 @@ export class WishlistApiService {
     return this.httpClient.get<WishlistState>(this.wishlistBaseUrl);
   }
 
-  addItem(productSlug: string): Observable<WishlistState> {
-    return this.httpClient.post<WishlistState>(`${this.wishlistBaseUrl}/items/${productSlug}`, {});
+  addItem(productId: string): Observable<WishlistState> {
+    return this.httpClient.post<WishlistState>(`${this.wishlistBaseUrl}/items/${productId}`, {});
   }
 
-  removeItem(productSlug: string): Observable<WishlistState> {
-    return this.httpClient.delete<WishlistState>(`${this.wishlistBaseUrl}/items/${productSlug}`);
+  removeItem(productId: string): Observable<WishlistState> {
+    return this.httpClient.delete<WishlistState>(`${this.wishlistBaseUrl}/items/${productId}`);
   }
 }

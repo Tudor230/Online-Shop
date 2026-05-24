@@ -1,5 +1,6 @@
 export interface ProductSummary {
   id: string;
+  slug: string;
   category: string;
   title: string;
   rating: number;
@@ -10,6 +11,7 @@ export interface ProductSummary {
 
 export interface ProductDetails {
   id: string;
+  slug: string;
   category: string;
   title: string;
   rating: number;

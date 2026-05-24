@@ -21,8 +21,8 @@ export class ProductApiService {
     return this.httpClient.get<ProductSearchPage>(this.productsBaseUrl, { params });
   }
 
-  getProductById(productId: string): Observable<ProductDetails> {
-    return this.httpClient.get<ProductDetails>(`${this.productsBaseUrl}/${productId}`);
+  getProductBySlug(slug: string): Observable<ProductDetails> {
+    return this.httpClient.get<ProductDetails>(`${this.productsBaseUrl}/${slug}`);
   }
 
   submitProductReview(productId: string, request: CreateProductReviewRequest): Observable<ProductDetails> {

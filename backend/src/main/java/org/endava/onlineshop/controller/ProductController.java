@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/products")
@@ -42,13 +44,13 @@ public class ProductController {
         return productService.getProductBySlug(slug, user);
     }
 
-    @PostMapping("/{slug}/reviews")
+    @PostMapping("/{productId}/reviews")
     @PreAuthorize("isAuthenticated()")
     public ProductDetailsDto createReview(
-            @PathVariable String slug,
+            @PathVariable UUID productId,
             @AuthenticationPrincipal User user,
             @Valid @RequestBody CreateProductReviewRequestDto request
     ) {
-        return productService.createReview(slug, user, request);
+        return productService.createReview(productId, user, request);
     }
 }

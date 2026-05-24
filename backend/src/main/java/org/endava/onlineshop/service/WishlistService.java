@@ -33,10 +33,13 @@ public class WishlistService {
     }
 
     @Transactional
-    public WishlistResponseDto addItem(User user, String productSlug) {
+    public WishlistResponseDto addItem(User user, UUID productId) {
         UUID userId = requireAuthenticatedUserId(user);
-        Product product = productRepository.findBySlugAndIsActiveTrue(productSlug)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BadRequestException("Product not found"));
+        if (!Boolean.TRUE.equals(product.getIsActive())) {
+            throw new BadRequestException("Product not found");
+        }
 
         if (!wishlistItemRepository.existsByUserIdAndProductId(userId, product.getId())) {
             WishlistItem wishlistItem = new WishlistItem(userId, product.getId());
@@ -51,18 +54,17 @@ public class WishlistService {
     }
 
     @Transactional
-    public WishlistResponseDto removeItem(User user, String productSlug) {
+    public WishlistResponseDto removeItem(User user, UUID productId) {
         UUID userId = requireAuthenticatedUserId(user);
-        Product product = productRepository.findBySlug(productSlug)
-                .orElseThrow(() -> new BadRequestException("Product not found"));
 
-        wishlistItemRepository.deleteByUserIdAndProductId(userId, product.getId());
+        wishlistItemRepository.deleteByUserIdAndProductId(userId, productId);
         return toResponse(userId);
     }
 
     private WishlistResponseDto toResponse(UUID userId) {
         List<WishlistItemDto> items = wishlistItemRepository.findItemViewsByUserId(userId).stream()
                 .map(item -> new WishlistItemDto(
+                        item.getProductId().toString(),
                         item.getProductSlug(),
                         item.getProductName(),
                         item.getProductPrice(),
