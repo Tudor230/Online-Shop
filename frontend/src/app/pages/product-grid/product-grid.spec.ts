@@ -8,6 +8,7 @@ import { ProductGridComponent } from './product-grid';
 
 const sampleProduct: ProductSummary = {
   id: 'prod-1',
+  slug: 'gaming-controller',
   category: 'Electronics',
   title: 'Gaming Controller',
   rating: 4.8,

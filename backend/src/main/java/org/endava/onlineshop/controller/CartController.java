@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/cart")
@@ -47,7 +49,7 @@ public class CartController {
     public CartResponseDto updateItemQuantity(
             @AuthenticationPrincipal User user,
             @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
-            @PathVariable String productId,
+            @PathVariable UUID productId,
             @Valid @RequestBody UpdateCartItemQuantityRequestDto request
     ) {
         return cartService.updateItemQuantity(user, sessionId, productId, request.quantity());
@@ -57,7 +59,7 @@ public class CartController {
     public CartResponseDto removeItem(
             @AuthenticationPrincipal User user,
             @RequestHeader(value = "X-Session-Id", required = false) String sessionId,
-            @PathVariable String productId
+            @PathVariable UUID productId
     ) {
         return cartService.removeItem(user, sessionId, productId);
     }

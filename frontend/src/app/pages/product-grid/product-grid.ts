@@ -97,8 +97,8 @@ export class ProductGridComponent {
   readonly pageLinks = computed(() => this.buildPageLinks(this.currentPage(), this.totalPages()));
   readonly skeletonItems = Array.from({ length: 8 }, (_, index) => index);
 
-  openProductDetails(productId: string): void {
-    void this.router.navigate(['/product', productId]);
+  openProductDetails(productSlug: string): void {
+    void this.router.navigate(['/product', productSlug]);
   }
 
   addProductToCart(productId: string): void {

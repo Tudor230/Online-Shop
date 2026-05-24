@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/wishlist")
 public class WishlistController {
@@ -26,13 +28,13 @@ public class WishlistController {
         return wishlistService.getWishlist(user);
     }
 
-    @PostMapping("/items/{productSlug}")
-    public WishlistResponseDto addItem(@AuthenticationPrincipal User user, @PathVariable String productSlug) {
-        return wishlistService.addItem(user, productSlug);
+    @PostMapping("/items/{productId}")
+    public WishlistResponseDto addItem(@AuthenticationPrincipal User user, @PathVariable UUID productId) {
+        return wishlistService.addItem(user, productId);
     }
 
-    @DeleteMapping("/items/{productSlug}")
-    public WishlistResponseDto removeItem(@AuthenticationPrincipal User user, @PathVariable String productSlug) {
-        return wishlistService.removeItem(user, productSlug);
+    @DeleteMapping("/items/{productId}")
+    public WishlistResponseDto removeItem(@AuthenticationPrincipal User user, @PathVariable UUID productId) {
+        return wishlistService.removeItem(user, productId);
     }
 }

@@ -62,7 +62,7 @@
         <app-product-card
           [product]="product"
           [isWishlisted]="isProductWishlisted(product.id)"
-          (selected)="openProductDetails(product.id)"
+          (selected)="openProductDetails(product.slug)"
           (addToCart)="addProductToCart(product.id)"
           (saveToWishlist)="saveProductToWishlist(product.id)"
         />

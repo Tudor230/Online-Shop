@@ -9,11 +9,19 @@ export type OrderStatus =
 
 export interface OrderHistoryItem {
   productSlug: string;
+  category: string;
   title: string;
   imageId: string;
+  description: string;
+  productRating: number;
+  productReviewCount: number;
   quantity: number;
   unitPrice: number;
   lineTotal: number;
+  canLeaveReview: boolean;
+  reviewed: boolean;
+  reviewId: string | null;
+  reviewedRating: number | null;
 }
 
 export interface OrderHistoryEntry {
@@ -29,6 +37,8 @@ export interface OrderHistoryEntry {
   currencyCode: string;
   items: OrderHistoryItem[];
 }
+
+export type OrderDetailsEntry = OrderHistoryEntry;
 
 export const canPayOrder = (order: OrderHistoryEntry): boolean => order.status === 'PENDING';
 

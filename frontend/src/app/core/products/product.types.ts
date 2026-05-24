@@ -1,5 +1,6 @@
 export interface ProductSummary {
   id: string;
+  slug: string;
   category: string;
   title: string;
   rating: number;
@@ -10,14 +11,27 @@ export interface ProductSummary {
 
 export interface ProductDetails {
   id: string;
+  slug: string;
   category: string;
   title: string;
   rating: number;
   reviewCount: number;
+  canReview: boolean;
+  hasReviewed: boolean;
+  reviewedReviewId: string | null;
   price: number;
   description: string;
   imageId: string;
   imageGalleryIds: string[];
+  reviews: ProductReview[];
+}
+
+export interface ProductReview {
+  id: string;
+  rating: number;
+  comment: string;
+  reviewerName: string;
+  createdAt: string;
 }
 
 export interface ProductSearchPage {
@@ -30,3 +44,7 @@ export interface ProductSearchPage {
   hasNext: boolean;
 }
 
+export interface CreateProductReviewRequest {
+  rating: number;
+  comment: string;
+}

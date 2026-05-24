@@ -132,9 +132,9 @@ export class HeaderComponent {
     }
   }
 
-  openCartProduct(productId: string): void {
+  openCartProduct(productSlug: string): void {
     this.closeCartSidebar();
-    void this.router.navigate(['/product', productId]);
+    void this.router.navigate(['/product', productSlug]);
   }
 
   openWishlist(): void {

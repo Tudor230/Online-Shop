@@ -1,4 +1,5 @@
 export interface WishlistItem {
+  productId: string;
   productSlug: string;
   title: string;
   price: number;

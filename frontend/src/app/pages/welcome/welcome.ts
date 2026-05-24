@@ -55,8 +55,8 @@ export class WelcomeComponent {
     }, 500);
   }
 
-  openProductDetails(productId: string): void {
-    void this.router.navigate(['/product', productId]);
+  openProductDetails(productSlug: string): void {
+    void this.router.navigate(['/product', productSlug]);
   }
 
   addProductToCart(_productId: string): void {}

@@ -10,6 +10,7 @@ import org.endava.onlineshop.model.entities.ProductInventory;
 import org.endava.onlineshop.repository.CategoryRepository;
 import org.endava.onlineshop.repository.ProductInventoryRepository;
 import org.endava.onlineshop.repository.ProductRepository;
+import org.endava.onlineshop.repository.ReviewRepository;
 import org.endava.onlineshop.security.SecurityUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminProductService {
@@ -28,6 +31,7 @@ public class AdminProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ProductInventoryRepository productInventoryRepository;
+    private final ReviewRepository reviewRepository;
     private final AdminAuditLogService auditLogService;
     private final SecurityUtils securityUtils;
     private final ApplicationEventPublisher eventPublisher;
@@ -36,6 +40,7 @@ public class AdminProductService {
             ProductRepository productRepository,
             CategoryRepository categoryRepository,
             ProductInventoryRepository productInventoryRepository,
+            ReviewRepository reviewRepository,
             AdminAuditLogService auditLogService,
             SecurityUtils securityUtils,
             ApplicationEventPublisher eventPublisher
@@ -43,6 +48,7 @@ public class AdminProductService {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.productInventoryRepository = productInventoryRepository;
+        this.reviewRepository = reviewRepository;
         this.auditLogService = auditLogService;
         this.securityUtils = securityUtils;
         this.eventPublisher = eventPublisher;
@@ -50,14 +56,23 @@ public class AdminProductService {
 
     @Transactional(readOnly = true)
     public Page<AdminProductListDto> getProducts(Pageable pageable) {
-        return productRepository.findAll(pageable).map(this::toListDto);
+        Page<Product> productPage = productRepository.findAll(pageable);
+        Map<UUID, ProductReviewSnapshot> reviewSnapshots = summarizeReviewsByProductId(
+                productPage.getContent().stream().map(Product::getId).toList()
+        );
+        return productPage.map(product -> toListDto(
+                product,
+                reviewSnapshots.getOrDefault(product.getId(), ProductReviewSnapshot.empty())
+        ));
     }
 
     @Transactional(readOnly = true)
     public AdminProductDetailDto getProduct(UUID id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-        return toDetailDto(product);
+        ProductReviewSnapshot reviewSnapshot = summarizeReviewsByProductId(List.of(product.getId()))
+                .getOrDefault(product.getId(), ProductReviewSnapshot.empty());
+        return toDetailDto(product, reviewSnapshot);
     }
 
     @Transactional
@@ -88,7 +103,7 @@ public class AdminProductService {
         Product savedProduct = productRepository.save(product);
 
         audit("CREATE", "PRODUCT", savedProduct.getId().toString(), "Created product " + savedProduct.getName());
-        return toDetailDto(savedProduct);
+        return toDetailDto(savedProduct, ProductReviewSnapshot.empty());
     }
 
     @Transactional
@@ -142,7 +157,9 @@ public class AdminProductService {
             eventPublisher.publishEvent(new ProductDetailsChangedEvent(savedProduct.getId()));
         }
 
-        return toDetailDto(savedProduct);
+        ProductReviewSnapshot reviewSnapshot = summarizeReviewsByProductId(List.of(savedProduct.getId()))
+                .getOrDefault(savedProduct.getId(), ProductReviewSnapshot.empty());
+        return toDetailDto(savedProduct, reviewSnapshot);
     }
 
     @Transactional
@@ -184,19 +201,19 @@ public class AdminProductService {
         );
     }
 
-    private AdminProductListDto toListDto(Product product) {
+    private AdminProductListDto toListDto(Product product, ProductReviewSnapshot reviewSnapshot) {
         Integer qty = product.getInventory() != null ? product.getInventory().getQuantityAvailable() : 0;
         Integer threshold = product.getInventory() != null ? product.getInventory().getLowStockThreshold() : 5;
         List<String> categories = product.getCategories().stream().map(Category::getName).toList();
         return new AdminProductListDto(
                 product.getId(), product.getSku(), product.getName(), product.getSlug(),
-                product.getBasePrice(), product.getIsActive(), product.getRating(),
-                product.getReviewCount(), product.getImageId(), qty, threshold,
+                product.getBasePrice(), product.getIsActive(), reviewSnapshot.averageRating(),
+                reviewSnapshot.reviewCount(), product.getImageId(), qty, threshold,
                 categories, product.getCreatedAt(), product.getUpdatedAt()
         );
     }
 
-    private AdminProductDetailDto toDetailDto(Product product) {
+    private AdminProductDetailDto toDetailDto(Product product, ProductReviewSnapshot reviewSnapshot) {
         List<AdminCategoryDto> categories = product.getCategories().stream()
                 .map(c -> new AdminCategoryDto(c.getId(), c.getParentId(), c.getName(), c.getSlug()))
                 .toList();
@@ -206,9 +223,31 @@ public class AdminProductService {
         return new AdminProductDetailDto(
                 product.getId(), product.getSku(), product.getName(), product.getSlug(),
                 product.getDescription(), product.getBasePrice(), product.getIsActive(),
-                product.getRating(), product.getReviewCount(), product.getImageId(),
+                reviewSnapshot.averageRating(), reviewSnapshot.reviewCount(), product.getImageId(),
                 List.copyOf(product.getImageGalleryIds()), categories, inventory,
                 product.getCreatedAt(), product.getUpdatedAt()
         );
+    }
+
+    private Map<UUID, ProductReviewSnapshot> summarizeReviewsByProductId(List<UUID> productIds) {
+        if (productIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return reviewRepository.summarizeByProductIds(productIds).stream()
+                .collect(Collectors.toMap(
+                        ReviewRepository.ProductReviewAggregate::getProductId,
+                        aggregate -> new ProductReviewSnapshot(
+                                aggregate.getAverageRating() != null ? aggregate.getAverageRating() : 0.0d,
+                                aggregate.getReviewCount() != null ? aggregate.getReviewCount().intValue() : 0
+                        ),
+                        (left, right) -> left
+                ));
+    }
+
+    private record ProductReviewSnapshot(double averageRating, int reviewCount) {
+        private static ProductReviewSnapshot empty() {
+            return new ProductReviewSnapshot(0.0d, 0);
+        }
     }
 }

@@ -7,11 +7,12 @@ import { AuthStateService } from '../../core/auth/auth-state.service';
 import { KeycloakAuthService } from '../../core/auth/keycloak-auth.service';
 import { OrderApiService } from '../../core/orders/order-api.service';
 import { OrderHistoryEntry, OrderStatus, canCancelOrder, canPayOrder } from '../../core/orders/order.types';
+import { CloudinaryImageFrameComponent } from '../../shared/cloudinary-image-frame/cloudinary-image-frame';
 
 @Component({
   selector: 'app-order-history-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, CloudinaryImageFrameComponent],
   templateUrl: './order-history.html'
 })
 export class OrderHistoryPageComponent {
