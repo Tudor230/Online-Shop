@@ -29,6 +29,8 @@ export class CartFacadeService {
   readonly items = computed<CartItem[]>(() => this.cartState().items);
   readonly cartCount = computed(() => this.cartState().totalItems);
   readonly totalPrice = computed(() => this.items().reduce((sum, item) => sum + item.quantity * item.price, 0));
+  readonly lastAddedItem = signal<CartItem | null>(null);
+  readonly lastAddedToken = signal(0);
   private wasAuthenticated = false;
   private mutationQueue: Promise<void> = Promise.resolve();
 
@@ -43,7 +45,16 @@ export class CartFacadeService {
   }
 
   addItem(productId: string, quantity = 1): void {
-    this.applyMutation((sessionId) => this.cartApiService.addItem({ productId, quantity }, sessionId));
+    this.applyMutation((sessionId) => this.cartApiService.addItem({ productId, quantity }, sessionId), {
+      onSuccess: (cartState) => {
+        const addedItem = cartState.items.find((item) => item.productId === productId);
+        if (!addedItem) {
+          return;
+        }
+        this.lastAddedItem.set(addedItem);
+        this.lastAddedToken.update((current) => current + 1);
+      }
+    });
   }
 
   incrementItemQuantity(productId: string): void {
@@ -122,7 +133,10 @@ export class CartFacadeService {
     await this.refreshCart();
   }
 
-  private applyMutation(mutation: (sessionId?: string) => Observable<CartState>): void {
+  private applyMutation(
+    mutation: (sessionId?: string) => Observable<CartState>,
+    options: { onSuccess?: (cartState: CartState) => void } = {}
+  ): void {
     if (!this.isBrowser) {
       return;
     }
@@ -131,6 +145,7 @@ export class CartFacadeService {
       try {
         const cartState = await firstValueFrom(mutation(this.getGuestSessionIfNeeded()));
         this.cartState.set(cartState);
+        options.onSuccess?.(cartState);
       } catch {
         // Keep current cart state if mutation fails.
       }

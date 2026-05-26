@@ -1,4 +1,5 @@
-import { Component, ElementRef, HostListener, ViewChild, effect, inject } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { Component, ElementRef, HostListener, ViewChild, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
@@ -12,11 +13,13 @@ import { CartSidebarComponent } from '../cart-sidebar/cart-sidebar';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, CartSidebarComponent],
+  imports: [RouterLink, ReactiveFormsModule, CartSidebarComponent, CurrencyPipe],
   templateUrl: './header.html'
 })
 export class HeaderComponent {
   @ViewChild('profileMenu') private profileMenu?: ElementRef<HTMLDetailsElement>;
+  @ViewChild('cartPreview') private cartPreview?: ElementRef<HTMLElement>;
+  @ViewChild('cartButton') private cartButton?: ElementRef<HTMLButtonElement>;
 
   private readonly keycloakAuthService = inject(KeycloakAuthService);
   private readonly router = inject(Router);
@@ -25,6 +28,7 @@ export class HeaderComponent {
   readonly wishlistFacade = inject(WishlistFacadeService);
   readonly searchControl = new FormControl('', { nonNullable: true });
   isCheckoutInProgress = false;
+  readonly isCartPreviewOpen = signal(false);
 
   private readonly currentUrlFromRoute = toSignal(
     this.router.events.pipe(
@@ -55,6 +59,13 @@ export class HeaderComponent {
         this.isCheckoutInProgress = false;
       }
     });
+
+    effect(() => {
+      const token = this.cartFacade.lastAddedToken();
+      if (token > 0) {
+        this.isCartPreviewOpen.set(true);
+      }
+    });
   }
 
   submitSearch(event: Event): void {
@@ -80,10 +91,12 @@ export class HeaderComponent {
     const target = event.target as Node | null;
 
     if (!menu?.open || !target || menu.contains(target)) {
+      this.closeCartPreviewIfNeeded(target);
       return;
     }
 
     this.closeProfileMenu();
+    this.closeCartPreviewIfNeeded(target);
   }
 
   closeProfileMenu(): void {
@@ -91,11 +104,16 @@ export class HeaderComponent {
   }
 
   openCartSidebar(): void {
+    this.closeCartPreview();
     this.cartFacade.openSidebar();
   }
 
   closeCartSidebar(): void {
     this.cartFacade.closeSidebar();
+  }
+
+  closeCartPreview(): void {
+    this.isCartPreviewOpen.set(false);
   }
 
   incrementCartItem(productId: string): void {
@@ -134,10 +152,23 @@ export class HeaderComponent {
 
   openCartProduct(productSlug: string): void {
     this.closeCartSidebar();
+    this.closeCartPreview();
     void this.router.navigate(['/product', productSlug]);
   }
 
   openWishlist(): void {
     void this.router.navigate(['/wishlist']);
+  }
+
+  private closeCartPreviewIfNeeded(target: Node | null): void {
+    if (!this.isCartPreviewOpen() || !target) {
+      return;
+    }
+    const preview = this.cartPreview?.nativeElement;
+    const button = this.cartButton?.nativeElement;
+    if ((preview && preview.contains(target)) || (button && button.contains(target))) {
+      return;
+    }
+    this.closeCartPreview();
   }
 }
