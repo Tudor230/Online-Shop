@@ -25,20 +25,6 @@ interface SimilarItemsState {
 })
 export class ProductDetailsComponent {
   private static readonly SIMILAR_ITEMS_SIZE = 60;
-  private static readonly SIMILAR_STOP_WORDS = new Set([
-    'the',
-    'and',
-    'for',
-    'with',
-    'from',
-    'your',
-    'this',
-    'that',
-    'new',
-    'pro',
-    'kit',
-    'set'
-  ]);
 
   @ViewChild('similarItemsTrack') private similarItemsTrack?: ElementRef<HTMLElement>;
 
@@ -268,46 +254,12 @@ export class ProductDetailsComponent {
   }
 
   private buildSimilarItems(currentProduct: ProductDetails, items: ProductSummary[]): ProductSummary[] {
-    const keywords = this.extractSimilarKeywords(currentProduct.title);
     return items
-      .filter((item) => item.id !== currentProduct.id)
-      .map((item) => ({
-        item,
-        score: this.scoreSimilarItem(currentProduct, item, keywords)
-      }))
-      .filter((entry) => entry.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .map((entry) => entry.item)
+      .filter(
+        (item) =>
+          item.id !== currentProduct.id &&
+          item.category.toLowerCase() === currentProduct.category.toLowerCase()
+      )
       .slice(0, 8);
-  }
-
-  private scoreSimilarItem(currentProduct: ProductDetails, item: ProductSummary, keywords: string[]): number {
-    let score = 0;
-    if (item.category.toLowerCase() === currentProduct.category.toLowerCase()) {
-      score += 1;
-    }
-    if (this.matchesTitleKeywords(item.title, keywords)) {
-      score += 2;
-    }
-    return score;
-  }
-
-  private matchesTitleKeywords(title: string, keywords: string[]): boolean {
-    if (!keywords.length) {
-      return false;
-    }
-    const lowerTitle = title.toLowerCase();
-    return keywords.some((keyword) => lowerTitle.includes(keyword));
-  }
-
-  private extractSimilarKeywords(title: string): string[] {
-    const tokens = title
-      .toLowerCase()
-      .split(/[^a-z0-9]+/i)
-      .map((token) => token.trim())
-      .filter((token) => token.length >= 3)
-      .filter((token) => !ProductDetailsComponent.SIMILAR_STOP_WORDS.has(token));
-
-    return Array.from(new Set(tokens));
   }
 }
