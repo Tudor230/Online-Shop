@@ -21,7 +21,7 @@ export class ProductCardComponent {
   readonly productImageOptions: CloudinaryTransformOptions = {
     width: 560,
     height: 420,
-    crop: 'limit',
+    crop: 'pad',
     radius: 16
   };
 

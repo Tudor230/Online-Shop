@@ -17,9 +17,9 @@ export class WishlistPageComponent {
   private readonly cartFacade = inject(CartFacadeService);
   readonly wishlistFacade = inject(WishlistFacadeService);
   readonly wishlistImageOptions: CloudinaryTransformOptions = {
-    width: 160,
-    height: 160,
-    crop: 'limit',
+    width: 240,
+    height: 180,
+    crop: 'pad',
     radius: 10
   };
 

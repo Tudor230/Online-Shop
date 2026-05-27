@@ -1,8 +1,18 @@
 package org.endava.onlineshop.service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.endava.onlineshop.exception.BadRequestException;
-import org.endava.onlineshop.model.dto.product.*;
+import org.endava.onlineshop.model.dto.product.CreateProductReviewRequestDto;
+import org.endava.onlineshop.model.dto.product.ProductDetailsDto;
+import org.endava.onlineshop.model.dto.product.ProductReviewDto;
+import org.endava.onlineshop.model.dto.product.ProductSearchPageDto;
+import org.endava.onlineshop.model.dto.product.ProductSummaryDto;
 import org.endava.onlineshop.model.entities.Category;
 import org.endava.onlineshop.model.entities.Product;
 import org.endava.onlineshop.model.entities.Review;
@@ -18,11 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
@@ -126,6 +132,7 @@ public class ProductService {
         ProductReviewSnapshot effectiveReviewSnapshot = reviewSnapshot != null
                 ? reviewSnapshot
                 : new ProductReviewSnapshot(0.0d, 0);
+        String primaryImageId = resolvePrimaryImage(product.getImageId(), product.getImageGalleryIds());
 
         return new ProductSummaryDto(
                 product.getId().toString(),
@@ -135,7 +142,7 @@ public class ProductService {
                 effectiveReviewSnapshot.averageRating(),
                 effectiveReviewSnapshot.reviewCount(),
                 product.getBasePrice(),
-                product.getImageId()
+            primaryImageId
         );
     }
 
@@ -153,6 +160,8 @@ public class ProductService {
                 .mapToInt(review -> review.getRating().intValue())
                 .average()
                 .orElse(0.0d);
+        List<String> normalizedGallery = normalizeImageGallery(product.getImageId(), product.getImageGalleryIds());
+        String primaryImageId = resolvePrimaryImage(product.getImageId(), normalizedGallery);
 
         return new ProductDetailsDto(
                 product.getId().toString(),
@@ -166,10 +175,50 @@ public class ProductService {
                 reviewedReviewId,
                 product.getBasePrice(),
                 product.getDescription(),
-                product.getImageId(),
-                List.copyOf(product.getImageGalleryIds()),
+                primaryImageId,
+                List.copyOf(normalizedGallery),
                 reviews.stream().map(this::toProductReviewDto).toList()
         );
+    }
+
+    private String resolvePrimaryImage(String imageId, List<String> gallery) {
+        String normalizedImageId = normalizeImageId(imageId);
+        if (normalizedImageId != null) {
+            return normalizedImageId;
+        }
+
+        return normalizeImageGallery(null, gallery).stream()
+                .findFirst()
+                .orElse("");
+    }
+
+    private List<String> normalizeImageGallery(String primaryImageId, List<String> imageGalleryIds) {
+        List<String> normalizedGallery = new ArrayList<>();
+        String normalizedPrimary = normalizeImageId(primaryImageId);
+
+        if (normalizedPrimary != null) {
+            normalizedGallery.add(normalizedPrimary);
+        }
+
+        if (imageGalleryIds != null) {
+            for (String imageId : imageGalleryIds) {
+                String normalizedImageId = normalizeImageId(imageId);
+                if (normalizedImageId != null && !normalizedGallery.contains(normalizedImageId)) {
+                    normalizedGallery.add(normalizedImageId);
+                }
+            }
+        }
+
+        return normalizedGallery;
+    }
+
+    private String normalizeImageId(String imageId) {
+        if (imageId == null) {
+            return null;
+        }
+
+        String trimmed = imageId.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
     private ProductReviewDto toProductReviewDto(Review review) {

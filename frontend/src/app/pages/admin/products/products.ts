@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AdminApiService } from '../../../core/admin/admin-api.service';
 import { AdminProductList, PageResponse } from '../../../core/admin/admin.types';
+import { CloudinaryTransformOptions } from '../../../core/images/cloudinary-url.pipe';
+import { CloudinaryImageFrameComponent } from '../../../shared/cloudinary-image-frame/cloudinary-image-frame';
 
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, CloudinaryImageFrameComponent],
   templateUrl: './products.html'
 })
 export class AdminProductsComponent implements OnInit {
@@ -22,6 +24,11 @@ export class AdminProductsComponent implements OnInit {
   readonly actionError = signal<string | null>(null);
   readonly selectedIds = signal<Set<string>>(new Set());
   readonly searchQuery = signal('');
+  readonly listImageOptions: CloudinaryTransformOptions = {
+    width: 96,
+    height: 72,
+    crop: 'pad'
+  };
 
   ngOnInit(): void {
     this.loadProducts();

@@ -36,15 +36,15 @@ export class ProductDisplayComponent implements OnChanges {
 
   readonly heroImageOptions: CloudinaryTransformOptions = {
     width: 1200,
-    height: 960,
-    crop: 'limit',
+    height: 900,
+    crop: 'pad',
     radius: 24
   };
 
   readonly thumbnailImageOptions: CloudinaryTransformOptions = {
     width: 240,
     height: 180,
-    crop: 'limit',
+    crop: 'pad',
     radius: 12
   };
 

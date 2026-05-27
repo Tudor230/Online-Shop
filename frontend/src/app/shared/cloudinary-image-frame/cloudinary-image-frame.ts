@@ -53,7 +53,7 @@ export class CloudinaryImageFrameComponent implements OnChanges {
   @Input() useLazy = true;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['source']) {
+    if (changes['source'] || changes['options']) {
       this.imageUnavailable = false;
     }
   }
