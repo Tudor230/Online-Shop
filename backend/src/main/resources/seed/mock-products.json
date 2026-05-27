@@ -5,12 +5,12 @@
     "title": "PS5 Console Shell",
     "price": 64.99,
     "description": "Custom matte shell plates with a precision fit that refresh your PS5 look in seconds.",
-    "imageName": "product-01.jpg",
+    "imageName": "product-09.jpg",
     "imageGalleryNames": [
-      "product-01.jpg",
-      "product-02.jpg",
-      "product-03.jpg",
-      "product-04.jpg"
+      "product-09.jpg",
+      "product-10.jpg",
+      "product-11.jpeg",
+      "product-12.jpg"
     ],
     "availableColors": [
       { "name": "Midnight", "swatch": "text-primary" },
@@ -24,12 +24,12 @@
     "title": "PS5 Controller",
     "price": 79.99,
     "description": "Adaptive trigger gaming controller tuned for low-latency sessions and long comfort.",
-    "imageName": "product-02.jpg",
+    "imageName": "product-05.jpg",
     "imageGalleryNames": [
-      "product-02.jpg",
-      "product-03.jpg",
-      "product-04.jpg",
-      "product-01.jpg"
+      "product-05.jpg",
+      "product-06.jpg",
+      "product-07.jpg",
+      "product-08.jpg"
     ],
     "availableColors": [
       { "name": "Cosmic Red", "swatch": "warning" },
@@ -43,12 +43,12 @@
     "title": "Xbox Controller",
     "price": 69.99,
     "description": "Textured wireless controller with ergonomic grip and responsive thumbstick precision.",
-    "imageName": "product-03.jpg",
+    "imageName": "product-13.jpg",
     "imageGalleryNames": [
-      "product-03.jpg",
-      "product-04.jpg",
-      "product-01.jpg",
-      "product-02.jpg"
+      "product-13.jpg",
+      "product-14.jpg",
+      "product-15.jpg",
+      "product-16.jpg"
     ],
     "availableColors": [
       { "name": "Carbon Black", "swatch": "surface-elevated" },
@@ -62,17 +62,93 @@
     "title": "Switch 2 Joy-Cons",
     "price": 89.99,
     "description": "Next-gen Joy-Cons with improved haptics and sharper motion tracking for party play.",
-    "imageName": "product-04.jpg",
+    "imageName": "product-17.jpg",
     "imageGalleryNames": [
-      "product-04.jpg",
-      "product-01.jpg",
-      "product-02.jpg",
-      "product-03.jpg"
+      "product-17.jpg",
+      "product-18.jpg",
+      "product-19.jpg",
+      "product-20.jpg"
     ],
     "availableColors": [
       { "name": "Neon Left", "swatch": "primary-hover" },
       { "name": "Neon Right", "swatch": "warning" },
       { "name": "Shadow Gray", "swatch": "text-secondary" }
+    ]
+  },
+  {
+    "id": "ps5-edge-controller",
+    "category": "Electronics > Video Games > PlayStation > Controllers",
+    "title": "PS5 Edge Controller",
+    "price": 999.99,
+    "description": "Highly customizable gaming controller tuned for intense and professional sessions and reliability.",
+    "imageName": "product-21.jpg",
+    "imageGalleryNames": [
+      "product-21.jpg",
+      "product-22.jpg",
+      "product-23.jpg",
+      "product-24.jpg"
+    ],
+    "availableColors": [
+      { "name": "Cosmic Red", "swatch": "warning" },
+      { "name": "Starlight Blue", "swatch": "primary-hover" },
+      { "name": "White", "swatch": "text-primary" }
+    ]
+  },
+  {
+    "id": "switch-2-controller",
+    "category": "Electronics > Video Games > Nintendo > Controllers",
+    "title": "Switch 2 Controller",
+    "price": 399.99,
+    "description": "Next-gen controller with improved haptics and ergonomic grip for long comfortable sessions.",
+    "imageName": "product-25.jpg",
+    "imageGalleryNames": [
+      "product-25.jpg",
+      "product-26.jpg",
+      "product-27.jpg",
+      "product-28.jpg"
+    ],
+    "availableColors": [
+      { "name": "Neon Left", "swatch": "primary-hover" },
+      { "name": "Neon Right", "swatch": "warning" },
+      { "name": "Shadow Gray", "swatch": "text-secondary" }
+    ]
+  },
+  {
+    "id": "switch-2-camera",
+    "category": "Electronics > Video Games > Nintendo > Accessories",
+    "title": "Switch 2 Camera",
+    "price": 89.99,
+    "description": "New camera connect and see your friends while you play.",
+    "imageName": "product-29.jpg",
+    "imageGalleryNames": [
+      "product-29.jpg",
+      "product-30.jpg",
+      "product-31.jpg",
+      "product-32.jpg"
+    ],
+    "availableColors": [
+      { "name": "Neon Left", "swatch": "primary-hover" },
+      { "name": "Neon Right", "swatch": "warning" },
+      { "name": "Shadow Gray", "swatch": "text-secondary" }
+    ]
+  },
+  {
+    "id": "ps5-headphones",
+    "category": "Electronics > Video Games > PlayStation > Accessories",
+    "title": "PS5 Headphones",
+    "price": 999.99,
+    "description": "Comfortable and reliable headphones, hear each footstep with pinpoint accuracy.",
+    "imageName": "product-33.jpg",
+    "imageGalleryNames": [
+      "product-33.jpg",
+      "product-34.jpg",
+      "product-35.jpg",
+      "product-36.jpg"
+    ],
+    "availableColors": [
+      { "name": "Cosmic Red", "swatch": "warning" },
+      { "name": "Starlight Blue", "swatch": "primary-hover" },
+      { "name": "White", "swatch": "text-primary" }
     ]
   }
 ]
