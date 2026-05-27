@@ -43,6 +43,22 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
           """)
     Page<UUID> findProductIdsByCategoryId(@Param("categoryId") UUID categoryId, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"categories", "inventory"})
+    @Query("""
+          SELECT DISTINCT p
+          FROM Product p
+          JOIN p.categories c
+          WHERE LOWER(c.name) = LOWER(:categoryName)
+            AND p.isActive = TRUE
+            AND p.id <> :productId
+          ORDER BY p.name ASC
+          """)
+    List<Product> findSimilarProductsByCategoryName(
+            @Param("categoryName") String categoryName,
+            @Param("productId") UUID productId,
+            Pageable pageable
+    );
+
     @Query(value = """
             WITH lexical AS (
                 SELECT p.id,

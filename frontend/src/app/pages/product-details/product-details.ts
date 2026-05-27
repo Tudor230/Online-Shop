@@ -24,7 +24,7 @@ interface SimilarItemsState {
   templateUrl: './product-details.html'
 })
 export class ProductDetailsComponent {
-  private static readonly SIMILAR_ITEMS_SIZE = 60;
+  private static readonly SIMILAR_ITEMS_SIZE = 8;
 
   @ViewChild('similarItemsTrack') private similarItemsTrack?: ElementRef<HTMLElement>;
 
@@ -73,14 +73,16 @@ export class ProductDetailsComponent {
           return of({ isLoading: false, items: [] as ProductSummary[] });
         }
 
-        return this.productApiService.getProducts({ page: 1, size: ProductDetailsComponent.SIMILAR_ITEMS_SIZE }).pipe(
-          map((result) => ({
-            isLoading: false,
-            items: this.buildSimilarItems(currentProduct, result.items)
-          })),
+        return this.productApiService
+          .getSimilarProducts(currentProduct.slug, ProductDetailsComponent.SIMILAR_ITEMS_SIZE)
+          .pipe(
+            map((items) => ({
+              isLoading: false,
+              items
+            })),
           startWith({ isLoading: true, items: [] as ProductSummary[] }),
           catchError(() => of({ isLoading: false, items: [] as ProductSummary[] }))
-        );
+          );
       })
     ),
     { initialValue: { isLoading: true, items: [] as ProductSummary[] } }
@@ -251,15 +253,5 @@ export class ProductDetailsComponent {
 
   reviewLabel(reviewCount: number): string {
     return reviewCount === 1 ? 'review' : 'reviews';
-  }
-
-  private buildSimilarItems(currentProduct: ProductDetails, items: ProductSummary[]): ProductSummary[] {
-    return items
-      .filter(
-        (item) =>
-          item.id !== currentProduct.id &&
-          item.category.toLowerCase() === currentProduct.category.toLowerCase()
-      )
-      .slice(0, 8);
   }
 }

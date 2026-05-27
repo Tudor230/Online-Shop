@@ -1,5 +1,5 @@
-import { CurrencyPipe } from '@angular/common';
-import { Component, ElementRef, HostListener, ViewChild, effect, inject, signal } from '@angular/core';
+import { CurrencyPipe, isPlatformBrowser } from '@angular/common';
+import { Component, ElementRef, HostListener, PLATFORM_ID, ViewChild, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
@@ -20,9 +20,12 @@ export class HeaderComponent {
   @ViewChild('profileMenu') private profileMenu?: ElementRef<HTMLDetailsElement>;
   @ViewChild('cartPreview') private cartPreview?: ElementRef<HTMLElement>;
   @ViewChild('cartButton') private cartButton?: ElementRef<HTMLButtonElement>;
+  @ViewChild('cartPreviewContinue') private cartPreviewContinue?: ElementRef<HTMLButtonElement>;
 
   private readonly keycloakAuthService = inject(KeycloakAuthService);
   private readonly router = inject(Router);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly isBrowser = isPlatformBrowser(this.platformId);
   readonly authState = inject(AuthStateService);
   readonly cartFacade = inject(CartFacadeService);
   readonly wishlistFacade = inject(WishlistFacadeService);
@@ -66,6 +69,13 @@ export class HeaderComponent {
         this.isCartPreviewOpen.set(true);
       }
     });
+
+    effect(() => {
+      if (!this.isCartPreviewOpen()) {
+        return;
+      }
+      this.focusCartPreview();
+    });
   }
 
   submitSearch(event: Event): void {
@@ -97,6 +107,16 @@ export class HeaderComponent {
 
     this.closeProfileMenu();
     this.closeCartPreviewIfNeeded(target);
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if (!this.isCartPreviewOpen() || event.key !== 'Escape') {
+      return;
+    }
+    event.preventDefault();
+    this.closeCartPreview();
+    this.focusCartButton();
   }
 
   closeProfileMenu(): void {
@@ -170,5 +190,24 @@ export class HeaderComponent {
       return;
     }
     this.closeCartPreview();
+  }
+
+  private focusCartPreview(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    queueMicrotask(() => {
+      requestAnimationFrame(() => {
+        const focusTarget = this.cartPreviewContinue?.nativeElement ?? this.cartPreview?.nativeElement;
+        focusTarget?.focus({ preventScroll: true });
+      });
+    });
+  }
+
+  private focusCartButton(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    this.cartButton?.nativeElement.focus({ preventScroll: true });
   }
 }
