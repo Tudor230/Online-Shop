@@ -18,7 +18,6 @@ import org.endava.onlineshop.repository.OrderRepository;
 import org.endava.onlineshop.repository.ProductRepository;
 import org.endava.onlineshop.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -97,22 +96,7 @@ public class ProductService {
     public List<ProductSummaryDto> getSimilarProducts(String slug, int size) {
         Product product = productRepository.findBySlugAndIsActiveTrue(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-
-        Category primaryCategory = extractPrimaryCategoryEntity(product);
-        if (primaryCategory == null || primaryCategory.getName() == null || primaryCategory.getName().isBlank()) {
-            return List.of();
-        }
-
-        int normalizedSize = Math.min(size, 60);
-        if (normalizedSize <= 0) {
-            return List.of();
-        }
-
-        List<Product> similarProducts = productRepository.findSimilarProductsByCategoryName(
-                primaryCategory.getName(),
-                product.getId(),
-                PageRequest.of(0, normalizedSize)
-        );
+        List<Product> similarProducts = productEmbeddingService.findSimilarProducts(product.getId(), size);
 
         return toSummaryDtos(similarProducts);
     }

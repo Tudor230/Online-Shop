@@ -15,6 +15,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 // TODO: Remove before deploying to production.
 @Component
@@ -39,12 +41,20 @@ public class ProductCatalogSeeder implements ApplicationRunner {
 
     private static final String CLOUDINARY_SEED_FOLDER = "online-shop/products/seed";
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductCatalogSeeder.class);
+    private static final int EMBEDDING_DIMENSIONS = 768;
+    private static final String UPDATE_PRODUCT_EMBEDDING_SQL = """
+            UPDATE product
+            SET embedding = CAST(? AS vector),
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """;
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ObjectMapper objectMapper;
     private final Resource seedResource;
     private final ResourceLoader resourceLoader;
+    private final JdbcTemplate jdbcTemplate;
     private final String cloudinaryCloudName;
     private final String cloudinaryApiKey;
     private final String cloudinaryApiSecret;
@@ -56,6 +66,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
             ObjectMapper objectMapper,
             @Value("classpath:seed/mock-products.json") Resource seedResource,
             ResourceLoader resourceLoader,
+            JdbcTemplate jdbcTemplate,
             @Value("${cloudinary.cloud-name:}") String cloudinaryCloudName,
             @Value("${cloudinary.api-key:}") String cloudinaryApiKey,
             @Value("${cloudinary.api-secret:}") String cloudinaryApiSecret,
@@ -66,6 +77,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         this.objectMapper = objectMapper;
         this.seedResource = seedResource;
         this.resourceLoader = resourceLoader;
+        this.jdbcTemplate = jdbcTemplate;
         this.cloudinaryCloudName = cloudinaryCloudName;
         this.cloudinaryApiKey = cloudinaryApiKey;
         this.cloudinaryApiSecret = cloudinaryApiSecret;
@@ -129,7 +141,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         product.setInventory(inventory);
 
         Product savedProduct = productRepository.saveAndFlush(product);
-        productEmbeddingService.upsertProductEmbedding(savedProduct);
+        applySeedEmbedding(savedProduct.getId(), seedProduct.embedding());
     }
 
     private Map<String, String> uploadSeedImages(List<SeedProduct> seedProducts) {
@@ -258,6 +270,27 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         return "SKU-" + slug.toUpperCase().replace("-", "_");
     }
 
+    private void applySeedEmbedding(UUID productId, List<SeedEmbeddingEntry> embedding) {
+        if (embedding == null || embedding.isEmpty()) {
+            return;
+        }
+
+        float[] vector = new float[EMBEDDING_DIMENSIONS];
+        for (SeedEmbeddingEntry entry : embedding) {
+            int index = entry.index();
+            if (index < 0 || index >= EMBEDDING_DIMENSIONS) {
+                throw new IllegalArgumentException("Embedding index out of range for seed data: " + index);
+            }
+            vector[index] = (float) entry.value();
+        }
+
+        String vectorLiteral = IntStream.range(0, vector.length)
+                .mapToObj(i -> String.format(java.util.Locale.US, "%.8f", vector[i]))
+                .collect(java.util.stream.Collectors.joining(",", "[", "]"));
+
+        jdbcTemplate.update(UPDATE_PRODUCT_EMBEDDING_SQL, vectorLiteral, productId);
+    }
+
     private record SeedProduct(
             String id,
             String category,
@@ -266,11 +299,14 @@ public class ProductCatalogSeeder implements ApplicationRunner {
             String description,
             String imageName,
             List<String> imageGalleryNames,
-            List<SeedColorOption> availableColors
+            List<SeedColorOption> availableColors,
+            List<SeedEmbeddingEntry> embedding
     ) {
     }
 
     private record SeedColorOption(String name, String swatch) {
     }
-}
 
+    private record SeedEmbeddingEntry(int index, double value) {
+    }
+}

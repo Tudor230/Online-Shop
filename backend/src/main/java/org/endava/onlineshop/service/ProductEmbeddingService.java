@@ -35,6 +35,11 @@ public class ProductEmbeddingService {
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
             """;
+    private static final String PRODUCT_EMBEDDING_PRESENT_SQL = """
+            SELECT embedding IS NOT NULL
+            FROM product
+            WHERE id = ?
+            """;
 
     private final JdbcTemplate jdbcTemplate;
     private final ProductRepository productRepository;
@@ -113,6 +118,23 @@ public class ProductEmbeddingService {
         return new PageImpl<>(orderedProducts, pageable, totalItems);
     }
 
+    public List<Product> findSimilarProducts(UUID productId, int size) {
+        if (!embeddingEnabled || productId == null) {
+            return List.of();
+        }
+
+        int normalizedSize = Math.min(size, 60);
+        if (normalizedSize <= 0 || !hasEmbedding(productId)) {
+            return List.of();
+        }
+
+        return productRepository.findSimilarProductsByEmbedding(
+                productId,
+                semanticMinSimilarity,
+                normalizedSize
+        );
+    }
+
     private List<Product> hydrateOrderedProducts(List<UUID> rankedIds) {
         if (rankedIds.isEmpty()) {
             return List.of();
@@ -130,6 +152,11 @@ public class ProductEmbeddingService {
 
     private String normalizeQuery(String query) {
         return query == null ? "" : query.trim();
+    }
+
+    private boolean hasEmbedding(UUID productId) {
+        Boolean present = jdbcTemplate.queryForObject(PRODUCT_EMBEDDING_PRESENT_SQL, Boolean.class, productId);
+        return Boolean.TRUE.equals(present);
     }
 
     public String buildCategoryText(Set<Category> categories) {
@@ -182,4 +209,3 @@ public class ProductEmbeddingService {
                 .collect(Collectors.joining(",", "[", "]"));
     }
 }
-

@@ -43,20 +43,22 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
           """)
     Page<UUID> findProductIdsByCategoryId(@Param("categoryId") UUID categoryId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"categories", "inventory"})
-    @Query("""
-          SELECT DISTINCT p
-          FROM Product p
-          JOIN p.categories c
-          WHERE LOWER(c.name) = LOWER(:categoryName)
-            AND p.isActive = TRUE
-            AND p.id <> :productId
-          ORDER BY p.name ASC
-          """)
-    List<Product> findSimilarProductsByCategoryName(
-            @Param("categoryName") String categoryName,
+    @Query(value = """
+            SELECT p.*
+            FROM product p
+            JOIN product seed ON seed.id = :productId
+            WHERE p.is_active = TRUE
+              AND p.id <> seed.id
+              AND p.embedding IS NOT NULL
+              AND seed.embedding IS NOT NULL
+              AND (1 - (p.embedding <=> seed.embedding)) >= :minSimilarity
+            ORDER BY p.embedding <=> seed.embedding ASC, p.name ASC
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<Product> findSimilarProductsByEmbedding(
             @Param("productId") UUID productId,
-            Pageable pageable
+            @Param("minSimilarity") double minSimilarity,
+            @Param("limit") int limit
     );
 
     @Query(value = """
