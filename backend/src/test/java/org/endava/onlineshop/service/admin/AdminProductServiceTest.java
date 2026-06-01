@@ -172,7 +172,7 @@ class AdminProductServiceTest {
         existing.setImageId("gallery-1");
         existing.setImageGalleryIds(List.of("gallery-1", "gallery-2", "gallery-3"));
         AdminProductUpdateRequestDto request = new AdminProductUpdateRequestDto(
-                null, null, null, null, null, null, null, "gallery-3", List.of("gallery-1", "gallery-2", "gallery-3"), null, null);
+                null, null, null, null, null, null, null, null, "gallery-3", List.of("gallery-1", "gallery-2", "gallery-3"), null, null);
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(existing));
         when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
