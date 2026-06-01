@@ -85,6 +85,12 @@ export interface AdminProductDetail {
   updatedAt: string;
 }
 
+export interface AdminUploadedProductImage {
+  imageId: string;
+  imageUrl: string | null;
+  originalFilename: string | null;
+}
+
 export interface AdminProductCreateRequest {
   sku: string;
   name: string;

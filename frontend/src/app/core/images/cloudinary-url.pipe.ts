@@ -3,7 +3,7 @@ import { lazyload, responsive } from '@cloudinary/ng';
 import { Cloudinary, CloudinaryImage } from '@cloudinary/url-gen';
 import { AppConfigService } from '../config/app-config.service';
 
-type CloudinaryCropMode = 'fill' | 'fit' | 'limit' | 'thumb';
+type CloudinaryCropMode = 'fill' | 'fit' | 'limit' | 'thumb' | 'pad';
 
 export interface CloudinaryTransformOptions {
   width?: number;
@@ -11,6 +11,9 @@ export interface CloudinaryTransformOptions {
   crop?: CloudinaryCropMode;
   gravity?: 'auto' | 'center' | 'faces';
   radius?: number | 'max';
+  backgroundColor?: string;
+  shadowStrength?: number;
+  removeBackground?: boolean;
 }
 
 @Pipe({
@@ -34,11 +37,12 @@ export class CloudinaryImagePipe implements PipeTransform {
 
     const cloudinary = this.getCloudinary(cloudName);
     const normalizedSource = source.trim();
-    const image = /^https?:\/\//i.test(normalizedSource)
+    const isFetchSource = /^https?:\/\//i.test(normalizedSource);
+    const image = isFetchSource
       ? cloudinary.image(normalizedSource).setDeliveryType('fetch').setAssetType('image')
       : cloudinary.image(normalizedSource.replace(/^\/+/, ''));
 
-    image.addTransformation(this.buildTransformationSegment(options));
+    image.addTransformation(this.buildTransformationSegment(options, isFetchSource));
     return image;
   }
 
@@ -58,26 +62,69 @@ export class CloudinaryImagePipe implements PipeTransform {
     return this.cloudinary;
   }
 
-  private buildTransformationSegment(options: CloudinaryTransformOptions): string {
-    const transforms = ['f_auto', 'q_auto', 'dpr_auto'];
+  private buildTransformationSegment(options: CloudinaryTransformOptions, isFetchSource: boolean): string {
+    const components = ['f_auto,q_auto,dpr_auto'];
+    const resizeQualifiers: string[] = [];
+    const hasBounds = Boolean(options.width || options.height);
+    const cropMode = options.crop ?? (hasBounds ? 'pad' : undefined);
+    const gravity = options.gravity;
+    const backgroundColor = this.normalizeColor(options.backgroundColor ?? 'f2efe9');
+    const shadowStrength = options.shadowStrength ?? 36;
+    const removeBackground = options.removeBackground ?? true;
 
-    if (options.crop) {
-      transforms.push(`c_${options.crop}`);
+    if (cropMode) {
+      resizeQualifiers.push(`c_${cropMode}`);
     }
     if (options.width) {
-      transforms.push(`w_${options.width}`);
+      resizeQualifiers.push(`w_${options.width}`);
     }
     if (options.height) {
-      transforms.push(`h_${options.height}`);
+      resizeQualifiers.push(`h_${options.height}`);
     }
-    if (options.gravity) {
-      transforms.push(`g_${options.gravity}`);
+    if (gravity) {
+      resizeQualifiers.push(`g_${gravity}`);
     }
-    if (options.radius !== undefined) {
-      transforms.push(`r_${options.radius}`);
+    if (hasBounds && cropMode === 'pad') {
+      resizeQualifiers.push(this.backgroundQualifier(backgroundColor));
     }
 
-    return transforms.join(',');
+    if (resizeQualifiers.length > 0) {
+      components.push(resizeQualifiers.join(','));
+    }
+
+    // Cloudinary docs: both e_background_removal and e_dropshadow are unsupported for fetched images.
+    // Also, e_dropshadow works best after transparency is present, so chain it after background removal.
+    if (!isFetchSource && removeBackground) {
+      components.push('e_background_removal');
+    }
+
+    if (!isFetchSource && shadowStrength > 0) {
+      components.push(this.dropShadowEffect(shadowStrength));
+    }
+
+    if (options.radius !== undefined) {
+      components.push(`r_${options.radius}`);
+    }
+
+    return components.join('/');
+  }
+
+  private normalizeColor(color: string): string {
+    const normalizedColor = color.trim().replace(/^#/, '').toLowerCase();
+    return normalizedColor || 'f2efe9';
+  }
+
+  private backgroundQualifier(color: string): string {
+    return /^[0-9a-f]{3}([0-9a-f]{3})?$/i.test(color) ? `b_rgb:${color}` : `b_${color}`;
+  }
+
+  private dropShadowEffect(shadowStrength: number): string {
+    const spread = this.clamp(Math.round(shadowStrength), 0, 100);
+    return `e_dropshadow:azimuth_220;elevation_45;spread_${spread}`;
+  }
+
+  private clamp(value: number, min: number, max: number): number {
+    return Math.min(max, Math.max(min, value));
   }
 }
 

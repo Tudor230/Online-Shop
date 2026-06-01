@@ -34,6 +34,7 @@
         <thead class="border-b border-surface-elevated bg-surface-default text-text-secondary">
           <tr>
             <th class="px-4 py-3"><input type="checkbox" class="h-4 w-4 rounded border-surface-elevated" (change)="selectAll($event)" /></th>
+            <th class="px-4 py-3 font-medium">Image</th>
             <th class="px-4 py-3 font-medium">SKU</th>
             <th class="px-4 py-3 font-medium">Name</th>
             <th class="px-4 py-3 font-medium">Price</th>
@@ -47,6 +48,20 @@
           @for (product of filteredProducts(); track product.id) {
             <tr class="transition-colors hover:bg-surface-elevated/50">
               <td class="px-4 py-3"><input type="checkbox" class="h-4 w-4 rounded border-surface-elevated" [checked]="selectedIds().has(product.id)" (change)="toggleSelection(product.id)" /></td>
+              <td class="px-4 py-3">
+                <div class="h-[72px] w-24 overflow-hidden rounded-lg border border-surface-elevated bg-surface-elevated p-1.5">
+                  <app-cloudinary-image-frame
+                    [source]="product.imagePlaceholder"
+                    [alt]="product.name"
+                    [options]="listImageOptions"
+                    width="96"
+                    height="72"
+                    imageClass="h-full w-full rounded-md object-contain"
+                    fallbackClass="grid h-full w-full place-items-center rounded-md bg-surface-default text-[11px] font-medium text-text-secondary"
+                    fallbackText="No image"
+                  />
+                </div>
+              </td>
               <td class="px-4 py-3 text-text-primary">{{ product.sku }}</td>
               <td class="px-4 py-3 text-text-primary">{{ product.name }}</td>
               <td class="px-4 py-3 text-text-primary">${{ product.basePrice | number:'1.2-2' }}</td>
@@ -69,7 +84,7 @@
             </tr>
           } @empty {
             <tr>
-              <td colspan="7" class="px-4 py-6 text-center text-sm text-text-secondary">No products found.</td>
+              <td colspan="9" class="px-4 py-6 text-center text-sm text-text-secondary">No products found.</td>
             </tr>
           }
         </tbody>

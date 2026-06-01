@@ -1,9 +1,22 @@
 package org.endava.onlineshop.service.admin;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.endava.onlineshop.events.ProductCategoriesChangedEvent;
 import org.endava.onlineshop.events.ProductDetailsChangedEvent;
 import org.endava.onlineshop.exception.BadRequestException;
-import org.endava.onlineshop.model.dto.admin.*;
+import org.endava.onlineshop.model.dto.admin.AdminCategoryDto;
+import org.endava.onlineshop.model.dto.admin.AdminInventoryDto;
+import org.endava.onlineshop.model.dto.admin.AdminProductCreateRequestDto;
+import org.endava.onlineshop.model.dto.admin.AdminProductDetailDto;
+import org.endava.onlineshop.model.dto.admin.AdminProductListDto;
+import org.endava.onlineshop.model.dto.admin.AdminProductUpdateRequestDto;
+import org.endava.onlineshop.model.dto.admin.AdminUploadedProductImageDto;
 import org.endava.onlineshop.model.entities.Category;
 import org.endava.onlineshop.model.entities.Product;
 import org.endava.onlineshop.model.entities.ProductInventory;
@@ -18,12 +31,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminProductService {
@@ -32,6 +41,7 @@ public class AdminProductService {
     private final CategoryRepository categoryRepository;
     private final ProductInventoryRepository productInventoryRepository;
     private final ReviewRepository reviewRepository;
+    private final ProductImageStorageService productImageStorageService;
     private final AdminAuditLogService auditLogService;
     private final SecurityUtils securityUtils;
     private final ApplicationEventPublisher eventPublisher;
@@ -41,6 +51,7 @@ public class AdminProductService {
             CategoryRepository categoryRepository,
             ProductInventoryRepository productInventoryRepository,
             ReviewRepository reviewRepository,
+            ProductImageStorageService productImageStorageService,
             AdminAuditLogService auditLogService,
             SecurityUtils securityUtils,
             ApplicationEventPublisher eventPublisher
@@ -49,9 +60,14 @@ public class AdminProductService {
         this.categoryRepository = categoryRepository;
         this.productInventoryRepository = productInventoryRepository;
         this.reviewRepository = reviewRepository;
+        this.productImageStorageService = productImageStorageService;
         this.auditLogService = auditLogService;
         this.securityUtils = securityUtils;
         this.eventPublisher = eventPublisher;
+    }
+
+    public List<AdminUploadedProductImageDto> uploadProductImages(List<MultipartFile> files) {
+        return productImageStorageService.uploadProductImages(files);
     }
 
     @Transactional(readOnly = true)
@@ -81,14 +97,17 @@ public class AdminProductService {
             throw new BadRequestException("Product slug already exists");
         }
 
+        String primaryImageId = requirePrimaryImage(request.imagePlaceholder());
+        List<String> normalizedGallery = normalizeImageGallery(primaryImageId, request.imageGallery());
+
         Product product = new Product();
         product.setSku(request.sku());
         product.setName(request.name());
         product.setSlug(request.slug());
         product.setDescription(request.description());
         product.setBasePrice(request.basePrice());
-        product.setImageId(request.imagePlaceholder());
-        product.setImageGalleryIds(request.imageGallery() != null ? request.imageGallery() : new java.util.ArrayList<>());
+        product.setImageId(primaryImageId);
+        product.setImageGalleryIds(new ArrayList<>(normalizedGallery));
 
         if (request.categoryIds() != null && !request.categoryIds().isEmpty()) {
             List<Category> categories = categoryRepository.findAllById(request.categoryIds());
@@ -131,8 +150,23 @@ public class AdminProductService {
         }
         if (request.basePrice() != null) product.setBasePrice(request.basePrice());
         if (request.isActive() != null) product.setIsActive(request.isActive());
-        if (request.imagePlaceholder() != null) product.setImageId(request.imagePlaceholder());
-        if (request.imageGallery() != null) product.setImageGalleryIds(request.imageGallery());
+        if (request.imagePlaceholder() != null || request.imageGallery() != null) {
+            String requestedPrimaryImage = request.imagePlaceholder() != null
+                    ? requirePrimaryImage(request.imagePlaceholder())
+                    : requirePrimaryImage(product.getImageId());
+            List<String> normalizedGallery = normalizeImageGallery(
+                    requestedPrimaryImage,
+                    request.imageGallery() != null ? request.imageGallery() : product.getImageGalleryIds()
+            );
+
+            if (!Objects.equals(product.getImageId(), requestedPrimaryImage)
+                    || !Objects.equals(product.getImageGalleryIds(), normalizedGallery)) {
+                detailsChanged = true;
+            }
+
+            product.setImageId(requestedPrimaryImage);
+            product.setImageGalleryIds(new ArrayList<>(normalizedGallery));
+        }
         if (request.categoryIds() != null) {
             List<Category> categories = categoryRepository.findAllById(request.categoryIds());
             product.setCategories(new java.util.HashSet<>(categories));
@@ -205,10 +239,11 @@ public class AdminProductService {
         Integer qty = product.getInventory() != null ? product.getInventory().getQuantityAvailable() : 0;
         Integer threshold = product.getInventory() != null ? product.getInventory().getLowStockThreshold() : 5;
         List<String> categories = product.getCategories().stream().map(Category::getName).toList();
+        String primaryImageId = resolvePrimaryImage(product.getImageId(), product.getImageGalleryIds());
         return new AdminProductListDto(
                 product.getId(), product.getSku(), product.getName(), product.getSlug(),
-                product.getBasePrice(), product.getIsActive(), reviewSnapshot.averageRating(),
-                reviewSnapshot.reviewCount(), product.getImageId(), qty, threshold,
+            product.getBasePrice(), product.getIsActive(), reviewSnapshot.averageRating(),
+            reviewSnapshot.reviewCount(), primaryImageId, qty, threshold,
                 categories, product.getCreatedAt(), product.getUpdatedAt()
         );
     }
@@ -220,13 +255,62 @@ public class AdminProductService {
         AdminInventoryDto inventory = product.getInventory() != null
                 ? new AdminInventoryDto(product.getInventory().getQuantityAvailable(), product.getInventory().getLowStockThreshold())
                 : new AdminInventoryDto(0, 5);
+        List<String> normalizedGallery = normalizeImageGallery(product.getImageId(), product.getImageGalleryIds());
         return new AdminProductDetailDto(
                 product.getId(), product.getSku(), product.getName(), product.getSlug(),
                 product.getDescription(), product.getBasePrice(), product.getIsActive(),
-                reviewSnapshot.averageRating(), reviewSnapshot.reviewCount(), product.getImageId(),
-                List.copyOf(product.getImageGalleryIds()), categories, inventory,
+                reviewSnapshot.averageRating(), reviewSnapshot.reviewCount(), resolvePrimaryImage(product.getImageId(), normalizedGallery),
+                List.copyOf(normalizedGallery), categories, inventory,
                 product.getCreatedAt(), product.getUpdatedAt()
         );
+    }
+
+    private String requirePrimaryImage(String imageId) {
+        String normalizedImageId = normalizeImageId(imageId);
+        if (normalizedImageId == null) {
+            throw new BadRequestException("Primary image is required");
+        }
+        return normalizedImageId;
+    }
+
+    private String resolvePrimaryImage(String imageId, List<String> gallery) {
+        String normalizedImageId = normalizeImageId(imageId);
+        if (normalizedImageId != null) {
+            return normalizedImageId;
+        }
+
+        return normalizeImageGallery(null, gallery).stream()
+                .findFirst()
+                .orElseThrow(() -> new BadRequestException("Primary image is required"));
+    }
+
+    private List<String> normalizeImageGallery(String primaryImageId, List<String> imageGalleryIds) {
+        List<String> normalizedGallery = new ArrayList<>();
+        String normalizedPrimary = normalizeImageId(primaryImageId);
+
+        if (normalizedPrimary != null) {
+            normalizedGallery.add(normalizedPrimary);
+        }
+
+        if (imageGalleryIds != null) {
+            for (String imageId : imageGalleryIds) {
+                String normalizedImageId = normalizeImageId(imageId);
+                if (normalizedImageId != null && !normalizedGallery.contains(normalizedImageId)) {
+                    normalizedGallery.add(normalizedImageId);
+                }
+            }
+        }
+
+        return normalizedGallery;
+    }
+
+    private String normalizeImageId(String imageId) {
+        if (imageId == null) {
+            return null;
+        }
+
+        String trimmed = imageId.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
     private Map<UUID, ProductReviewSnapshot> summarizeReviewsByProductId(List<UUID> productIds) {

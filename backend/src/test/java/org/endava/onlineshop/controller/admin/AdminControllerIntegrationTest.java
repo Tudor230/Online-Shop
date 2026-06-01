@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -179,6 +180,23 @@ class AdminControllerIntegrationTest {
                                 }
                                 """))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldAllowAdminToUploadProductImages() throws Exception {
+        when(adminProductService.uploadProductImages(any())).thenReturn(List.of(
+                new org.endava.onlineshop.model.dto.admin.AdminUploadedProductImageDto(
+                        "online-shop/products/admin/test-image",
+                        "https://example.com/test-image.png",
+                        "test-image.png"
+                )
+        ));
+
+        mockMvc.perform(multipart("/api/admin/products/images")
+                        .file(new MockMultipartFile("files", "test-image.png", MediaType.IMAGE_PNG_VALUE, "png".getBytes()))
+                        .with(adminJwt()))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$[0].imageId").value("online-shop/products/admin/test-image"));
     }
 
     // =================== Orders ===================

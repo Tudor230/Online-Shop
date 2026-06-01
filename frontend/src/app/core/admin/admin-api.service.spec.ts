@@ -136,6 +136,24 @@ describe('AdminApiService', () => {
         );
       });
     });
+
+    it('should upload product images using multipart form data', () => {
+      const mockImages = [
+        { imageId: 'image-1', imageUrl: 'https://example.com/image-1.png', originalFilename: 'image-1.png' },
+      ];
+      httpMock.post.mockReturnValue(of(mockImages));
+
+      const file = new File(['image'], 'image-1.png', { type: 'image/png' });
+
+      service.uploadProductImages([file]).subscribe((res) => {
+        expect(res).toEqual(mockImages);
+      });
+
+      expect(httpMock.post).toHaveBeenCalledWith(
+        'http://localhost:8080/api/admin/products/images',
+        expect.any(FormData)
+      );
+    });
   });
 
   describe('Orders', () => {

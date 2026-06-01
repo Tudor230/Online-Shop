@@ -24,9 +24,9 @@ export class CartSidebarComponent {
   @Output() itemSelected = new EventEmitter<string>();
 
   readonly cartImageOptions: CloudinaryTransformOptions = {
-    width: 160,
-    height: 160,
-    crop: 'limit',
+    width: 240,
+    height: 180,
+    crop: 'pad',
     radius: 10
   };
 

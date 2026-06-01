@@ -82,13 +82,13 @@
                   >
                     <td class="px-3 py-2">
                       <div class="flex items-center gap-3">
-                        <div class="h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-surface-elevated bg-surface-elevated">
+                        <div class="w-14 shrink-0 overflow-hidden rounded-lg border border-surface-elevated bg-surface-elevated aspect-[4/3]">
                           <app-cloudinary-image-frame
                             [source]="item.imageId"
                             [alt]="item.title"
-                            [options]="{ width: 80, height: 80, crop: 'limit', radius: 8 }"
-                            width="80"
-                            height="80"
+                            [options]="{ width: 120, height: 90, crop: 'pad', radius: 8 }"
+                            width="120"
+                            height="90"
                             [useLazy]="true"
                             imageClass="h-full w-full object-contain"
                             fallbackClass="grid h-full w-full place-items-center text-[9px] font-medium text-text-secondary"

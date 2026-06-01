@@ -13,6 +13,7 @@ import {
   AdminProductCreateRequest,
   AdminProductDetail,
   AdminProductList,
+  AdminUploadedProductImage,
   AdminProductUpdateRequest,
   AdminRevenueChart,
   AdminUserCreateRequest,
@@ -81,6 +82,12 @@ export class AdminApiService {
 
   updateProduct(id: string, request: AdminProductUpdateRequest): Observable<AdminProductDetail> {
     return this.http.put<AdminProductDetail>(`${this.baseUrl}/products/${id}`, request);
+  }
+
+  uploadProductImages(files: File[]): Observable<AdminUploadedProductImage[]> {
+    const formData = new FormData();
+    files.forEach((file) => formData.append('files', file));
+    return this.http.post<AdminUploadedProductImage[]>(`${this.baseUrl}/products/images`, formData);
   }
 
   deleteProduct(id: string): Observable<void> {

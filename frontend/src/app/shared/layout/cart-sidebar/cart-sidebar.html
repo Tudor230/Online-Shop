@@ -34,8 +34,8 @@
               (keydown.enter)="onItemSelected(item.productSlug)"
               (keydown.space)="onItemSelected(item.productSlug); $event.preventDefault()"
             >
-              <div class="grid grid-cols-[88px_minmax(0,1fr)_auto] items-start gap-3">
-                <div class="h-20 w-20 overflow-hidden rounded-lg bg-surface-elevated">
+              <div class="grid grid-cols-[104px_minmax(0,1fr)_auto] items-start gap-3">
+                <div class="w-24 overflow-hidden rounded-lg bg-surface-elevated aspect-[4/3]">
                   <app-cloudinary-image-frame
                     [source]="item.imageId"
                     [alt]="item.title"
