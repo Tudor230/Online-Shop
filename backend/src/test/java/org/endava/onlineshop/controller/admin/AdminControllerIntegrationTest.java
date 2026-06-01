@@ -142,7 +142,7 @@ class AdminControllerIntegrationTest {
         UUID id = UUID.randomUUID();
         when(adminProductService.createProduct(any())).thenReturn(
                 new org.endava.onlineshop.model.dto.admin.AdminProductDetailDto(
-                        id, "SKU-001", "Test Product", "test-product", "Description",
+                        id, "SKU-001", "Test Product", "test-product", "Description", "Detailed description",
                         new BigDecimal("99.99"), true, 0.0, 0, "placeholder",
                         List.of(), List.of(),
                         new org.endava.onlineshop.model.dto.admin.AdminInventoryDto(10, 5),

@@ -24,6 +24,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class ProductService {
@@ -198,6 +204,7 @@ public class ProductService {
                 reviewedReviewId,
                 product.getBasePrice(),
                 product.getDescription(),
+                product.getDetailedDescription(),
                 primaryImageId,
                 List.copyOf(normalizedGallery),
                 reviews.stream().map(this::toProductReviewDto).toList()

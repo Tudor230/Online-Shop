@@ -11,6 +11,7 @@ public record AdminProductDetailDto(
         String name,
         String slug,
         String description,
+        String detailedDescription,
         BigDecimal basePrice,
         Boolean isActive,
         Double rating,

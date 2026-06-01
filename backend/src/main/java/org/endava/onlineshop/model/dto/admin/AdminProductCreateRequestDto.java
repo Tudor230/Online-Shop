@@ -14,6 +14,7 @@ public record AdminProductCreateRequestDto(
         @NotNull @Size(max = 200) String name,
         @NotNull @Size(max = 220) String slug,
         String description,
+        String detailedDescription,
         @NotNull @Positive BigDecimal basePrice,
         List<UUID> categoryIds,
         @NotNull @Size(max = 255) String imagePlaceholder,

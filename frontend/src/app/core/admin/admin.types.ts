@@ -73,6 +73,7 @@ export interface AdminProductDetail {
   name: string;
   slug: string;
   description: string;
+  detailedDescription: string;
   basePrice: number;
   isActive: boolean;
   rating: number;
@@ -96,6 +97,7 @@ export interface AdminProductCreateRequest {
   name: string;
   slug: string;
   description?: string;
+  detailedDescription?: string;
   basePrice: number;
   categoryIds?: string[];
   imagePlaceholder: string;
@@ -109,6 +111,7 @@ export interface AdminProductUpdateRequest {
   name?: string;
   slug?: string;
   description?: string;
+  detailedDescription?: string;
   basePrice?: number;
   isActive?: boolean;
   categoryIds?: string[];

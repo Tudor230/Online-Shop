@@ -180,6 +180,8 @@ public class ProductEmbeddingService {
                 "name: " + product.getName(),
                 "description: " + Optional.ofNullable(product.getDescription())
                         .orElse(""),
+                "detailed description: " + Optional.ofNullable(product.getDetailedDescription())
+                        .orElse(""),
                 "categories: " + Optional.ofNullable(product.getCategoryText())
                         .orElse("")
         );

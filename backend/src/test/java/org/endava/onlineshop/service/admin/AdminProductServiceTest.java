@@ -140,7 +140,7 @@ class AdminProductServiceTest {
     void updateProductWithNoMeaningfulChangesShouldNotPublishEvents() {
         Product existing = buildProduct("Name", "desc", "slug");
         AdminProductUpdateRequestDto request = new AdminProductUpdateRequestDto(
-                "sku", "Name", "slug", "desc", null, null, null, null, null, null, null);
+                "sku", "Name", "slug", "desc", null, null, null, null, null, null, null, null);
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(existing));
         when(productRepository.save(any(Product.class))).thenReturn(existing);
@@ -155,7 +155,7 @@ class AdminProductServiceTest {
     void updateProductShouldReturnUpdatedDto() {
         Product existing = buildProduct("Name", "desc", "slug");
         AdminProductUpdateRequestDto request = new AdminProductUpdateRequestDto(
-                null, "Updated Name", null, null, null, null, null, null, null, null, null);
+                null, "Updated Name", null, null, null, null, null, null, null, null, null, null);
 
         when(productRepository.findById(productId)).thenReturn(Optional.of(existing));
         when(productRepository.save(any(Product.class))).thenReturn(existing);
@@ -203,6 +203,7 @@ class AdminProductServiceTest {
         product.setId(productId);
         product.setName(name);
         product.setDescription(description);
+        product.setDetailedDescription("Detailed " + description);
         product.setSlug(slug);
         product.setSku("SKU-001");
         product.setBasePrice(new BigDecimal("99.99"));
@@ -220,6 +221,6 @@ class AdminProductServiceTest {
 
     private AdminProductUpdateRequestDto buildUpdateRequest(String name, String description, List<UUID> categoryIds) {
         return new AdminProductUpdateRequestDto(
-                null, name, null, description, null, null, categoryIds, null, null, null, null);
+                null, name, null, description, null, null, null, categoryIds, null, null, null, null);
     }
 }

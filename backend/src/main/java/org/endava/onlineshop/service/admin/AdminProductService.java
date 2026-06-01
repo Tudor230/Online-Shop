@@ -105,6 +105,7 @@ public class AdminProductService {
         product.setName(request.name());
         product.setSlug(request.slug());
         product.setDescription(request.description());
+        product.setDetailedDescription(request.detailedDescription());
         product.setBasePrice(request.basePrice());
         product.setImageId(primaryImageId);
         product.setImageGalleryIds(new ArrayList<>(normalizedGallery));
@@ -146,6 +147,10 @@ public class AdminProductService {
         }
         if (request.description() != null && !request.description().equals(product.getDescription())) {
             product.setDescription(request.description());
+            detailsChanged = true;
+        }
+        if (request.detailedDescription() != null && !request.detailedDescription().equals(product.getDetailedDescription())) {
+            product.setDetailedDescription(request.detailedDescription());
             detailsChanged = true;
         }
         if (request.basePrice() != null) product.setBasePrice(request.basePrice());
@@ -258,7 +263,7 @@ public class AdminProductService {
         List<String> normalizedGallery = normalizeImageGallery(product.getImageId(), product.getImageGalleryIds());
         return new AdminProductDetailDto(
                 product.getId(), product.getSku(), product.getName(), product.getSlug(),
-                product.getDescription(), product.getBasePrice(), product.getIsActive(),
+                product.getDescription(), product.getDetailedDescription(), product.getBasePrice(), product.getIsActive(),
                 reviewSnapshot.averageRating(), reviewSnapshot.reviewCount(), resolvePrimaryImage(product.getImageId(), normalizedGallery),
                 List.copyOf(normalizedGallery), categories, inventory,
                 product.getCreatedAt(), product.getUpdatedAt()

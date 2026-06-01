@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Component, ElementRef, PLATFORM_ID, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -20,7 +20,7 @@ interface SimilarItemsState {
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, ProductDisplayComponent, ProductCardComponent],
+  imports: [CommonModule, ProductDisplayComponent, ProductCardComponent],
   templateUrl: './product-details.html'
 })
 export class ProductDetailsComponent {

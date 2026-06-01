@@ -113,6 +113,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         product.setSku(toSku(slug));
         product.setBasePrice(BigDecimal.valueOf(seedProduct.price()));
         product.setDescription(seedProduct.description());
+        product.setDetailedDescription(seedProduct.detailedDescription());
         product.setIsActive(true);
 
         String primaryImageId = uploadedImageIdsByName.get(seedProduct.imageName());
@@ -297,6 +298,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
             String title,
             double price,
             String description,
+            String detailedDescription,
             String imageName,
             List<String> imageGalleryNames,
             List<SeedColorOption> availableColors,
