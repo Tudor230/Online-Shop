@@ -46,6 +46,7 @@ public class ProductEmbeddingService {
     private final EmbeddingModel embeddingModel;
     private final boolean embeddingEnabled;
     private final double semanticMinSimilarity;
+    private final double similarProductsMinSimilarity;
     private final int rrfK;
     private final double lexicalWeight;
     private final double semanticWeight;
@@ -56,6 +57,7 @@ public class ProductEmbeddingService {
             @Nullable EmbeddingModel embeddingModel,
             @Value("${ai.embedding.enabled:false}") boolean embeddingEnabled,
             @Value("${search.hybrid.semantic-min-similarity:0.58}") double semanticMinSimilarity,
+            @Value("${search.similar-products.semantic-min-similarity:0.82}") double similarProductsMinSimilarity,
             @Value("${search.hybrid.rrf.k:60}") int rrfK,
             @Value("${search.hybrid.weight.lexical:1.0}") double lexicalWeight,
             @Value("${search.hybrid.weight.semantic:1.0}") double semanticWeight
@@ -65,6 +67,7 @@ public class ProductEmbeddingService {
         this.embeddingModel = embeddingModel;
         this.embeddingEnabled = embeddingEnabled;
         this.semanticMinSimilarity = semanticMinSimilarity;
+        this.similarProductsMinSimilarity = similarProductsMinSimilarity;
         this.rrfK = rrfK;
         this.lexicalWeight = lexicalWeight;
         this.semanticWeight = semanticWeight;
@@ -130,7 +133,7 @@ public class ProductEmbeddingService {
 
         return productRepository.findSimilarProductsByEmbedding(
                 productId,
-                semanticMinSimilarity,
+                similarProductsMinSimilarity,
                 normalizedSize
         );
     }

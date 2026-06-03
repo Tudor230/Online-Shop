@@ -17,10 +17,6 @@
       { "name": "Midnight", "swatch": "text-primary" },
       { "name": "Nebula Violet", "swatch": "primary" },
       { "name": "Slate", "swatch": "surface-elevated" }
-    ],
-    "embedding": [
-      { "index": 0, "value": 1.0 },
-      { "index": 5, "value": 0.6 }
     ]
   },
   {
@@ -41,10 +37,6 @@
       { "name": "Cosmic Red", "swatch": "warning" },
       { "name": "Starlight Blue", "swatch": "primary-hover" },
       { "name": "White", "swatch": "text-primary" }
-    ],
-    "embedding": [
-      { "index": 0, "value": 1.0 },
-      { "index": 3, "value": 0.6 }
     ]
   },
   {
@@ -65,10 +57,6 @@
       { "name": "Carbon Black", "swatch": "surface-elevated" },
       { "name": "Pulse Blue", "swatch": "primary" },
       { "name": "Electric Volt", "swatch": "warning" }
-    ],
-    "embedding": [
-      { "index": 1, "value": 1.0 },
-      { "index": 3, "value": 0.6 }
     ]
   },
   {
@@ -89,10 +77,6 @@
       { "name": "Neon Left", "swatch": "primary-hover" },
       { "name": "Neon Right", "swatch": "warning" },
       { "name": "Shadow Gray", "swatch": "text-secondary" }
-    ],
-    "embedding": [
-      { "index": 2, "value": 1.0 },
-      { "index": 6, "value": 0.6 }
     ]
   },
   {
@@ -113,10 +97,6 @@
       { "name": "Cosmic Red", "swatch": "warning" },
       { "name": "Starlight Blue", "swatch": "primary-hover" },
       { "name": "White", "swatch": "text-primary" }
-    ],
-    "embedding": [
-      { "index": 0, "value": 1.0 },
-      { "index": 3, "value": 0.6 }
     ]
   },
   {
@@ -137,10 +117,6 @@
       { "name": "Neon Left", "swatch": "primary-hover" },
       { "name": "Neon Right", "swatch": "warning" },
       { "name": "Shadow Gray", "swatch": "text-secondary" }
-    ],
-    "embedding": [
-      { "index": 2, "value": 1.0 },
-      { "index": 3, "value": 0.6 }
     ]
   },
   {
@@ -161,10 +137,6 @@
       { "name": "Neon Left", "swatch": "primary-hover" },
       { "name": "Neon Right", "swatch": "warning" },
       { "name": "Shadow Gray", "swatch": "text-secondary" }
-    ],
-    "embedding": [
-      { "index": 2, "value": 1.0 },
-      { "index": 4, "value": 0.6 }
     ]
   },
   {
@@ -185,10 +157,6 @@
       { "name": "Cosmic Red", "swatch": "warning" },
       { "name": "Starlight Blue", "swatch": "primary-hover" },
       { "name": "White", "swatch": "text-primary" }
-    ],
-    "embedding": [
-      { "index": 0, "value": 1.0 },
-      { "index": 4, "value": 0.6 }
     ]
   }
 ]

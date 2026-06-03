@@ -41,13 +41,6 @@ public class ProductCatalogSeeder implements ApplicationRunner {
 
     private static final String CLOUDINARY_SEED_FOLDER = "online-shop/products/seed";
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductCatalogSeeder.class);
-    private static final int EMBEDDING_DIMENSIONS = 768;
-    private static final String UPDATE_PRODUCT_EMBEDDING_SQL = """
-            UPDATE product
-            SET embedding = CAST(? AS vector),
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = ?
-            """;
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -142,7 +135,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         product.setInventory(inventory);
 
         Product savedProduct = productRepository.saveAndFlush(product);
-        applySeedEmbedding(savedProduct.getId(), seedProduct.embedding());
+        productEmbeddingService.upsertProductEmbedding(savedProduct);
     }
 
     private Map<String, String> uploadSeedImages(List<SeedProduct> seedProducts) {
@@ -271,27 +264,6 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         return "SKU-" + slug.toUpperCase().replace("-", "_");
     }
 
-    private void applySeedEmbedding(UUID productId, List<SeedEmbeddingEntry> embedding) {
-        if (embedding == null || embedding.isEmpty()) {
-            return;
-        }
-
-        float[] vector = new float[EMBEDDING_DIMENSIONS];
-        for (SeedEmbeddingEntry entry : embedding) {
-            int index = entry.index();
-            if (index < 0 || index >= EMBEDDING_DIMENSIONS) {
-                throw new IllegalArgumentException("Embedding index out of range for seed data: " + index);
-            }
-            vector[index] = (float) entry.value();
-        }
-
-        String vectorLiteral = IntStream.range(0, vector.length)
-                .mapToObj(i -> String.format(java.util.Locale.US, "%.8f", vector[i]))
-                .collect(java.util.stream.Collectors.joining(",", "[", "]"));
-
-        jdbcTemplate.update(UPDATE_PRODUCT_EMBEDDING_SQL, vectorLiteral, productId);
-    }
-
     private record SeedProduct(
             String id,
             String category,
@@ -301,14 +273,10 @@ public class ProductCatalogSeeder implements ApplicationRunner {
             String detailedDescription,
             String imageName,
             List<String> imageGalleryNames,
-            List<SeedColorOption> availableColors,
-            List<SeedEmbeddingEntry> embedding
+            List<SeedColorOption> availableColors
     ) {
     }
 
     private record SeedColorOption(String name, String swatch) {
-    }
-
-    private record SeedEmbeddingEntry(int index, double value) {
     }
 }
