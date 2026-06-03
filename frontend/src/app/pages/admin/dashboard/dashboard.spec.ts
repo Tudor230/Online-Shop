@@ -2,7 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AdminDashboardComponent } from './dashboard';
 import { AdminApiService } from '../../../core/admin/admin-api.service';
 import { of, throwError } from 'rxjs';
-import { createEnvironmentInjector, runInInjectionContext, EnvironmentInjector } from '@angular/core';
+import { createEnvironmentInjector, runInInjectionContext, EnvironmentInjector, LOCALE_ID } from '@angular/core';
+import {DatePipe} from '@angular/common';
 
 const createMockApi = () => ({
   getStats: vi.fn(),
@@ -18,6 +19,8 @@ describe('AdminDashboardComponent', () => {
     mockApi = createMockApi();
     injector = createEnvironmentInjector([
       { provide: AdminApiService, useValue: mockApi },
+      { provide: LOCALE_ID, useValue: 'en-US' },
+      DatePipe
     ], null as any);
 
     component = runInInjectionContext(injector, () => new AdminDashboardComponent());

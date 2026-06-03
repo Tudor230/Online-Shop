@@ -1,5 +1,5 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Component, PLATFORM_ID, computed, effect, inject, signal } from '@angular/core';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Component, ElementRef, PLATFORM_ID, ViewChild, computed, effect, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -7,17 +7,27 @@ import { combineLatest, firstValueFrom, catchError, map, of, startWith, switchMa
 import { AuthStateService } from '../../core/auth/auth-state.service';
 import { CartFacadeService } from '../../core/cart/cart-facade.service';
 import { ProductApiService } from '../../core/products/product-api.service';
-import { CreateProductReviewRequest, ProductDetails } from '../../core/products/product.types';
+import { CreateProductReviewRequest, ProductDetails, ProductSummary } from '../../core/products/product.types';
 import { WishlistFacadeService } from '../../core/wishlist/wishlist-facade.service';
 import { ProductDisplayComponent } from '../../shared/product-display/product-display';
+import { ProductCardComponent } from '../../shared/product-card/product-card';
+
+interface SimilarItemsState {
+  isLoading: boolean;
+  items: ProductSummary[];
+}
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [ProductDisplayComponent],
+  imports: [CommonModule, ProductDisplayComponent, ProductCardComponent],
   templateUrl: './product-details.html'
 })
 export class ProductDetailsComponent {
+  private static readonly SIMILAR_ITEMS_SIZE = 8;
+
+  @ViewChild('similarItemsTrack') private similarItemsTrack?: ElementRef<HTMLElement>;
+
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productApiService = inject(ProductApiService);
@@ -56,6 +66,29 @@ export class ProductDetailsComponent {
 
   readonly isLoading = computed(() => this.productState().isLoading);
   readonly product = computed(() => this.productState().product);
+  private readonly similarItemsState = toSignal(
+    toObservable(this.product).pipe(
+      switchMap((currentProduct) => {
+        if (!currentProduct) {
+          return of({ isLoading: false, items: [] as ProductSummary[] });
+        }
+
+        return this.productApiService
+          .getSimilarProducts(currentProduct.slug, ProductDetailsComponent.SIMILAR_ITEMS_SIZE)
+          .pipe(
+            map((items) => ({
+              isLoading: false,
+              items
+            })),
+          startWith({ isLoading: true, items: [] as ProductSummary[] }),
+          catchError(() => of({ isLoading: false, items: [] as ProductSummary[] }))
+          );
+      })
+    ),
+    { initialValue: { isLoading: true, items: [] as ProductSummary[] } }
+  );
+  readonly similarItems = computed(() => this.similarItemsState().items);
+  readonly isSimilarItemsLoading = computed(() => this.similarItemsState().isLoading);
   readonly isAuthenticated = this.authState.isAuthenticated;
   readonly selectedImage = computed(() => {
     const currentProduct = this.product();
@@ -151,12 +184,24 @@ export class ProductDetailsComponent {
     this.cartFacadeService.addItem(currentProduct.id);
   }
 
+  addSimilarProductToCart(productId: string): void {
+    this.cartFacadeService.addItem(productId);
+  }
+
   saveToWishlist(): void {
     const currentProduct = this.product();
     if (!currentProduct) {
       return;
     }
     this.wishlistFacadeService.toggleItem(currentProduct.id);
+  }
+
+  saveSimilarProductToWishlist(productId: string): void {
+    this.wishlistFacadeService.toggleItem(productId);
+  }
+
+  isProductWishlisted(productId: string): boolean {
+    return this.wishlistFacadeService.isInWishlist(productId);
   }
   async submitReview(request: CreateProductReviewRequest): Promise<void> {
     const currentProduct = this.product();
@@ -188,5 +233,25 @@ export class ProductDetailsComponent {
     }
 
     return 'We could not submit your review right now. Please try again.';
+  }
+
+  openSimilarProduct(productSlug: string): void {
+    void this.router.navigate(['/product', productSlug]);
+  }
+
+  scrollSimilarItems(direction: 'left' | 'right'): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    const container = this.similarItemsTrack?.nativeElement;
+    if (!container) {
+      return;
+    }
+    const offset = container.clientWidth ? container.clientWidth * 0.8 : 320;
+    container.scrollBy({ left: direction === 'left' ? -offset : offset, behavior: 'smooth' });
+  }
+
+  reviewLabel(reviewCount: number): string {
+    return reviewCount === 1 ? 'review' : 'reviews';
   }
 }

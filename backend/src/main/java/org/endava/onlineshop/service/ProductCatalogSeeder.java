@@ -15,6 +15,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 // TODO: Remove before deploying to production.
 @Component
@@ -45,6 +47,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
     private final ObjectMapper objectMapper;
     private final Resource seedResource;
     private final ResourceLoader resourceLoader;
+    private final JdbcTemplate jdbcTemplate;
     private final String cloudinaryCloudName;
     private final String cloudinaryApiKey;
     private final String cloudinaryApiSecret;
@@ -56,6 +59,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
             ObjectMapper objectMapper,
             @Value("classpath:seed/mock-products.json") Resource seedResource,
             ResourceLoader resourceLoader,
+            JdbcTemplate jdbcTemplate,
             @Value("${cloudinary.cloud-name:}") String cloudinaryCloudName,
             @Value("${cloudinary.api-key:}") String cloudinaryApiKey,
             @Value("${cloudinary.api-secret:}") String cloudinaryApiSecret,
@@ -66,6 +70,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         this.objectMapper = objectMapper;
         this.seedResource = seedResource;
         this.resourceLoader = resourceLoader;
+        this.jdbcTemplate = jdbcTemplate;
         this.cloudinaryCloudName = cloudinaryCloudName;
         this.cloudinaryApiKey = cloudinaryApiKey;
         this.cloudinaryApiSecret = cloudinaryApiSecret;
@@ -101,6 +106,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
         product.setSku(toSku(slug));
         product.setBasePrice(BigDecimal.valueOf(seedProduct.price()));
         product.setDescription(seedProduct.description());
+        product.setDetailedDescription(seedProduct.detailedDescription());
         product.setIsActive(true);
 
         String primaryImageId = uploadedImageIdsByName.get(seedProduct.imageName());
@@ -264,6 +270,7 @@ public class ProductCatalogSeeder implements ApplicationRunner {
             String title,
             double price,
             String description,
+            String detailedDescription,
             String imageName,
             List<String> imageGalleryNames,
             List<SeedColorOption> availableColors
@@ -273,4 +280,3 @@ public class ProductCatalogSeeder implements ApplicationRunner {
     private record SeedColorOption(String name, String swatch) {
     }
 }
-

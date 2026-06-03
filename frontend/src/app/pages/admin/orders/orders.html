@@ -57,7 +57,7 @@
               <td class="px-4 py-3">
                 <span class="inline-flex rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">{{ order.currentStatus }}</span>
               </td>
-              <td class="px-4 py-3 text-text-primary">${{ order.totalAmount | number:'1.2-2' }}</td>
+              <td class="px-4 py-3 text-text-primary">{{ order.totalAmount | currency : 'RON' : 'symbol' : '1.2-2' }}</td>
               <td class="px-4 py-3 text-text-secondary">{{ order.createdAt | date:'short' }}</td>
               <td class="px-4 py-3 text-right text-text-secondary">View</td>
             </tr>
@@ -109,7 +109,7 @@
           </div>
           <div class="rounded-lg border border-surface-elevated p-3">
             <p class="text-xs text-text-secondary">Total</p>
-            <p class="font-medium text-text-primary">${{ detail.totalAmount | number:'1.2-2' }}</p>
+            <p class="font-medium text-text-primary">{{ detail.totalAmount | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
           </div>
         </div>
 
@@ -119,7 +119,7 @@
             @for (item of detail.items; track item.productId) {
               <div class="flex items-center justify-between rounded-lg border border-surface-elevated px-3 py-2">
                 <span class="text-sm text-text-primary">{{ item.productName }} x{{ item.quantity }}</span>
-                <span class="text-sm text-text-secondary">${{ item.unitPriceAtPurchase | number:'1.2-2' }}</span>
+                <span class="text-sm text-text-secondary">{{ item.unitPriceAtPurchase | currency : 'RON' : 'symbol' : '1.2-2' }}</span>
               </div>
             }
           </div>

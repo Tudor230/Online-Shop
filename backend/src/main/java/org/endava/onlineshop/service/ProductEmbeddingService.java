@@ -35,12 +35,18 @@ public class ProductEmbeddingService {
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
             """;
+    private static final String PRODUCT_EMBEDDING_PRESENT_SQL = """
+            SELECT embedding IS NOT NULL
+            FROM product
+            WHERE id = ?
+            """;
 
     private final JdbcTemplate jdbcTemplate;
     private final ProductRepository productRepository;
     private final EmbeddingModel embeddingModel;
     private final boolean embeddingEnabled;
     private final double semanticMinSimilarity;
+    private final double similarProductsMinSimilarity;
     private final int rrfK;
     private final double lexicalWeight;
     private final double semanticWeight;
@@ -51,6 +57,7 @@ public class ProductEmbeddingService {
             @Nullable EmbeddingModel embeddingModel,
             @Value("${ai.embedding.enabled:false}") boolean embeddingEnabled,
             @Value("${search.hybrid.semantic-min-similarity:0.58}") double semanticMinSimilarity,
+            @Value("${search.similar-products.semantic-min-similarity:0.82}") double similarProductsMinSimilarity,
             @Value("${search.hybrid.rrf.k:60}") int rrfK,
             @Value("${search.hybrid.weight.lexical:1.0}") double lexicalWeight,
             @Value("${search.hybrid.weight.semantic:1.0}") double semanticWeight
@@ -60,6 +67,7 @@ public class ProductEmbeddingService {
         this.embeddingModel = embeddingModel;
         this.embeddingEnabled = embeddingEnabled;
         this.semanticMinSimilarity = semanticMinSimilarity;
+        this.similarProductsMinSimilarity = similarProductsMinSimilarity;
         this.rrfK = rrfK;
         this.lexicalWeight = lexicalWeight;
         this.semanticWeight = semanticWeight;
@@ -113,6 +121,23 @@ public class ProductEmbeddingService {
         return new PageImpl<>(orderedProducts, pageable, totalItems);
     }
 
+    public List<Product> findSimilarProducts(UUID productId, int size) {
+        if (!embeddingEnabled || productId == null) {
+            return List.of();
+        }
+
+        int normalizedSize = Math.min(size, 60);
+        if (normalizedSize <= 0 || !hasEmbedding(productId)) {
+            return List.of();
+        }
+
+        return productRepository.findSimilarProductsByEmbedding(
+                productId,
+                similarProductsMinSimilarity,
+                normalizedSize
+        );
+    }
+
     private List<Product> hydrateOrderedProducts(List<UUID> rankedIds) {
         if (rankedIds.isEmpty()) {
             return List.of();
@@ -130,6 +155,11 @@ public class ProductEmbeddingService {
 
     private String normalizeQuery(String query) {
         return query == null ? "" : query.trim();
+    }
+
+    private boolean hasEmbedding(UUID productId) {
+        Boolean present = jdbcTemplate.queryForObject(PRODUCT_EMBEDDING_PRESENT_SQL, Boolean.class, productId);
+        return Boolean.TRUE.equals(present);
     }
 
     public String buildCategoryText(Set<Category> categories) {
@@ -152,6 +182,8 @@ public class ProductEmbeddingService {
         return String.join("\n",
                 "name: " + product.getName(),
                 "description: " + Optional.ofNullable(product.getDescription())
+                        .orElse(""),
+                "detailed description: " + Optional.ofNullable(product.getDetailedDescription())
                         .orElse(""),
                 "categories: " + Optional.ofNullable(product.getCategoryText())
                         .orElse("")
@@ -182,4 +214,3 @@ public class ProductEmbeddingService {
                 .collect(Collectors.joining(",", "[", "]"));
     }
 }
-

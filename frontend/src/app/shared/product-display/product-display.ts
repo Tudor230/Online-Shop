@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ import { CloudinaryImageFrameComponent } from '../cloudinary-image-frame/cloudin
 @Component({
   selector: 'app-product-display',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, CloudinaryImageFrameComponent, DatePipe, FormsModule, RouterLink],
+  imports: [CommonModule, CurrencyPipe, CloudinaryImageFrameComponent, FormsModule, RouterLink],
   templateUrl: './product-display.html'
 })
 export class ProductDisplayComponent implements OnChanges {

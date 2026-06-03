@@ -15,9 +15,9 @@ public record ProductDetailsDto(
         String reviewedReviewId,
         BigDecimal price,
         String description,
+        String detailedDescription,
         String imageId,
         List<String> imageGalleryIds,
         List<ProductReviewDto> reviews
 ) {
 }
-

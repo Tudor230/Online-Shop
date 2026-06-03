@@ -167,9 +167,22 @@ export class KeycloakAuthService {
       .map((roleName) => roleName.toUpperCase())
       .filter((roleName): roleName is Role => Object.values(Role).includes(roleName as Role));
 
-    if (mappedRoles.length !== 1) {
+    if (!mappedRoles.length) {
       return null;
     }
+
+    if (mappedRoles.includes(Role.ADMIN)) {
+      return Role.ADMIN;
+    }
+
+    if (mappedRoles.includes(Role.SUPPORT)) {
+      return Role.SUPPORT;
+    }
+
+    if (mappedRoles.includes(Role.CUSTOMER)) {
+      return Role.CUSTOMER;
+    }
+
 
     return mappedRoles[0];
   }

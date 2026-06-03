@@ -21,6 +21,7 @@ export interface ProductDetails {
   reviewedReviewId: string | null;
   price: number;
   description: string;
+  detailedDescription: string;
   imageId: string;
   imageGalleryIds: string[];
   reviews: ProductReview[];

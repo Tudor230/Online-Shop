@@ -30,6 +30,7 @@ export class AdminProductFormComponent implements OnInit {
   readonly name = signal('');
   readonly slug = signal('');
   readonly description = signal('');
+  readonly detailedDescription = signal('');
   readonly basePrice = signal(0);
   readonly imagePlaceholder = signal('');
   readonly images = signal<AdminUploadedProductImage[]>([]);
@@ -68,6 +69,7 @@ export class AdminProductFormComponent implements OnInit {
         this.name.set(product.name);
         this.slug.set(product.slug);
         this.description.set(product.description);
+        this.detailedDescription.set(product.detailedDescription);
         this.basePrice.set(product.basePrice);
         this.setImages(
           product.imageGallery.map((imageId) => ({ imageId, imageUrl: null, originalFilename: null })),
@@ -155,6 +157,7 @@ export class AdminProductFormComponent implements OnInit {
         name: this.name(),
         slug: this.slug(),
         description: this.description() || undefined,
+        detailedDescription: this.detailedDescription() || undefined,
         basePrice: this.basePrice(),
         categoryIds: this.selectedCategoryIds(),
         imagePlaceholder: this.imagePlaceholder(),
@@ -175,6 +178,7 @@ export class AdminProductFormComponent implements OnInit {
         name: this.name(),
         slug: this.slug(),
         description: this.description() || undefined,
+        detailedDescription: this.detailedDescription() || undefined,
         basePrice: this.basePrice(),
         categoryIds: this.selectedCategoryIds(),
         imagePlaceholder: this.imagePlaceholder(),

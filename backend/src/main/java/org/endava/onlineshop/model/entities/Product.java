@@ -51,6 +51,9 @@ public class Product extends AuditedEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "detailed_description")
+    private String detailedDescription;
+
     @Column(name = "base_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal basePrice;
 

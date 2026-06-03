@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.endava.onlineshop.model.dto.product.CreateProductReviewRequestDto;
 import org.endava.onlineshop.model.dto.product.ProductDetailsDto;
 import org.endava.onlineshop.model.dto.product.ProductSearchPageDto;
+import org.endava.onlineshop.model.dto.product.ProductSummaryDto;
 import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.service.ProductService;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -42,6 +44,14 @@ public class ProductController {
             @AuthenticationPrincipal User user
     ) {
         return productService.getProductBySlug(slug, user);
+    }
+
+    @GetMapping("/{slug}/similar")
+    public List<ProductSummaryDto> getSimilarProducts(
+            @PathVariable String slug,
+            @RequestParam(name = "size", defaultValue = "8") int size
+    ) {
+        return productService.getSimilarProducts(slug, size);
     }
 
     @PostMapping("/{productId}/reviews")

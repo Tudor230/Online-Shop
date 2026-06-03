@@ -134,7 +134,7 @@
         <div class="mt-6 rounded-xl border border-surface-elevated bg-surface-elevated p-4">
           <div class="grid gap-4">
             <div>
-              <p class="text-sm font-semibold text-text-primary">Free Delivery over $50</p>
+              <p class="text-sm font-semibold text-text-primary">Free Delivery over RON 50</p>
               <p class="text-sm text-text-secondary">Estimated delivery: 2-4 business days.</p>
             </div>
             <div>
@@ -205,26 +205,13 @@
     </article>
 
     <section class="mt-8 rounded-2xl border border-surface-elevated bg-surface-default p-6">
-      <h2 class="text-xl font-semibold text-text-primary">Customer reviews</h2>
-
-      @if (!product.reviews.length) {
-        <p class="mt-3 text-sm text-text-secondary">No reviews yet. Be the first customer to share feedback.</p>
-      } @else {
-        <div class="mt-4 grid gap-4">
-          @for (review of product.reviews; track review.id) {
-            <article [attr.id]="'review-' + review.id" class="rounded-xl border border-surface-elevated bg-surface-elevated p-4">
-              <div class="flex flex-wrap items-center gap-2 text-sm text-text-secondary">
-                <span class="font-semibold text-text-primary">{{ review.reviewerName }}</span>
-                <span>•</span>
-                <span>★ {{ review.rating }}</span>
-                <span>•</span>
-                <time [attr.datetime]="review.createdAt">{{ review.createdAt | date : 'mediumDate' }}</time>
-              </div>
-              <p class="mt-2 text-sm leading-6 text-text-primary">{{ review.comment }}</p>
-            </article>
-          }
-        </div>
-      }
+      <h2 class="text-xl font-semibold text-text-primary">Product details</h2>
+      <div class="mt-3 space-y-4 text-sm leading-6 text-text-secondary">
+        @for (paragraph of (product.detailedDescription || product.description).split('\n\n'); track paragraph) {
+          <p>{{ paragraph }}</p>
+        }
+      </div>
     </section>
+
   }
 </section>

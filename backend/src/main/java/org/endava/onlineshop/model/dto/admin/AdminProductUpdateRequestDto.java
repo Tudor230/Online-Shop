@@ -13,6 +13,7 @@ public record AdminProductUpdateRequestDto(
         @Size(max = 200) String name,
         @Size(max = 220) String slug,
         String description,
+        String detailedDescription,
         @Positive BigDecimal basePrice,
         Boolean isActive,
         List<UUID> categoryIds,

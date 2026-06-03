@@ -33,6 +33,11 @@
         <textarea id="description" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" rows="3" [ngModel]="description()" (ngModelChange)="description.set($event)"></textarea>
       </div>
 
+      <div>
+        <label for="detailedDescription" class="mb-1 block text-xs font-medium text-text-secondary">Detailed Description</label>
+        <textarea id="detailedDescription" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" rows="5" [ngModel]="detailedDescription()" (ngModelChange)="detailedDescription.set($event)"></textarea>
+      </div>
+
       <div class="grid gap-4 sm:grid-cols-3">
         <div>
           <label for="basePrice" class="mb-1 block text-xs font-medium text-text-secondary">Base Price *</label>

@@ -64,7 +64,7 @@
               </td>
               <td class="px-4 py-3 text-text-primary">{{ product.sku }}</td>
               <td class="px-4 py-3 text-text-primary">{{ product.name }}</td>
-              <td class="px-4 py-3 text-text-primary">${{ product.basePrice | number:'1.2-2' }}</td>
+              <td class="px-4 py-3 text-text-primary">{{ product.basePrice | currency : 'RON' : 'symbol' : '1.2-2' }}</td>
               <td class="px-4 py-3 text-text-primary">{{ product.quantityAvailable }}</td>
               <td class="px-4 py-3">
                 <span

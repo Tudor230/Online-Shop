@@ -1,12 +1,8 @@
 package org.endava.onlineshop.service;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
-
+import lombok.RequiredArgsConstructor;
 import org.endava.onlineshop.exception.BadRequestException;
 import org.endava.onlineshop.model.dto.product.CreateProductReviewRequestDto;
 import org.endava.onlineshop.model.dto.product.ProductDetailsDto;
@@ -28,7 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -98,6 +98,15 @@ public class ProductService {
         return toDetailsDto(product, reviews, canReview, hasReviewed, myReview != null ? myReview.getId().toString() : null);
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductSummaryDto> getSimilarProducts(String slug, int size) {
+        Product product = productRepository.findBySlugAndIsActiveTrue(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+        List<Product> similarProducts = productEmbeddingService.findSimilarProducts(product.getId(), size);
+
+        return toSummaryDtos(similarProducts);
+    }
+
     @Transactional
     public ProductDetailsDto createReview(UUID productId, User user, CreateProductReviewRequestDto request) {
         if (user == null) {
@@ -146,6 +155,26 @@ public class ProductService {
         );
     }
 
+    private List<ProductSummaryDto> toSummaryDtos(List<Product> products) {
+        Map<UUID, ProductReviewSnapshot> reviewByProductId = products.isEmpty()
+                ? Map.of()
+                : reviewRepository.summarizeByProductIds(
+                                products.stream().map(Product::getId).toList()
+                        ).stream()
+                        .collect(Collectors.toMap(
+                                ReviewRepository.ProductReviewAggregate::getProductId,
+                                aggregate -> new ProductReviewSnapshot(
+                                        aggregate.getAverageRating() != null ? aggregate.getAverageRating() : 0.0d,
+                                        aggregate.getReviewCount() != null ? aggregate.getReviewCount().intValue() : 0
+                                ),
+                                (left, right) -> left
+                        ));
+
+        return products.stream()
+                .map(product -> toSummaryDto(product, reviewByProductId.get(product.getId())))
+                .toList();
+    }
+
     private record ProductReviewSnapshot(double averageRating, int reviewCount) {
     }
 
@@ -175,6 +204,7 @@ public class ProductService {
                 reviewedReviewId,
                 product.getBasePrice(),
                 product.getDescription(),
+                product.getDetailedDescription(),
                 primaryImageId,
                 List.copyOf(normalizedGallery),
                 reviews.stream().map(this::toProductReviewDto).toList()
@@ -237,10 +267,33 @@ public class ProductService {
     }
 
     private String extractPrimaryCategory(Product product) {
+        Category category = extractPrimaryCategoryEntity(product);
+        return category != null ? category.getName() : "Uncategorized";
+    }
+
+    private Category extractPrimaryCategoryEntity(Product product) {
+        if (product == null || product.getCategories() == null || product.getCategories().isEmpty()) {
+            return null;
+        }
+
+        Comparator<Category> comparator = Comparator
+                .comparingInt(this::categoryDepth)
+                .reversed()
+                .thenComparing(Category::getName, String.CASE_INSENSITIVE_ORDER);
+
         return product.getCategories().stream()
-                .map(Category::getName)
-                .sorted()
-                .findFirst()
-                .orElse("Uncategorized");
+                .min(comparator)
+                .orElse(null);
+    }
+
+    private int categoryDepth(Category category) {
+        if (category == null) {
+            return 0;
+        }
+        String path = category.getPath();
+        if (path == null || path.isBlank()) {
+            return 0;
+        }
+        return (int) path.chars().filter(ch -> ch == '.').count() + 1;
     }
 }

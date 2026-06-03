@@ -44,6 +44,24 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     Page<UUID> findProductIdsByCategoryId(@Param("categoryId") UUID categoryId, Pageable pageable);
 
     @Query(value = """
+            SELECT p.*
+            FROM product p
+            JOIN product seed ON seed.id = :productId
+            WHERE p.is_active = TRUE
+              AND p.id <> seed.id
+              AND p.embedding IS NOT NULL
+              AND seed.embedding IS NOT NULL
+              AND (1 - (p.embedding <=> seed.embedding)) >= :minSimilarity
+            ORDER BY p.embedding <=> seed.embedding ASC, p.name ASC
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<Product> findSimilarProductsByEmbedding(
+            @Param("productId") UUID productId,
+            @Param("minSimilarity") double minSimilarity,
+            @Param("limit") int limit
+    );
+
+    @Query(value = """
             WITH lexical AS (
                 SELECT p.id,
                        ROW_NUMBER() OVER (
