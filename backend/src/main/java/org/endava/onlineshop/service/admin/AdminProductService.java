@@ -121,6 +121,8 @@ public class AdminProductService {
 
         product.setInventory(inventory);
         Product savedProduct = productRepository.save(product);
+        eventPublisher.publishEvent(new ProductCategoriesChangedEvent(savedProduct.getId()));
+        eventPublisher.publishEvent(new ProductDetailsChangedEvent(savedProduct.getId()));
 
         audit("CREATE", "PRODUCT", savedProduct.getId().toString(), "Created product " + savedProduct.getName());
         return toDetailDto(savedProduct, ProductReviewSnapshot.empty());

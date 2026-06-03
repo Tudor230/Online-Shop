@@ -27,7 +27,7 @@
   "oauth2DevicePollingInterval" : 5,
   "enabled" : true,
   "sslRequired" : "external",
-  "registrationAllowed" : false,
+  "registrationAllowed" : true,
   "registrationEmailAsUsername" : false,
   "rememberMe" : false,
   "verifyEmail" : false,
@@ -1574,7 +1574,7 @@
       "providerId" : "rsa-generated",
       "subComponents" : { },
       "config" : {
-        "privateKey" : [ "MIIEpAIBAAKCAQEArRT5C4GDZ6qPRnmGOcwgS2/vtOWkTNgxDKTyaQToFQYyqNe1cjuCspYsf8rEb3MvUQ7t832UxlLud3ICJdgRtjiuYPOAsdgC1RAKDjTDRdWVu5YQJaCrZcXlTnSEtLS4oGNSBWTlcT6D1qTtUUrYf9o3Twhju7rt7uv2up2Znv9APRZU9t0who1DJydtIOcha2/elzUjGupTZmXoWZfRlN3dB+XpQ9xuCRV13IfrIWdnxru3viEPoWrlqhAPf0os8JibjTZQMNGclKX1BPWbyd1yKax+LpYgf4O2rIHVNVsGWpbyoZ/dh4PxcKlQvVMQfV+i8UShxPotZSSXr3UbgQIDAQABAoIBAA3NluDqhrq9OOjjZydz1n19o023ZKd2NE8wVl62s/V9RYv+i+tcwJsSa+ETICBNPNBHkwVwle1NDtR6xJ4VAbCZC5sSwEgulGc+fLbOUWZf1q2blZUSn6ihpBxiIXUx1mmAEjn45m1mEWiMRZrOj75+fhuw7Rc7HJ+JtOcEC4zI571LJV10P0N3jw5ODI2+/FROYpuqcxKYzPePyxLevNJ4Rni9CNokgSF0+2EYgrdgbLb8T9xqQzI/qQOAuV86k3sPwB5qvqgYU1JNt14+CH5WPS66tThnAYuhJpx5ZeTViL7cWrZ1PBeNOITd0YKAF3VM2ymyOR54hIEMHlmqbTMCgYEA5B1gXKY9g5qWDZFBYMYPxgbFkjRpePL+bm+lhaBN2Y4OSQjQ8rTZgnjyVzrEw918pPfIc5g7vsiNcnKInjKUonaO7WQL4fSla7iitJmgzTGH9wDkFwBwaPCgDT3vZH42U72Qrlbg5dD1nSHeAjr8RSlNr1lCZXZeKjSSzp6H65sCgYEAwj1mJb10UQXJlQ516a+stxicifPmP/AjXMdM7jCK9RohD6YO7xrVy45FN/OKr/PmQA6/NO2ihkj3Jv6HIV1dgvOMecRrDsEPMrbiFT6RPPr+vAlRW1iNzfXc0TLQh8YvIHVxXEcGpiuB9UezKj9aM1IYcX9Npq9EXKaPHvcTTRMCgYBLRvJ0wJtOIaZg5c1YXSP5amSqgcdIlY+m7AsIVMU8BOfr7A/f+BRLPRRj+s3SAPZQDkDE/LjClbYvzWIOKozoLA2wgzJ0p2IrcSuoQ4ZQEIdY2J9sg8WUq8t1cznbxNayvbzP+3WOAW38I5/6xnJXdHDha6hAiVY7wUutCZ26/wKBgQCvgi0XMs20HCeeIJfYlJzaQEnJuPE2mrRJM+hGXORiPb7b1e8ui6/couvWd5+8BwTooqqQl5w//BQeTuQo+KTzGz+2Ew2tIjKqX2d/TK6NTDn6C+1QPX68OEjTWjfkRuX0TUol2COg6DUgPS4doWrOboKZoy61yy5ZDULK9vOgswKBgQDe9lIns3aimAnKuFuVOu6NpSETuwbn+Uls//9QD+o2X66AjGsZCV5pC9KK79/z7/scvpKgT1da9wHKY3BYB9n4K7i6Br2Hcp39+WVdCQuMwhqaKR30mJpeDYsUvFo8MWWpn1HnIXO6qZttg82de85staSD+MgECMlX2cyrZGwa6Q==" ],
+        "privateKey" : [ "MIIEpAIBAAKCAQEArRT5C4GDZ6qPRnmGOcwgS2/vtOWkTNgxDKTyaQToFQYyqNe1cjuCspYsf8rEb3MvUQ7t832UxlLud3ICJdgRtjiuYPOAsdgC1RAKDjTDRdWVu5YQJaCrZcXlTnSEtLS4oGNSBWTlcT6D1qTtUUrYf9o3Twhju7rt7uv2up2Znv9APRZU9t0who1DJydtIOcha2/elzUjGupTZmXoWZfRlN3dB+XpQ9xuCRV13IfrIWdnxru3viEPoWrlqhAPf0os8JibjTZQMNGclKX1BPWbyd1yKax+LpYgf4O2rIHVNVsGWpbyoZ/dh4PxcKlQvVMQfV+i8UShxPotZSSXr3UbgQIDAQABAoIBAFM4TzpnxxjKCK2/qTG/VZQ3ubbrRZSx48wENCmQBAbz58AjSRZrsVZ6UwbXXgSGcRbfhNg1DE5+vGKQKkNhZrvQPWe3NElQ8OIz/hRU5CMBUKIQlVgcAmKL1+EEWdAsTFm9ZlGc+Q797UjwEPdl6E1XPYtT5l9O9w/rfRy0w6W0CbDGrFOt7ashi3Z5uZLD7iuFh2abCEnD+mb5F2euSAZKYt3A2/JXN+zvmrvasgm08Eoav7MQ6bObyXgmsAdHgsC48CnPmLyXamCP2xNu1z+WPYgNt6ArMQKV1uIltqWCmSIb9IEQc2Ka/Qd7jwtNlJ+ruU7KWyHtKLZok2g3dDECgYEA6v3yLTpUVcjYybYD7SHkcpX26cFLPtRRvT09louUHOghvvaCVdl79BTp7/EXoI/u5qzZ5VkS9QbtfeLFLy3x58/C4w+OEz/d/zAcg0+lf78kJ1ELkKa7Q/F3XjKUcUCG2AXdhCLJi8VGaGel0aYVXj5UiLh6HGtLxGigAGvunukCgYEA35gY6N7Ww9AEq/jQxrOmupZEGyp6+Q2vk8ntwqfRaphm90hbDx7aEb53pZ8FC3+ZihqYBp65O4OLqJ8Ljcv0Hz16eY640C09poOiJsjTmFkx1dtOpez4fUik23+deXDq5i9z31bEliRC73j3215Mpdky4y3ktWl9FnzMmD4z/jcCgYBjnqp3H/42q8GzqXT6p16YcRjOugHzLcFFL1wXoS52HraHpStVx7AzplYSQSvaBoqpwedRwjQ2KeyubF9Zg+nEcyBUb/i0EmRDVZsQ08f+YwKppEL53KUQxaHsDhc997PyinIBHVpB5azWf/Ic8YKnhFcD6ujheV8ScaQ66YasWQKBgQDLodOd0cS6VKrMjDBnppnD+LJSI2AXjlVHPXIiA4B/mgi8UNNNdAWaf2KsHaUUkcMduZaXANslzmnUyfRV0VelU/JE3qyGO42YJu34cJH0f9cZMz/vcV/lidFKbnDWdvYXaUQYNQeYzbGAMyVYTgt0R9lGeTd/2HCpmEMkrBHiBQKBgHvabi2RrMg4L15bzBIk7DE6/QdWOXW0efnJhqEsWutvsZsMRicmCvJeVO9cDLe63Du3yGjDrYcwzdYp5dld/cBH4JzY8SqyYQ/VOjQj+Mb38fyQgGAZyXxp005rRkNu0k7vVgxl2zwDnyR2upC85PAP/dYaR4YNNCGDFKFNTtu6" ],
         "keyUse" : [ "SIG" ],
         "certificate" : [ "MIICpTCCAY0CBgGdgqPj9zANBgkqhkiG9w0BAQsFADAWMRQwEgYDVQQDDAtvbmxpbmUtc2hvcDAeFw0yNjA0MTIxNjU5MzJaFw0zNjA0MTIxNzAxMTJaMBYxFDASBgNVBAMMC29ubGluZS1zaG9wMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArRT5C4GDZ6qPRnmGOcwgS2/vtOWkTNgxDKTyaQToFQYyqNe1cjuCspYsf8rEb3MvUQ7t832UxlLud3ICJdgRtjiuYPOAsdgC1RAKDjTDRdWVu5YQJaCrZcXlTnSEtLS4oGNSBWTlcT6D1qTtUUrYf9o3Twhju7rt7uv2up2Znv9APRZU9t0who1DJydtIOcha2/elzUjGupTZmXoWZfRlN3dB+XpQ9xuCRV13IfrIWdnxru3viEPoWrlqhAPf0os8JibjTZQMNGclKX1BPWbyd1yKax+LpYgf4O2rIHVNVsGWpbyoZ/dh4PxcKlQvVMQfV+i8UShxPotZSSXr3UbgQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQCMCVVwulYGFuLYhSXC8bRkOAAISG2E9CQSVaL2hcxMii7jpxxAQ7wAE/MjHP0dk6cKcsmFqpymdoZksUsy5nrWGb0nK0jDAHdnF2k4EbaIptG9MIyyqDhKQxt61yMRp9d24BrC5LklE+8cNhj8cVfvlPwRbbvGSIci9b0t3o31J/flMYhQkELw6IqYvFrykJTYHwLYc81urGVKOlTYJNE7ag0uUsxJEnHeJ5buWN0lWYpgf3jVy4VpbDjQjeJKA0z3bCfTlcB57sGXiaVVg9/JR44kpp7jbisIz9aV9lqvZwdXvQyNQO8Y/mZxgIQz3DnSabLRpcGQGNWNLFReInBP" ],
         "priority" : [ "100" ]
@@ -2249,7 +2249,7 @@
     "priority" : 80,
     "config" : { }
   }, {
-    "alias" : "webauthn-register-passwordless",
+    "id" : "webauthn-register-passwordless",
     "name" : "Webauthn Register Passwordless",
     "providerId" : "webauthn-register-passwordless",
     "enabled" : true,

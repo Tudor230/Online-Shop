@@ -50,7 +50,7 @@
       </div>
       <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
         <p class="text-sm text-text-secondary">Total Revenue</p>
-        <p class="mt-1 text-3xl font-bold text-text-primary">${{ (stats()?.totalRevenue ?? 0) | number:'1.2-2' }}</p>
+        <p class="mt-1 text-3xl font-bold text-text-primary">{{ (stats()?.totalRevenue ?? 0) | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
       </div>
     </div>
 
@@ -67,7 +67,7 @@
               <div
                 class="w-full rounded-sm bg-primary"
                 [style.height.px]="(item.revenue / maxRev) * 160 > 4 ? (item.revenue / maxRev) * 160 : 4"
-                [title]="item.date + ': $' + item.revenue"
+                [title]="item.date + ': ' + (item.revenue | currency : 'RON' : 'symbol' : '1.2-2')"
               ></div>
               <span class="text-[10px] text-text-secondary">{{ item.date | date:'MMM d' }}</span>
             </div>
