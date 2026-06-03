@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { AdminApiService } from '../../../core/admin/admin-api.service';
 import { AdminDashboardStats, AdminRevenueChart } from '../../../core/admin/admin.types';
@@ -7,12 +8,13 @@ import { AdminDashboardStats, AdminRevenueChart } from '../../../core/admin/admi
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './dashboard.html'
+  imports: [CommonModule, DatePipe],
+  templateUrl: './dashboard.html',
+  providers: [DatePipe]
 })
 export class AdminDashboardComponent implements OnInit {
   private readonly api = inject(AdminApiService);
-
+  private readonly datePipe = inject(DatePipe);
   readonly stats = signal<AdminDashboardStats | null>(null);
   readonly revenue = signal<AdminRevenueChart[]>([]);
   readonly loading = signal(true);
@@ -33,7 +35,10 @@ export class AdminDashboardComponent implements OnInit {
 
     forkJoin({
       stats: this.api.getStats(),
-      revenue: this.api.getRevenueChart(from.toISOString().split('T')[0], to.toISOString().split('T')[0])
+      revenue: this.api.getRevenueChart(
+        this.datePipe.transform(from, 'yyyy-MM-dd')!,
+        this.datePipe.transform(to, 'yyyy-MM-dd')!
+      )
     }).subscribe({
       next: ({ stats, revenue }) => {
         this.stats.set(stats);
