@@ -19,11 +19,11 @@
     </div>
   } @else if (isLoadingProfile()) {
     <div class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
-      <div class="h-4 w-40 rounded-full bg-surface-elevated animate-pulse"></div>
-      <div class="mt-3 h-4 w-64 rounded-full bg-surface-elevated animate-pulse"></div>
+      <div class="h-4 w-40 rounded-full bg-[--color-surface] animate-pulse"></div>
+      <div class="mt-3 h-4 w-64 rounded-full bg-[--color-surface] animate-pulse"></div>
     </div>
   } @else if (profileError()) {
-    <div class="rounded-2xl border border-red-400/40 bg-surface-default p-6 text-sm text-red-300">
+    <div class="rounded-2xl border border-[--color-danger]/30 bg-[--color-danger-muted]/50 p-6 text-sm text-[--color-danger]">
       {{ profileError() }}
     </div>
   } @else {
@@ -39,7 +39,7 @@
               type="email"
               [value]="profile()?.email ?? ''"
               readonly
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-secondary outline-none"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface-hover] px-3 py-2 text-sm text-[--color-text-muted] outline-none"
             />
           </label>
 
@@ -48,7 +48,7 @@
             <input
               type="text"
               formControlName="firstName"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
           </label>
 
@@ -57,12 +57,12 @@
             <input
               type="text"
               formControlName="lastName"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
           </label>
 
           @if (profileSaveError()) {
-            <p class="text-sm text-red-300">{{ profileSaveError() }}</p>
+            <p class="text-sm text-[--color-danger]">{{ profileSaveError() }}</p>
           }
 
           <button
@@ -89,10 +89,10 @@
             <input
               type="text"
               formControlName="recipientName"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
             @if (getAddressError('recipientName')) {
-              <p class="mt-1 text-xs text-red-300">{{ getAddressError('recipientName') }}</p>
+              <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('recipientName') }}</p>
             }
           </label>
 
@@ -101,10 +101,10 @@
             <input
               type="text"
               formControlName="phoneNumber"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
             @if (getAddressError('phoneNumber')) {
-              <p class="mt-1 text-xs text-red-300">{{ getAddressError('phoneNumber') }}</p>
+              <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('phoneNumber') }}</p>
             }
           </label>
 
@@ -115,10 +115,10 @@
             <input
               type="text"
               formControlName="addressLine1"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
             @if (getAddressError('addressLine1')) {
-              <p class="mt-1 text-xs text-red-300">{{ getAddressError('addressLine1') }}</p>
+              <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('addressLine1') }}</p>
             }
           </label>
 
@@ -127,10 +127,10 @@
             <input
               type="text"
               formControlName="addressLine2"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
             @if (getAddressError('addressLine2')) {
-              <p class="mt-1 text-xs text-red-300">{{ getAddressError('addressLine2') }}</p>
+              <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('addressLine2') }}</p>
             }
           </label>
 
@@ -139,10 +139,10 @@
             <input
               type="text"
               formControlName="city"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
             @if (getAddressError('city')) {
-              <p class="mt-1 text-xs text-red-300">{{ getAddressError('city') }}</p>
+              <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('city') }}</p>
             }
           </label>
 
@@ -151,10 +151,10 @@
             <input
               type="text"
               formControlName="state"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
             @if (getAddressError('state')) {
-              <p class="mt-1 text-xs text-red-300">{{ getAddressError('state') }}</p>
+              <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('state') }}</p>
             }
           </label>
 
@@ -163,10 +163,10 @@
             <input
               type="text"
               formControlName="postalCode"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
             @if (getAddressError('postalCode')) {
-              <p class="mt-1 text-xs text-red-300">{{ getAddressError('postalCode') }}</p>
+              <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('postalCode') }}</p>
             }
           </label>
 
@@ -175,15 +175,15 @@
             <input
               type="text"
               formControlName="country"
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
+              class="mt-2 w-full rounded-xl border border-surface-elevated bg-[--color-surface] px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
             />
             @if (getAddressError('country')) {
-              <p class="mt-1 text-xs text-red-300">{{ getAddressError('country') }}</p>
+              <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('country') }}</p>
             }
           </label>
 
           @if (addressCreateError()) {
-            <p class="text-sm text-red-300 md:col-span-2">{{ addressCreateError() }}</p>
+            <p class="text-sm text-[--color-danger] md:col-span-2">{{ addressCreateError() }}</p>
           }
 
           <div class="md:col-span-2">
@@ -208,11 +208,11 @@
       <p class="mt-1 text-sm text-text-secondary">Choose one primary address for shipping and one for billing.</p>
 
       @if (primarySelectionError()) {
-        <p class="mt-3 text-sm text-red-300">{{ primarySelectionError() }}</p>
+        <p class="mt-3 text-sm text-[--color-danger]">{{ primarySelectionError() }}</p>
       }
 
       @if (deleteAddressError()) {
-        <p class="mt-3 text-sm text-red-300">{{ deleteAddressError() }}</p>
+        <p class="mt-3 text-sm text-[--color-danger]">{{ deleteAddressError() }}</p>
       }
 
       @if (!addresses().length) {
@@ -222,14 +222,14 @@
       } @else {
         <div class="mt-4 grid gap-4 md:grid-cols-2">
           @for (address of addresses(); track address.id) {
-            <article class="rounded-xl border border-surface-elevated bg-surface-elevated/40 p-4">
+            <article class="rounded-xl border border-surface-elevated bg-[--color-surface] p-4">
               <div class="flex flex-wrap items-center gap-2">
                 <h3 class="text-sm font-semibold text-text-primary">{{ address.recipientName }}</h3>
                 @if (isPrimaryShipping(address.id)) {
-                  <span class="rounded-full bg-primary/20 px-2 py-1 text-xs text-primary">Primary shipping</span>
+                  <span class="rounded-full bg-[--color-brand-muted] px-2 py-1 text-xs text-[--color-brand]">Primary shipping</span>
                 }
                 @if (isPrimaryBilling(address.id)) {
-                  <span class="rounded-full bg-warning/20 px-2 py-1 text-xs text-warning">Primary billing</span>
+                  <span class="rounded-full bg-[--color-warning-muted] px-2 py-1 text-xs text-[--color-warning]">Primary billing</span>
                 }
               </div>
 
@@ -285,7 +285,7 @@
                     type="button"
                     (click)="deleteAddress(address)"
                     [disabled]="!canDeleteAddress(address.id) || deleteInProgressId() === address.id"
-                    class="rounded-full border border-red-400/50 px-3 py-1.5 text-xs font-semibold text-red-300 transition-colors duration-200 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                    class="rounded-full border border-[--color-danger]/30 px-3 py-1.5 text-xs font-semibold text-[--color-danger] transition-colors duration-200 hover:bg-[--color-danger-muted] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     @if (deleteInProgressId() === address.id) {
                       Deleting...

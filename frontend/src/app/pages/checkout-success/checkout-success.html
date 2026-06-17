@@ -3,9 +3,9 @@
     <h1 class="text-2xl font-semibold text-text-primary">Checkout status</h1>
 
     @if (error()) {
-      <p class="mt-4 rounded-xl border border-red-400/40 bg-surface-elevated p-4 text-sm text-red-300">{{ error() }}</p>
+      <p class="mt-4 rounded-xl border border-[--color-danger]/30 bg-[--color-danger-muted]/50 p-4 text-sm text-[--color-danger]">{{ error() }}</p>
     } @else if (isPaid()) {
-      <p class="mt-4 rounded-xl border border-emerald-400/40 bg-surface-elevated p-4 text-sm text-emerald-300">
+      <p class="mt-4 rounded-xl border border-[--color-success]/40 bg-[--color-success-muted] p-4 text-sm text-[--color-success]">
         Payment confirmed. Your order has been marked as paid.
       </p>
     } @else if (isPending()) {

@@ -7,7 +7,7 @@
   @if (wishlistFacade.isLoading()) {
     <div class="rounded-2xl border border-surface-elevated bg-surface-default p-8 text-sm text-text-secondary">Loading wishlist...</div>
   } @else if (wishlistFacade.error()) {
-    <div class="rounded-2xl border border-surface-elevated bg-surface-default p-8 text-sm text-red-300">{{ wishlistFacade.error() }}</div>
+    <div class="rounded-2xl border border-surface-elevated bg-surface-default p-8 text-sm text-[--color-danger]">{{ wishlistFacade.error() }}</div>
   } @else if (!wishlistFacade.items().length) {
     <div
       class="flex min-h-64 flex-col items-center justify-center gap-3 rounded-2xl border border-surface-elevated bg-surface-default p-8 text-center"

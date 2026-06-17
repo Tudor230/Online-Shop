@@ -5,7 +5,7 @@
   </div>
 
   @if (error()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+    <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ error() }}</div>
   }
 
   @if (loading()) {
@@ -67,7 +67,7 @@
         </div>
 
         @if (imageUploadError()) {
-          <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ imageUploadError() }}</div>
+          <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ imageUploadError() }}</div>
         }
 
         @if (!images().length) {
@@ -117,7 +117,7 @@
 
                     <button
                       type="button"
-                      class="min-w-[5.25rem] rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100"
+                      class="min-w-[5.25rem] rounded-lg border-[--color-danger]/30 bg-[--color-danger-muted] px-3 py-1.5 text-xs font-medium text-[--color-danger] hover:opacity-80"
                       (click)="removeImage(image.imageId)"
                     >
                       Remove

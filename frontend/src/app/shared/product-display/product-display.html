@@ -54,7 +54,7 @@
               <button
                 type="button"
                 aria-label="Previous image"
-                class="absolute left-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-surface-default/80 text-lg font-semibold text-text-primary shadow-lg backdrop-blur-sm transition-all duration-200 hover:-translate-y-1/2 hover:scale-105 hover:bg-surface-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                class="absolute left-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-surface-default/80 text-lg font-semibold text-text-primary shadow-lg backdrop-blur-sm transition-all duration-200 hover:-translate-y-1/2 hover:scale-105 hover:bg-surface-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-brand]/70"
                 (click)="onPreviousImageRequested()"
               >
                 ‹
@@ -62,7 +62,7 @@
               <button
                 type="button"
                 aria-label="Next image"
-                class="absolute right-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-surface-default/80 text-lg font-semibold text-text-primary shadow-lg backdrop-blur-sm transition-all duration-200 hover:-translate-y-1/2 hover:scale-105 hover:bg-surface-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70"
+                class="absolute right-4 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-surface-default/80 text-lg font-semibold text-text-primary shadow-lg backdrop-blur-sm transition-all duration-200 hover:-translate-y-1/2 hover:scale-105 hover:bg-surface-default focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-brand]/70"
                 (click)="onNextImageRequested()"
               >
                 ›
@@ -79,7 +79,7 @@
               class="aspect-[4/3] overflow-hidden rounded-xl border bg-surface-default px-2 py-2 text-xs transition-colors duration-200"
               [ngClass]="
                 selectedImageIndex === index
-                  ? 'border-primary text-text-primary'
+                  ? 'border-[--color-brand] text-text-primary'
                   : 'border-surface-elevated text-text-secondary hover:bg-surface-elevated'
               "
               (click)="onImageSelected(index)"
@@ -122,7 +122,7 @@
             class="rounded-full px-4 py-3 text-sm font-semibold transition-colors duration-200"
             [ngClass]="
               isWishlisted
-                ? 'bg-red-500/15 text-red-300 hover:bg-red-500/20'
+                ? 'bg-[--color-danger-muted] text-[--color-danger] hover:bg-[--color-danger-muted]'
                 : 'bg-surface-elevated text-text-primary hover:bg-surface-default'
             "
             (click)="onSaveToWishlist()"
@@ -187,7 +187,7 @@
               ></textarea>
 
               @if (reviewError) {
-                <p class="text-sm text-danger">{{ reviewError }}</p>
+                <p class="text-sm text-[--color-danger]">{{ reviewError }}</p>
               }
 
               <button

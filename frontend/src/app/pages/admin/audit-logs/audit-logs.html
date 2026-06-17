@@ -17,25 +17,32 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-surface-elevated">
-          <tr *ngIf="loading()">
+          @if (loading()) {
+          <tr>
             <td colspan="6" class="px-6 py-8 text-center text-text-secondary">
               Loading audit logs...
             </td>
           </tr>
+          }
           
-          <tr *ngIf="!loading() && error()">
-            <td colspan="6" class="px-6 py-8 text-center text-accent-primary">
+          @if (!loading() && error()) {
+          <tr>
+            <td colspan="6" class="px-6 py-8 text-center text-[--color-danger]">
               {{ error() }}
             </td>
           </tr>
+          }
 
-          <tr *ngIf="!loading() && !error() && logs().length === 0">
+          @if (!loading() && !error() && logs().length === 0) {
+          <tr>
             <td colspan="6" class="px-6 py-8 text-center text-text-secondary">
               No audit logs found.
             </td>
           </tr>
+          }
 
-          <tr *ngFor="let log of logs()" class="transition-colors hover:bg-surface-elevated/50">
+          @for (log of logs(); track log.id) {
+          <tr class="transition-colors hover:bg-surface-elevated/50">
             <td class="whitespace-nowrap px-6 py-4 text-text-secondary">
               {{ log.createdAt | date:'medium' }}
             </td>
@@ -57,12 +64,14 @@
               {{ formatDetails(log.details) }}
             </td>
           </tr>
+          }
         </tbody>
       </table>
     </div>
 
     <!-- Pagination -->
-    <div class="flex items-center justify-between border-t border-surface-elevated px-6 py-4" *ngIf="totalPages() > 1">
+    @if (totalPages() > 1) {
+    <div class="flex items-center justify-between border-t border-surface-elevated px-6 py-4">
       <p class="text-sm text-text-secondary">
         Showing <span class="font-medium text-text-primary">{{ currentPage() * pageSize + 1 }}</span> to
         <span class="font-medium text-text-primary">{{ (currentPage() * pageSize) + logs().length }}</span> of
@@ -85,5 +94,6 @@
         </button>
       </div>
     </div>
+    }
   </div>
 </div>

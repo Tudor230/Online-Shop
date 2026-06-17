@@ -14,11 +14,11 @@
   </div>
 
   @if (error()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+    <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ error() }}</div>
   }
 
   @if (actionError()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ actionError() }}</div>
+    <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ actionError() }}</div>
   }
 
   @if (loading()) {
@@ -45,10 +45,10 @@
               <td class="px-4 py-3">
                 <span
                   class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium"
-                  [class.bg-green-100]="user.isActive"
-                  [class.text-green-700]="user.isActive"
-                  [class.bg-red-100]="!user.isActive"
-                  [class.text-red-700]="!user.isActive"
+                  [class.bg-[--color-success-muted]]="user.isActive"
+                  [class.text-[--color-success]]="user.isActive"
+                  [class.bg-[--color-danger-muted]]="!user.isActive"
+                  [class.text-[--color-danger]]="!user.isActive"
                 >
                   {{ user.isActive ? 'Active' : 'Inactive' }}
                 </span>
@@ -63,7 +63,7 @@
                   {{ user.isActive ? 'Deactivate' : 'Activate' }}
                 </button>
                 <button
-                  class="text-xs text-red-500 hover:text-red-700"
+                  class="text-xs text-[--color-danger] hover:underline"
                   (click)="deleteUser(user.id)"
                 >
                   Delete

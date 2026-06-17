@@ -29,7 +29,7 @@
 
     <div class="mt-4 grid gap-3 md:grid-cols-2">
       @for (coverage of coverageByCategory; track coverage.category) {
-        <article class="rounded-xl border border-surface-elevated bg-bg-default p-4">
+        <article class="rounded-xl border border-surface-elevated bg-[--color-bg] p-4">
           <h3 class="text-sm font-semibold text-text-primary">{{ coverage.category }}</h3>
           <p class="mt-1 text-sm text-text-secondary">Coverage period: {{ coverage.period }}</p>
           <p class="mt-2 text-sm text-text-secondary">{{ coverage.details }}</p>
@@ -69,7 +69,7 @@
     <h2 class="text-xl font-semibold text-text-primary">🚫 What is not covered</h2>
     <ul class="mt-4 grid gap-3 md:grid-cols-2">
       @for (item of notCovered; track item) {
-        <li class="rounded-xl border border-surface-elevated bg-bg-default p-4 text-sm text-text-secondary">{{ item }}</li>
+        <li class="rounded-xl border border-surface-elevated bg-[--color-bg] p-4 text-sm text-text-secondary">{{ item }}</li>
       }
     </ul>
   </section>
@@ -95,7 +95,7 @@
     </article>
   </section>
 
-  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-glass p-6">
+  <section class="mt-6 rounded-2xl border border-[--color-border] bg-[--color-surface] p-6">
     <h2 class="text-lg font-semibold text-text-primary">💬 Need help with an active issue?</h2>
     <p class="mt-2 text-sm text-text-secondary">
       Open a warranty request from your account to share diagnostics faster and reduce back-and-forth.

@@ -97,8 +97,8 @@
                         </div>
                         <a
                           [routerLink]="['/product', item.productSlug]"
-                          class="font-medium text-text-primary hover:text-sky-300 hover:underline"
-                          (click)="$event.stopPropagation()"
+                           class="font-medium text-text-primary hover:text-[--color-brand] hover:underline"
+                           (click)="$event.stopPropagation()"
                         >
                           {{ item.title }}
                         </a>
@@ -111,11 +111,11 @@
                     <td class="px-3 py-2">{{ item.lineTotal | currency: order.currencyCode : 'symbol' : '1.2-2' }}</td>
                     <td class="px-3 py-2" (click)="$event.stopPropagation()">
                       @if (item.reviewed) {
-                        <a [routerLink]="['/product', item.productSlug]" [fragment]="'review-' + item.reviewId" class="font-medium text-text-primary hover:text-sky-300 hover:underline">
+                        <a [routerLink]="['/product', item.productSlug]" [fragment]="'review-' + item.reviewId" class="font-medium text-text-primary hover:text-[--color-brand] hover:underline">
                           Reviewed @if (item.reviewedRating !== null) { ★{{ item.reviewedRating }} }
                         </a>
                       } @else if (item.canLeaveReview) {
-                        <a [routerLink]="['/product', item.productSlug]" fragment="write-review" class="font-medium text-text-primary hover:text-sky-300 hover:underline">
+                        <a [routerLink]="['/product', item.productSlug]" fragment="write-review" class="font-medium text-text-primary hover:text-[--color-brand] hover:underline">
                           Leave review
                         </a>
                       } @else {
@@ -157,7 +157,7 @@
               @if (canCancel(order)) {
                 <button
                   type="button"
-                  class="rounded-full border border-red-400/50 px-4 py-2 text-sm font-semibold text-red-300 transition-colors duration-200 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                  class="rounded-full border border-[--color-danger]/30 px-4 py-2 text-sm font-semibold text-[--color-danger] transition-colors duration-200 hover:bg-[--color-danger-muted] disabled:cursor-not-allowed disabled:opacity-60"
                   [disabled]="actionLoadingOrderId() === order.id"
                   (click)="cancelPendingOrder(order)"
                 >

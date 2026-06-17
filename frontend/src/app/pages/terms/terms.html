@@ -13,7 +13,7 @@
     <h2 class="text-xl font-semibold text-text-primary">✨ Quick highlights</h2>
     <ul class="mt-4 grid gap-3 md:grid-cols-3">
       @for (highlight of highlights; track highlight) {
-        <li class="rounded-xl border border-surface-elevated bg-bg-default p-4 text-sm text-text-secondary">{{ highlight }}</li>
+        <li class="rounded-xl border border-surface-elevated bg-[--color-bg] p-4 text-sm text-text-secondary">{{ highlight }}</li>
       }
     </ul>
   </section>
@@ -50,7 +50,7 @@
     </article>
   </section>
 
-  <section class="mt-6 rounded-2xl border border-surface-elevated bg-surface-glass p-6">
+  <section class="mt-6 rounded-2xl border border-[--color-border] bg-[--color-surface] p-6">
     <h2 class="text-lg font-semibold text-text-primary">📣 Changes and contact</h2>
     <p class="mt-2 text-sm text-text-secondary">
       We may update these terms when services, laws, or business practices change. Material updates are reflected by the last updated date.

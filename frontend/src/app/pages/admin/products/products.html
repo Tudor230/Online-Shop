@@ -11,19 +11,19 @@
       />
       <a routerLink="/admin/products/new" class="rounded-lg bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary-hover">Add Product</a>
       @if (selectedIds().size > 0) {
-        <button class="rounded-lg bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-700" (click)="bulkActivate()">Activate</button>
-        <button class="rounded-lg bg-yellow-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-yellow-700" (click)="bulkDeactivate()">Deactivate</button>
-        <button class="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700" (click)="bulkDelete()">Delete</button>
+        <button class="rounded-lg bg-[--color-success] px-3 py-1.5 text-sm font-medium text-[--color-text-inverse] hover:opacity-90" (click)="bulkActivate()">Activate</button>
+        <button class="rounded-lg bg-[--color-warning] px-3 py-1.5 text-sm font-medium text-[--color-text-inverse] hover:opacity-90" (click)="bulkDeactivate()">Deactivate</button>
+        <button class="rounded-lg bg-[--color-danger] px-3 py-1.5 text-sm font-medium text-[--color-text-inverse] hover:opacity-90" (click)="bulkDelete()">Delete</button>
       }
     </div>
   </div>
 
   @if (error()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
+    <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ error() }}</div>
   }
 
   @if (actionError()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ actionError() }}</div>
+    <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ actionError() }}</div>
   }
 
   @if (loading()) {
@@ -69,10 +69,10 @@
               <td class="px-4 py-3">
                 <span
                   class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium"
-                  [class.bg-green-100]="product.isActive"
-                  [class.text-green-700]="product.isActive"
-                  [class.bg-red-100]="!product.isActive"
-                  [class.text-red-700]="!product.isActive"
+                  [class.bg-[--color-success-muted]]="product.isActive"
+                  [class.text-[--color-success]]="product.isActive"
+                  [class.bg-[--color-danger-muted]]="!product.isActive"
+                  [class.text-[--color-danger]]="!product.isActive"
                 >
                   {{ product.isActive ? 'Active' : 'Inactive' }}
                 </span>
