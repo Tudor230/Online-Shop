@@ -7,6 +7,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { KeycloakAuthService } from './core/auth/keycloak-auth.service';
 import { authInterceptor } from './core/auth/auth.interceptor';
 import { AppConfigService } from './core/config/app-config.service';
+import {keycloakInterceptor} from './core/auth/keycloak.interceptor';
 
 function initializeAuth(keycloakAuthService: KeycloakAuthService): () => Promise<void> {
   return () => keycloakAuthService.init();
@@ -22,7 +23,7 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled'
       })
     ),
-    provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
+    provideHttpClient(withInterceptors([authInterceptor, keycloakInterceptor]), withFetch()),
     provideClientHydration(withEventReplay()),
     provideAppInitializer(() => initializeAuth(inject(KeycloakAuthService))()),
     provideAppInitializer(() => inject(AppConfigService).loadConfig()),
