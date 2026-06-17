@@ -42,13 +42,40 @@
 
   @if (detailOrder(); as detail) {
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" (click)="closeDetail()">
-      <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-[--color-surface-raised] p-6 shadow-2xl" (click)="$event.stopPropagation()">
-        <div class="mb-4 flex items-center justify-between"><h2 class="text-lg font-bold text-[--color-text]">Order {{ detail.orderNumber }}</h2><button class="text-sm text-[--color-text-muted]/40 hover:text-[--color-text]" (click)="closeDetail()">Close</button></div>
-        @if (actionError()) {<div class="mb-4 rounded-xl bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger]">{{ actionError() }}</div>}
-        <div class="mb-4 grid gap-4 sm:grid-cols-2"><div class="rounded-xl bg-white/[0.02] p-3"><p class="text-[11px] text-[--color-text-muted]/50">Status</p><p class="font-medium text-[--color-text]">{{ detail.currentStatus }}</p></div><div class="rounded-xl bg-white/[0.02] p-3"><p class="text-[11px] text-[--color-text-muted]/50">Total</p><p class="font-medium text-[--color-text]">{{ detail.totalAmount | currency : 'RON' : 'symbol' : '1.2-2' }}</p></div></div>
-        <div class="mb-4"><h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/50">Items</h3><div class="space-y-2">@for (item of detail.items; track item.productId) {<div class="flex items-center justify-between rounded-xl bg-white/[0.02] px-3 py-2"><span class="text-sm text-[--color-text]">{{ item.productName }} x{{ item.quantity }}</span><span class="text-sm text-[--color-text-muted]/50">{{ item.unitPriceAtPurchase | currency : 'RON' : 'symbol' : '1.2-2' }}</span></div>}</div></div>
-        <div class="mb-4"><h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/50">Status History</h3><div class="space-y-2">@for (h of detail.statusHistory; track h.createdAt) {<div class="flex items-center justify-between rounded-xl bg-white/[0.02] px-3 py-2"><span class="text-sm text-[--color-text]">{{ h.status }}</span><span class="text-xs text-[--color-text-muted]/40">{{ h.createdAt | date:'short' }}</span></div>}</div></div>
-        <div class="space-y-2"><h3 class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/50">Update Status</h3><div class="flex gap-2"><select class="rounded-lg bg-white/[0.03] px-3 py-2 text-sm text-[--color-text] outline-none" [(ngModel)]="newStatus"><option value="PENDING">PENDING</option><option value="PAID">PAID</option><option value="PROCESSING">PROCESSING</option><option value="SHIPPED">SHIPPED</option><option value="DELIVERED">DELIVERED</option><option value="CANCELLED">CANCELLED</option><option value="RETURNED">RETURNED</option></select><input class="flex-1 rounded-lg bg-white/[0.03] px-3 py-2 text-sm text-[--color-text] outline-none placeholder:text-[--color-text-muted]/30" placeholder="Note (optional)" [(ngModel)]="statusNote" /><button class="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-medium text-[--color-on-brand] hover:bg-[--color-brand-hover]" (click)="updateStatus()">Update</button></div></div>
+      <div class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-surface-elevated bg-surface-default p-6 shadow-2xl" (click)="$event.stopPropagation()">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-lg font-bold text-text-primary">Order {{ detail.orderNumber }}</h2>
+          <button class="text-sm text-text-secondary hover:text-text-primary" (click)="closeDetail()">Close</button>
+        </div>
+        @if (actionError()) {<div class="mb-4 rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ actionError() }}</div>}
+        <div class="mb-4 grid gap-4 sm:grid-cols-2">
+          <div class="rounded-xl border border-surface-elevated bg-surface-default p-3"><p class="text-xs font-medium text-text-secondary">Status</p><p class="font-medium text-text-primary">{{ detail.currentStatus }}</p></div>
+          <div class="rounded-xl border border-surface-elevated bg-surface-default p-3"><p class="text-xs font-medium text-text-secondary">Total</p><p class="font-medium text-text-primary">{{ detail.totalAmount | currency : 'RON' : 'symbol' : '1.2-2' }}</p></div>
+        </div>
+        <div class="mb-4">
+          <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-secondary">Items</h3>
+          <div class="space-y-2">
+            @for (item of detail.items; track item.productId) {
+              <div class="flex items-center justify-between rounded-xl border border-surface-elevated bg-surface-default px-3 py-2"><span class="text-sm text-text-primary">{{ item.productName }} x{{ item.quantity }}</span><span class="text-sm text-text-secondary">{{ item.unitPriceAtPurchase | currency : 'RON' : 'symbol' : '1.2-2' }}</span></div>
+            }
+          </div>
+        </div>
+        <div class="mb-4">
+          <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-secondary">Status History</h3>
+          <div class="space-y-2">
+            @for (h of detail.statusHistory; track h.createdAt) {
+              <div class="flex items-center justify-between rounded-xl border border-surface-elevated bg-surface-default px-3 py-2"><span class="text-sm text-text-primary">{{ h.status }}</span><span class="text-xs text-text-secondary">{{ h.createdAt | date:'short' }}</span></div>
+            }
+          </div>
+        </div>
+        <div>
+          <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-secondary">Update Status</h3>
+          <div class="flex gap-2">
+            <select class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary outline-none" [(ngModel)]="newStatus"><option value="PENDING">PENDING</option><option value="PAID">PAID</option><option value="PROCESSING">PROCESSING</option><option value="SHIPPED">SHIPPED</option><option value="DELIVERED">DELIVERED</option><option value="CANCELLED">CANCELLED</option><option value="RETURNED">RETURNED</option></select>
+            <input class="flex-1 rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary outline-none placeholder:text-text-secondary" placeholder="Note (optional)" [(ngModel)]="statusNote" />
+            <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover" (click)="updateStatus()">Update</button>
+          </div>
+        </div>
       </div>
     </div>
   }

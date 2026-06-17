@@ -5,14 +5,19 @@
   </div>
 
   <div class="flex-1 rounded-2xl bg-white/[0.04] shadow-sm shadow-black/10 overflow-y-auto">
-    @if (loading()) {<div class="px-6 py-8 text-center text-sm text-[--color-text-muted]/50">Loading audit logs...</div>}
-    @else if (error()) {<div class="px-6 py-8 text-center text-sm text-[--color-danger]">{{ error() }}</div>}
-    @else if (logs().length === 0) {<div class="px-6 py-8 text-center text-sm text-[--color-text-muted]/40">No audit logs found.</div>}
-    @else {
-      <table class="w-full text-left text-sm">
+    @if (loading()) {
+      <div class="px-6 py-8 text-center text-sm text-[--color-text-muted]/50">Loading audit logs...</div>
+    } @else {
+      @if (error()) {
+        <div class="px-6 py-8 text-center text-sm text-[--color-danger]">{{ error() }}</div>
+      } @else if (logs().length === 0) {
+        <div class="px-6 py-8 text-center text-sm text-[--color-text-muted]/40">No audit logs found.</div>
+      } @else {
+        <table class="w-full text-left text-sm">
         <thead><tr class="text-[--color-text-muted]/50"><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Timestamp</th><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Admin</th><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Action</th><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Entity Type</th><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Entity ID</th><th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wider w-full">Details</th></tr></thead>
         <tbody>@for (log of logs(); track log.id; let even = $even) {<tr class="transition-colors" [class.bg-white/[0.015]]="even"><td class="whitespace-nowrap px-6 py-4 text-[--color-text-muted]/50">{{ log.createdAt | date:'medium' }}</td><td class="whitespace-nowrap px-6 py-4"><span class="font-medium text-[--color-text]">{{ log.adminEmail || 'System' }}</span></td><td class="whitespace-nowrap px-6 py-4"><span class="inline-flex items-center rounded-full bg-white/[0.03] px-2.5 py-0.5 text-[11px] font-semibold text-[--color-text]">{{ log.actionType }}</span></td><td class="whitespace-nowrap px-6 py-4 font-medium text-[--color-text]">{{ log.entityType }}</td><td class="whitespace-nowrap px-6 py-4 font-mono text-xs text-[--color-text-muted]/40">{{ log.entityId || '-' }}</td><td class="px-6 py-4 text-[--color-text-muted]/40 truncate max-w-xs" [title]="formatDetails(log.details)">{{ formatDetails(log.details) }}</td></tr>}</tbody>
       </table>
+      }
     }
   </div>
 
