@@ -106,20 +106,29 @@
   <div class="relative z-10 mx-auto h-px w-24 bg-gradient-to-r from-transparent via-primary/30 to-transparent" aria-hidden="true"></div>
 
   <section class="relative z-10 mx-auto w-full max-w-7xl px-safe py-16 md:px-6 md:py-24 lg:px-8" aria-label="Why shop with us">
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
+    <div class="mb-12 flex flex-col items-center gap-3 text-center">
+      <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Why shop with us</span>
+      <h2 class="text-3xl font-bold tracking-tight text-[--color-text] md:text-4xl">Built for builders.<br class="hidden sm:block">Backed by precision.</h2>
+    </div>
+    <div class="flex flex-col divide-y divide-[--color-border] md:flex-row md:divide-x md:divide-y-0">
       @for (prop of valueProps(); track prop.title; let i = $index) {
         <div
-          class="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border-t-2 border-[--color-border-brand] bg-surface-default p-6 animate-fade-up transition-colors duration-500 ease-premium hover:bg-surface-elevated/50"
+          class="group flex flex-1 flex-col items-center gap-4 px-6 py-8 text-center animate-fade-up transition-colors duration-300 md:hover:bg-[--color-surface]/50"
           [class.range-stagger-1]="i === 0"
           [class.range-stagger-2]="i === 1"
           [class.range-stagger-3]="i === 2"
         >
-          <span class="absolute right-4 top-2 text-6xl font-black leading-none text-[--color-brand]/10 select-none" aria-hidden="true">0{{ i + 1 }}</span>
-          <div class="relative z-10 flex flex-col gap-4">
-            <div class="h-8 w-8 rounded-lg bg-[--color-brand-muted]" aria-hidden="true"></div>
-            <h3 class="text-base font-semibold tracking-tight text-text-primary">{{ prop.title }}</h3>
-            <p class="text-sm font-normal text-text-secondary">{{ prop.description }}</p>
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-[--color-brand-muted] transition-transform duration-300 group-hover:scale-110">
+            @if (i === 0) {
+              <svg viewBox="0 0 24 24" class="h-6 w-6 text-[--color-brand]"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/><rect x="2" y="3" width="20" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+            } @else if (i === 1) {
+              <svg viewBox="0 0 24 24" class="h-6 w-6 text-[--color-brand]"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M2 12h3l2-7 4 14 3-8 2 1h3M8 12h8"/></svg>
+            } @else {
+              <svg viewBox="0 0 24 24" class="h-6 w-6 text-[--color-brand]"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/></svg>
+            }
           </div>
+          <h3 class="text-base font-bold tracking-tight text-[--color-text]">{{ prop.title }}</h3>
+          <p class="max-w-xs text-sm leading-relaxed text-[--color-text-muted]">{{ prop.description }}</p>
         </div>
       }
     </div>
@@ -188,7 +197,9 @@
       <div class="grid gap-10 lg:grid-cols-[1.5fr_0.9fr_0.9fr_1.2fr] lg:items-start">
         <section class="lg:pr-4">
           <div class="inline-flex items-center gap-2 text-text-primary">
-            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">O</span>
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            </span>
             <span class="text-base font-semibold">Online Shop</span>
           </div>
           <p class="mt-3 text-sm text-text-secondary">

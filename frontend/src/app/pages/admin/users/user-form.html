@@ -1,17 +1,20 @@
-<div class="mx-auto max-w-xl space-y-6">
-  <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold text-text-primary">{{ userId() ? 'Edit' : 'New' }} User</h1>
+<div class="flex-1 min-h-0 mx-auto max-w-xl flex flex-col">
+  <div class="shrink-0 flex items-center justify-between pb-4">
+    <div>
+      <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Users</span>
+      <h1 class="mt-1 text-2xl font-bold tracking-tight text-[--color-text]">{{ userId() ? 'Edit' : 'New' }} User</h1>
+    </div>
     <button class="text-sm text-text-secondary hover:text-text-primary" (click)="cancel()">Back to Users</button>
   </div>
 
   @if (error()) {
-    <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ error() }}</div>
+    <div class="shrink-0 rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ error() }}</div>
   }
 
   @if (loading()) {
-    <p class="text-sm text-text-secondary">Loading...</p>
+    <p class="text-sm text-[--color-text-muted]/50">Loading...</p>
   } @else {
-    <div class="space-y-4 rounded-xl border border-surface-elevated bg-surface-default p-5">
+    <div class="flex-1 min-h-0 overflow-y-auto space-y-4 rounded-xl border border-surface-elevated bg-surface-default p-5">
       <div class="grid gap-4 sm:grid-cols-2">
         <div>
           <label for="firstName" class="mb-1 block text-xs font-medium text-text-secondary">First Name *</label>

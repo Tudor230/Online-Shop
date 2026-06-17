@@ -1,79 +1,43 @@
-<div class="space-y-6">
-  <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold text-text-primary">Dashboard</h1>
-    <button
-      class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary transition-colors hover:bg-surface-elevated disabled:opacity-50"
-      [disabled]="loading()"
-      (click)="loadData()"
-    >
-      {{ loading() ? 'Loading...' : 'Refresh' }}
-    </button>
+<div class="flex flex-col min-h-full">
+  <div class="pb-4">
+    <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Overview</span>
+    <h1 class="mt-1.5 text-2xl font-bold tracking-tight text-[--color-text]">Dashboard</h1>
+    <div class="mt-2 flex items-center gap-3">
+      <span class="text-[11px] text-[--color-text-muted]/50">{{ today | date:'EEEE, MMMM d' }}</span>
+      <button class="rounded-lg bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-[--color-text-muted]/60 transition-all hover:bg-white/[0.06]" [disabled]="loading()" (click)="loadData()">{{ loading() ? 'Refreshing...' : 'Refresh' }}</button>
+    </div>
   </div>
 
   @if (error()) {
-    <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">
-      {{ error() }}
-    </div>
+    <div class="rounded-xl bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger]">{{ error() }}</div>
   }
 
-  @if (loading()) {
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      @for (i of [1,2,3,4,5,6]; track i) {
-        <div class="rounded-xl border border-surface-elevated bg-surface-default p-5 animate-pulse">
-          <div class="h-4 w-24 rounded bg-surface-elevated"></div>
-          <div class="mt-2 h-8 w-16 rounded bg-surface-elevated"></div>
+  <div class="flex-1 space-y-4">
+    @if (loading()) {
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div class="lg:col-span-2 rounded-2xl bg-white/[0.04] p-6 skeleton-wave"><div class="h-4 w-24 rounded bg-white/[0.06]"></div><div class="mt-3 h-10 w-40 rounded bg-white/[0.06]"></div></div>
+        <div class="rounded-2xl bg-[oklch(0.68_0.16_80/0.12)] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-14 rounded bg-white/[0.06]"></div></div>
+        <div class="rounded-2xl bg-[oklch(0.52_0.18_22/0.12)] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-14 rounded bg-white/[0.06]"></div></div>
+        <div class="rounded-2xl bg-white/[0.04] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-12 rounded bg-white/[0.06]"></div></div>
+        <div class="rounded-2xl bg-white/[0.04] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-12 rounded bg-white/[0.06]"></div></div>
+        <div class="rounded-2xl bg-white/[0.04] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-12 rounded bg-white/[0.06]"></div></div>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div class="lg:col-span-2 flex flex-col justify-between rounded-2xl bg-white/[0.04] p-6 shadow-sm shadow-black/10">
+          <div><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/60">Total Revenue</p><span class="flex h-7 w-7 items-center justify-center rounded-lg bg-[--color-brand-muted]"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-[--color-brand]"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></span></div><p class="mt-3 text-5xl font-bold tracking-tight text-[--color-text]">{{ (stats()?.totalRevenue ?? 0) | currency : 'RON' : 'symbol' : '1.0-0' }}</p><p class="mt-1 text-xs text-[--color-text-muted]/40">Gross revenue across all orders</p></div>
+          @if (revenue().length > 0) {<div class="mt-4 flex items-end gap-[3px] h-16">@for (item of revenue().slice(-24); track item.date) {<div class="flex-1 rounded-full bg-[--color-brand]/20" [style.height.%]="(item.revenue / maxRevenue()) * 100 > 2 ? (item.revenue / maxRevenue()) * 100 : 2" [title]="item.date + ': ' + (item.revenue | currency : 'RON' : 'symbol' : '1.2-2')"></div>}</div>}
         </div>
-      }
-    </div>
-  } @else {
-    <!-- Stats Grid -->
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
-        <p class="text-sm text-text-secondary">Total Orders</p>
-        <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.totalOrders ?? 0 }}</p>
+        <div class="flex flex-col justify-between rounded-2xl bg-[oklch(0.68_0.16_80/0.12)] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-warning]/80">Pending</p><p class="mt-2 text-4xl font-bold tracking-tight text-[--color-warning]">{{ stats()?.pendingOrders ?? 0 }}</p><p class="mt-1 text-[11px] text-[--color-warning]/60">Orders awaiting action</p></div></div>
+        <div class="flex flex-col justify-between rounded-2xl bg-[oklch(0.52_0.18_22/0.12)] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-danger]/80">Low Stock</p><p class="mt-2 text-4xl font-bold tracking-tight text-[--color-danger]">{{ stats()?.lowStockCount ?? 0 }}</p><p class="mt-1 text-[11px] text-[--color-danger]/60">Items need restocking</p></div></div>
+        <div class="flex flex-col justify-between rounded-2xl bg-white/[0.04] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/60">Total Orders</p><p class="mt-2 text-3xl font-bold tracking-tight text-[--color-text]">{{ stats()?.totalOrders ?? 0 }}</p></div></div>
+        <div class="flex flex-col justify-between rounded-2xl bg-white/[0.04] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/60">Total Users</p><p class="mt-2 text-3xl font-bold tracking-tight text-[--color-text]">{{ stats()?.totalUsers ?? 0 }}</p></div></div>
+        <div class="flex flex-col justify-between rounded-2xl bg-white/[0.04] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/60">Products</p><p class="mt-2 text-3xl font-bold tracking-tight text-[--color-text]">{{ stats()?.totalProducts ?? 0 }}</p></div></div>
       </div>
-      <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
-        <p class="text-sm text-text-secondary">Total Users</p>
-        <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.totalUsers ?? 0 }}</p>
+      <div class="rounded-2xl bg-white/[0.04] p-6 shadow-sm shadow-black/10 mt-4">
+        <div class="mb-5 flex items-center justify-between"><h2 class="text-sm font-semibold uppercase tracking-[0.15em] text-[--color-text-muted]/50">Revenue · 30 days</h2>@if (revenue().length > 0) {<span class="text-[11px] text-[--color-text-muted]/40">Peak: {{ maxRevenue() | currency : 'RON' : 'symbol' : '1.0-0' }}</span>}</div>
+        @if (revenue().length === 0) {<p class="py-12 text-center text-sm text-[--color-text-muted]/40">No revenue data yet.</p>} @else {<div class="flex items-end gap-1 h-44">@for (item of revenue(); track item.date) {<div class="flex flex-1 flex-col items-center justify-end gap-2 h-full"><div class="w-full rounded-t-[3px] bg-gradient-to-t from-[--color-brand] to-[--color-brand-hover]" [style.height.%]="(item.revenue / maxRevenue()) * 100 > 1 ? (item.revenue / maxRevenue()) * 100 : 1" [title]="item.date + ': ' + (item.revenue | currency : 'RON' : 'symbol' : '1.2-2')"></div><span class="text-[9px] font-medium text-[--color-text-muted]/30 whitespace-nowrap">{{ item.date | date:'d MMM' }}</span></div>}</div>}
       </div>
-      <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
-        <p class="text-sm text-text-secondary">Total Products</p>
-        <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.totalProducts ?? 0 }}</p>
-      </div>
-      <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
-        <p class="text-sm text-text-secondary">Pending Orders</p>
-        <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.pendingOrders ?? 0 }}</p>
-      </div>
-      <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
-        <p class="text-sm text-text-secondary">Low Stock Items</p>
-        <p class="mt-1 text-3xl font-bold text-text-primary">{{ stats()?.lowStockCount ?? 0 }}</p>
-      </div>
-      <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
-        <p class="text-sm text-text-secondary">Total Revenue</p>
-        <p class="mt-1 text-3xl font-bold text-text-primary">{{ (stats()?.totalRevenue ?? 0) | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
-      </div>
-    </div>
-
-    <!-- Revenue Chart -->
-    <div class="rounded-xl border border-surface-elevated bg-surface-default p-5">
-      <h2 class="mb-4 text-lg font-semibold text-text-primary">Revenue (Last 30 Days)</h2>
-      @if (revenue().length === 0) {
-        <p class="text-sm text-text-secondary">No revenue data available.</p>
-      } @else {
-        <div class="flex items-end gap-1 overflow-x-auto">
-          @let maxRev = revenue().reduce((m, r) => m > r.revenue ? m : r.revenue, 0.01);
-          @for (item of revenue(); track item.date) {
-            <div class="flex flex-1 flex-col items-center gap-1">
-              <div
-                class="w-full rounded-sm bg-primary"
-                [style.height.px]="(item.revenue / maxRev) * 160 > 4 ? (item.revenue / maxRev) * 160 : 4"
-                [title]="item.date + ': ' + (item.revenue | currency : 'RON' : 'symbol' : '1.2-2')"
-              ></div>
-              <span class="text-[10px] text-text-secondary">{{ item.date | date:'MMM d' }}</span>
-            </div>
-          }
-        </div>
-      }
-    </div>
-  }
+    }
+  </div>
 </div>

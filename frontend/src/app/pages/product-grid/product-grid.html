@@ -1,7 +1,8 @@
 <section class="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 lg:px-8">
   <header class="mb-6 flex flex-col gap-2">
-    <h1 class="text-2xl font-semibold text-text-primary">Gaming Tech Grid</h1>
-    <p class="text-sm text-text-secondary">Customized accessories for your next setup upgrade.</p>
+    <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Products</span>
+    <h1 class="text-2xl font-bold tracking-tight text-[--color-text]">Gaming Tech Grid</h1>
+    <p class="text-sm text-[--color-text-muted]">Customized accessories for your next setup upgrade.</p>
   </header>
 
   @if (isLoading()) {
@@ -34,7 +35,7 @@
       </p>
     </div>
   } @else {
-    <div class="mb-4 flex flex-col gap-3 rounded-2xl border border-surface-elevated bg-surface-default px-4 py-3 text-sm text-text-secondary md:flex-row md:items-center md:justify-between">
+    <div class="mb-4 flex flex-col gap-3 rounded-2xl border border-[--color-border] bg-surface-default px-4 py-3 text-sm text-text-secondary md:flex-row md:items-center md:justify-between">
       <p class="font-medium text-text-primary">{{ resultRangeLabel() }}</p>
 
       <div class="flex flex-wrap items-center gap-2">
@@ -46,7 +47,7 @@
             [ngClass]="
               option === pageSize()
                 ? 'bg-[--color-brand] text-[--color-on-brand] border-[--color-brand]'
-                : 'border-surface-elevated text-text-primary hover:bg-surface-elevated'
+                : 'border-[--color-border] text-text-primary hover:bg-[--color-surface-hover]'
             "
             [attr.aria-pressed]="option === pageSize()"
             (click)="changePageSize(option)"
@@ -70,10 +71,10 @@
     </div>
 
     @if (shouldShowPagination()) {
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-surface-elevated bg-surface-default px-4 py-3 text-sm text-text-secondary">
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-[--color-border] bg-surface-default px-4 py-3 text-sm text-text-secondary">
         <button
           type="button"
-          class="rounded-full border border-surface-elevated px-4 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
+          class="rounded-full border border-[--color-border] px-4 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
           [disabled]="!hasPreviousPage()"
           (click)="goToPreviousPage()"
         >
@@ -88,7 +89,7 @@
               [ngClass]="
                 pageLink === currentPage()
                   ? 'bg-[--color-brand] text-[--color-on-brand] border-[--color-brand]'
-                  : 'border-surface-elevated text-text-primary hover:bg-surface-elevated'
+                  : 'border-[--color-border] text-text-primary hover:bg-[--color-surface-hover]'
               "
               [disabled]="pageLink === currentPage()"
               (click)="goToPageLink(pageLink)"
@@ -102,7 +103,7 @@
 
         <button
           type="button"
-          class="rounded-full border border-surface-elevated px-4 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
+          class="rounded-full border border-[--color-border] px-4 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
           [disabled]="!hasNextPage()"
           (click)="goToNextPage()"
         >

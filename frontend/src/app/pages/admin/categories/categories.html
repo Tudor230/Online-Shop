@@ -1,83 +1,28 @@
-<div class="space-y-4">
-  <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold text-text-primary">Categories</h1>
-    <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover" (click)="startCreate()">Add Category</button>
+<div class="flex flex-col min-h-full">
+  <div class="flex items-center justify-between pb-4">
+    <div><span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Catalog</span><h1 class="mt-1.5 text-2xl font-bold tracking-tight text-[--color-text]">Categories</h1></div>
+    <button class="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-medium text-[--color-on-brand] hover:bg-[--color-brand-hover]" (click)="startCreate()">Add Category</button>
   </div>
 
-  @if (error()) {
-    <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ error() }}</div>
-  }
+  @if (error()) {<div class="rounded-xl bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ error() }}</div>}
+  @if (actionError()) {<div class="rounded-xl bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ actionError() }}</div>}
 
-  @if (actionError()) {
-    <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ actionError() }}</div>
-  }
-
-  @if (loading()) {
-    <p class="text-sm text-text-secondary">Loading...</p>
-  } @else {
-    <div class="overflow-x-auto rounded-xl border border-surface-elevated bg-surface-default">
+  <div class="flex-1 rounded-2xl bg-white/[0.04] shadow-sm shadow-black/10 overflow-y-auto">
+    @if (loading()) {<div class="px-4 py-8 text-center text-sm text-[--color-text-muted]/50">Loading...</div>} @else {
       <table class="w-full text-left text-sm">
-        <thead class="border-b border-surface-elevated bg-surface-default text-text-secondary">
-          <tr>
-            <th class="px-4 py-3 font-medium">Name</th>
-            <th class="px-4 py-3 font-medium">Slug</th>
-            <th class="px-4 py-3 font-medium">Parent</th>
-            <th class="px-4 py-3 font-medium text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-surface-elevated">
-          @for (cat of categories(); track cat.id) {
-            <tr class="transition-colors hover:bg-surface-elevated/50">
-              <td class="px-4 py-3 text-text-primary">{{ cat.name }}</td>
-              <td class="px-4 py-3 text-text-secondary">{{ cat.slug }}</td>
-              <td class="px-4 py-3 text-text-secondary">{{ cat.parentId ? (parentName(cat.parentId)) : '-' }}</td>
-              <td class="px-4 py-3 text-right">
-                <button class="mr-2 text-xs text-text-secondary hover:text-text-primary" (click)="startEdit(cat)">Edit</button>
-                <button class="text-xs text-[--color-danger] hover:underline" (click)="deleteCategory(cat.id)">Delete</button>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="4" class="px-4 py-6 text-center text-sm text-text-secondary">No categories found.</td>
-            </tr>
-          }
-        </tbody>
+        <thead><tr class="text-[--color-text-muted]/50"><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Name</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Slug</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Parent</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-right">Actions</th></tr></thead>
+        <tbody>@for (cat of categories(); track cat.id; let even = $even) {<tr class="transition-colors" [class.bg-white/[0.015]]="even"><td class="px-4 py-3 text-[--color-text]">{{ cat.name }}</td><td class="px-4 py-3 text-[--color-text-muted]/50">{{ cat.slug }}</td><td class="px-4 py-3 text-[--color-text-muted]/50">{{ cat.parentId ? (parentName(cat.parentId)) : '-' }}</td><td class="px-4 py-3 text-right"><button class="mr-2 text-xs text-[--color-text-muted]/40 hover:text-[--color-text]" (click)="startEdit(cat)">Edit</button><button class="text-xs text-[--color-danger]/50 hover:text-[--color-danger]" (click)="deleteCategory(cat.id)">Delete</button></td></tr>} @empty {<tr><td colspan="4" class="px-4 py-8 text-center text-sm text-[--color-text-muted]/40">No categories found.</td></tr>}</tbody>
       </table>
-    </div>
-  }
+    }
+  </div>
 
   @if (editing(); as edit) {
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div class="w-full max-w-md rounded-xl border border-surface-elevated bg-surface-default p-6 shadow-xl">
-        <h2 class="mb-4 text-lg font-bold text-text-primary">{{ edit.id ? 'Edit' : 'New' }} Category</h2>
-
-        @if (actionError()) {
-          <div class="mb-4 rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ actionError() }}</div>
-        }
-
-        <div class="space-y-3">
-          <div>
-            <label class="mb-1 block text-xs font-medium text-text-secondary">Name *</label>
-            <input class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="name()" (ngModelChange)="name.set($event)" />
-          </div>
-          <div>
-            <label class="mb-1 block text-xs font-medium text-text-secondary">Slug *</label>
-            <input class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="slug()" (ngModelChange)="slug.set($event)" />
-          </div>
-          <div>
-            <label class="mb-1 block text-xs font-medium text-text-secondary">Parent Category</label>
-            <select class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="parentId()" (ngModelChange)="parentId.set($event)">
-              <option value="">None (root category)</option>
-              @for (opt of parentOptions(); track opt.id) {
-                <option [value]="opt.id">{{ opt.name }}</option>
-              }
-            </select>
-          </div>
-        </div>
-        <div class="mt-4 flex justify-end gap-2">
-          <button class="rounded-lg border border-surface-elevated bg-surface-default px-4 py-2 text-sm text-text-primary hover:bg-surface-elevated" (click)="cancelEdit()">Cancel</button>
-          <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover" (click)="save()">Save</button>
-        </div>
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+      <div class="w-full max-w-md rounded-2xl bg-[--color-surface-raised] p-6 shadow-2xl">
+        <h2 class="mb-4 text-lg font-bold text-[--color-text]">{{ edit.id ? 'Edit' : 'New' }} Category</h2>
+        @if (actionError()) {<div class="mb-4 rounded-xl bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger]">{{ actionError() }}</div>}
+        <div class="space-y-3"><div><label class="mb-1 block text-xs font-medium text-[--color-text-muted]/50">Name *</label><input class="w-full rounded-lg bg-white/[0.03] px-3 py-2 text-sm text-[--color-text] outline-none focus:bg-white/[0.06]" [ngModel]="name()" (ngModelChange)="name.set($event)" /></div><div><label class="mb-1 block text-xs font-medium text-[--color-text-muted]/50">Slug *</label><input class="w-full rounded-lg bg-white/[0.03] px-3 py-2 text-sm text-[--color-text] outline-none focus:bg-white/[0.06]" [ngModel]="slug()" (ngModelChange)="slug.set($event)" /></div><div><label class="mb-1 block text-xs font-medium text-[--color-text-muted]/50">Parent</label><select class="w-full rounded-lg bg-white/[0.03] px-3 py-2 text-sm text-[--color-text] outline-none" [ngModel]="parentId()" (ngModelChange)="parentId.set($event)"><option value="">None</option>@for (opt of parentOptions(); track opt.id) {<option [value]="opt.id">{{ opt.name }}</option>}</select></div></div>
+        <div class="mt-4 flex justify-end gap-2"><button class="rounded-lg bg-white/[0.03] px-4 py-2 text-sm text-[--color-text-muted] hover:bg-white/[0.06] hover:text-[--color-text]" (click)="cancelEdit()">Cancel</button><button class="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-medium text-[--color-on-brand] hover:bg-[--color-brand-hover]" (click)="save()">Save</button></div>
       </div>
     </div>
   }

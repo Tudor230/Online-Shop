@@ -1,8 +1,9 @@
 <section class="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 lg:px-8">
   <header class="mb-6 flex flex-wrap items-center justify-between gap-3">
     <div>
-      <h1 class="text-2xl font-semibold text-text-primary">Your profile</h1>
-      <p class="mt-1 text-sm text-text-secondary">Manage your details and default addresses.</p>
+      <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Account</span>
+      <h1 class="mt-1 text-2xl font-bold tracking-tight text-[--color-text]">Your profile</h1>
+      <p class="mt-1 text-sm text-[--color-text-muted]">Manage your details and default addresses.</p>
     </div>
   </header>
 
@@ -29,7 +30,7 @@
   } @else {
     <div class="grid gap-6 lg:grid-cols-2">
       <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
-        <h2 class="text-lg font-semibold text-text-primary">Personal details</h2>
+        <h2 class="text-lg font-bold tracking-tight text-[--color-text]">Personal details</h2>
         <p class="mt-1 text-sm text-text-secondary">Update your name for checkout and delivery records.</p>
 
         <form class="mt-5 space-y-4" [formGroup]="profileForm" (ngSubmit)="saveProfileDetails()">
@@ -80,7 +81,7 @@
       </article>
 
       <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
-        <h2 class="text-lg font-semibold text-text-primary">Add address</h2>
+        <h2 class="text-lg font-bold tracking-tight text-[--color-text]">Add address</h2>
         <p class="mt-1 text-sm text-text-secondary">Create billing and shipping options for this account.</p>
 
         <form class="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2" [formGroup]="addressForm" (ngSubmit)="addAddress()">
@@ -203,8 +204,10 @@
       </article>
     </div>
 
+    <hr class="my-6 border-[--color-border]">
+
     <article class="mt-6 rounded-2xl border border-surface-elevated bg-surface-default p-5">
-      <h2 class="text-lg font-semibold text-text-primary">Saved addresses</h2>
+      <h2 class="text-lg font-bold tracking-tight text-[--color-text]">Saved addresses</h2>
       <p class="mt-1 text-sm text-text-secondary">Choose one primary address for shipping and one for billing.</p>
 
       @if (primarySelectionError()) {
