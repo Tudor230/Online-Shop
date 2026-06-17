@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DatePipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
@@ -18,10 +18,6 @@ export class AdminDashboardComponent implements OnInit {
   readonly today = new Date();
   readonly stats = signal<AdminDashboardStats | null>(null);
   readonly revenue = signal<AdminRevenueChart[]>([]);
-  readonly maxRevenue = computed(() => {
-    const r = this.revenue();
-    return r.length > 0 ? r.reduce((m, item) => m > item.revenue ? m : item.revenue, 0.01) : 1;
-  });
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 

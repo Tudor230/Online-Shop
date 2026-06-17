@@ -12,7 +12,6 @@ import org.endava.onlineshop.model.entities.User;
 import org.endava.onlineshop.model.enums.OrderStatus;
 import org.endava.onlineshop.repository.OrderRepository;
 import org.endava.onlineshop.repository.ReviewRepository;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,16 +37,10 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ReviewRepository reviewRepository;
     private final InventoryService inventoryService;
-    private final ObjectProvider<OrderMockSeeder> orderMockSeederProvider;
 
 
     @Transactional
     public List<OrderHistoryEntryDto> getOrderHistory(User user) {
-        OrderMockSeeder orderMockSeeder = orderMockSeederProvider.getIfAvailable();
-        if (orderMockSeeder != null) {
-            orderMockSeeder.seedForUserIfMissing(user);
-        }
-
         return orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId()).stream()
                 .map(order -> toOrderHistoryDto(order, user.getId()))
                 .toList();
@@ -55,11 +48,6 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderHistoryEntryDto getOrderDetails(User user, String orderSlug) {
-        OrderMockSeeder orderMockSeeder = orderMockSeederProvider.getIfAvailable();
-        if (orderMockSeeder != null) {
-            orderMockSeeder.seedForUserIfMissing(user);
-        }
-
         Order order = orderRepository.findByOrderNumberAndUserId(orderSlug, user.getId())
                 .orElseThrow(() -> new BadRequestException("Order was not found"));
         return toOrderHistoryDto(order, user.getId());
