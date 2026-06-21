@@ -1,114 +1,53 @@
-<section class="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 lg:px-8">
-  <header class="mb-6 flex flex-col gap-2">
-    <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Products</span>
-    <h1 class="text-2xl font-bold tracking-tight text-[--color-text]">Gaming Tech Grid</h1>
+<section class="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 lg:px-8">
+  <header class="mb-8 flex flex-col gap-2">
+    <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Products</span>
+    <h1 class="text-3xl font-bold tracking-tight text-[--color-text]">Gaming Tech Grid</h1>
     <p class="text-sm text-[--color-text-muted]">Customized accessories for your next setup upgrade.</p>
   </header>
 
   @if (isLoading()) {
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5">
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 2xl:grid-cols-5">
       @for (item of skeletonItems; track item) {
-        <div class="rounded-2xl border border-surface-elevated bg-surface-default p-4">
-          <div class="aspect-[4/3] rounded-xl bg-surface-elevated animate-pulse"></div>
-          <div class="mt-4 h-4 w-3/4 rounded-full bg-surface-elevated animate-pulse"></div>
-          <div class="mt-3 h-4 w-1/3 rounded-full bg-surface-elevated animate-pulse"></div>
-        </div>
+        <div class="card p-4"><div class="aspect-[4/3] rounded-xl bg-[--color-bg] skeleton-wave"></div><div class="mt-4 h-4 w-3/4 rounded-full bg-[--color-bg] skeleton-wave"></div><div class="mt-3 h-4 w-1/3 rounded-full bg-[--color-bg] skeleton-wave"></div></div>
       }
     </div>
   } @else if (hasError()) {
-    <div class="flex min-h-64 flex-col items-center justify-center gap-3 rounded-2xl border border-surface-elevated bg-surface-default p-8 text-center">
+    <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center">
       <p class="text-base font-semibold text-text-primary">Search is unavailable right now</p>
-      <p class="text-sm text-text-secondary">Please try again in a moment.</p>
+      <p class="text-sm text-text-muted">Please try again in a moment.</p>
     </div>
   } @else if (!products().length) {
-    <div
-      class="flex min-h-64 flex-col items-center justify-center gap-3 rounded-2xl border border-surface-elevated bg-surface-default p-8 text-center"
-    >
-      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-surface-elevated text-text-secondary">◎</div>
+    <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center">
+      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[--color-bg] text-text-muted/50">◎</div>
       <p class="text-base font-semibold text-text-primary">No products found</p>
-      <p class="text-sm text-text-secondary">
-        @if (isSearchActive()) {
-          Try changing the prompt to describe what you need.
-        } @else {
-          Try refreshing or browse the featured collection next.
-        }
-      </p>
+      <p class="text-sm text-text-muted">@if (isSearchActive()) { Try changing the prompt to describe what you need. } @else { Try refreshing or browse the featured collection next. }</p>
     </div>
   } @else {
-    <div class="mb-4 flex flex-col gap-3 rounded-2xl border border-[--color-border] bg-surface-default px-4 py-3 text-sm text-text-secondary md:flex-row md:items-center md:justify-between">
-      <p class="font-medium text-text-primary">{{ resultRangeLabel() }}</p>
-
+    <div class="card mb-5 flex flex-col gap-3 px-4 py-3 text-sm text-text-muted md:flex-row md:items-center md:justify-between">
+      <p class="text-xs font-medium text-text-primary">{{ resultRangeLabel() }}</p>
       <div class="flex flex-wrap items-center gap-2">
-        <span>Show:</span>
+        <span class="text-xs">Show:</span>
         @for (option of pageSizeOptions; track option) {
-          <button
-            type="button"
-            class="min-w-11 rounded-full border px-3 py-1 text-sm transition-colors duration-200"
-            [ngClass]="
-              option === pageSize()
-                ? 'bg-[--color-brand] text-[--color-on-brand] border-[--color-brand]'
-                : 'border-[--color-border] text-text-primary hover:bg-[--color-surface-hover]'
-            "
-            [attr.aria-pressed]="option === pageSize()"
-            (click)="changePageSize(option)"
-          >
-            {{ option }}
-          </button>
+          <button type="button" class="btn-secondary min-w-10 px-3 py-1.5 text-xs" [ngClass]="option === pageSize() ? '!bg-[--color-brand] !text-[--color-on-brand] !border-[--color-brand]' : ''" [attr.aria-pressed]="option === pageSize()" (click)="changePageSize(option)">{{ option }}</button>
         }
       </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 2xl:grid-cols-5">
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 2xl:grid-cols-5">
       @for (product of products(); track product.id) {
-        <app-product-card
-          [product]="product"
-          [isWishlisted]="isProductWishlisted(product.id)"
-          (selected)="openProductDetails(product.slug)"
-          (addToCart)="addProductToCart(product.id)"
-          (saveToWishlist)="saveProductToWishlist(product.id)"
-        />
+        <app-product-card [product]="product" [isWishlisted]="isProductWishlisted(product.id)" (selected)="openProductDetails(product.slug)" (addToCart)="addProductToCart(product.id)" (saveToWishlist)="saveProductToWishlist(product.id)"/>
       }
     </div>
 
     @if (shouldShowPagination()) {
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-[--color-border] bg-surface-default px-4 py-3 text-sm text-text-secondary">
-        <button
-          type="button"
-          class="rounded-full border border-[--color-border] px-4 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
-          [disabled]="!hasPreviousPage()"
-          (click)="goToPreviousPage()"
-        >
-          &lt; Prev
-        </button>
-
+      <div class="card mt-8 flex flex-wrap items-center justify-center gap-2 px-4 py-3 text-sm text-text-muted">
+        <button type="button" class="btn-secondary px-4 py-2 text-sm" [disabled]="!hasPreviousPage()" [class.opacity-40]="!hasPreviousPage()" (click)="goToPreviousPage()">&lt; Prev</button>
         @for (pageLink of pageLinks(); track $index) {
           @if (isPageLink(pageLink)) {
-            <button
-              type="button"
-              class="min-w-10 rounded-full border px-3 py-2 text-sm transition-colors duration-200"
-              [ngClass]="
-                pageLink === currentPage()
-                  ? 'bg-[--color-brand] text-[--color-on-brand] border-[--color-brand]'
-                  : 'border-[--color-border] text-text-primary hover:bg-[--color-surface-hover]'
-              "
-              [disabled]="pageLink === currentPage()"
-              (click)="goToPageLink(pageLink)"
-            >
-              {{ pageLink }}
-            </button>
-          } @else {
-            <span class="px-1 text-text-secondary">...</span>
-          }
+            <button type="button" class="btn-secondary min-w-10 px-3 py-2 text-sm" [ngClass]="pageLink === currentPage() ? '!bg-[--color-brand] !text-[--color-on-brand] !border-[--color-brand]' : ''" [disabled]="pageLink === currentPage()" (click)="goToPageLink(pageLink)">{{ pageLink }}</button>
+          } @else { <span class="px-1 text-text-muted/50">...</span> }
         }
-
-        <button
-          type="button"
-          class="rounded-full border border-[--color-border] px-4 py-2 text-sm text-text-primary transition-colors duration-200 hover:bg-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
-          [disabled]="!hasNextPage()"
-          (click)="goToNextPage()"
-        >
-          Next &gt;
-        </button>
+        <button type="button" class="btn-secondary px-4 py-2 text-sm" [disabled]="!hasNextPage()" [class.opacity-40]="!hasNextPage()" (click)="goToNextPage()">Next &gt;</button>
       </div>
     }
   }

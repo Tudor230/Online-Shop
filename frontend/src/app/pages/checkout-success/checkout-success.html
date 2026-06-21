@@ -1,41 +1,15 @@
-<section class="mx-auto w-full max-w-3xl px-4 py-10 md:px-6 lg:px-8">
-  <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6 md:p-8">
-    <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Checkout</span>
+<section class="mx-auto w-full max-w-3xl px-4 py-12 md:px-6 lg:px-8">
+  <article class="card p-6 md:p-8">
+    <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Checkout</span>
     <h1 class="mt-1 text-2xl font-bold tracking-tight text-[--color-text]">Checkout status</h1>
-
-    @if (error()) {
-      <p class="mt-4 rounded-xl border border-[--color-danger]/30 bg-[--color-danger-muted]/50 p-4 text-sm text-[--color-danger]">{{ error() }}</p>
-    } @else if (isPaid()) {
-      <p class="mt-4 rounded-xl border border-[--color-success]/40 bg-[--color-success-muted] p-4 text-sm text-[--color-success]">
-        Payment confirmed. Your order has been marked as paid.
-      </p>
-    } @else if (isPending()) {
-      <p class="mt-4 rounded-xl border border-surface-elevated bg-surface-elevated p-4 text-sm text-text-secondary">
-        Payment is processing. This page checks your status automatically.
-      </p>
-    } @else {
-      <p class="mt-4 rounded-xl border border-surface-elevated bg-surface-elevated p-4 text-sm text-text-secondary">
-        We are waiting for Stripe confirmation. You can also check your order history.
-      </p>
-    }
-
-    @if (currentOrderId()) {
-      <p class="mt-4 text-sm text-text-secondary">Order ID: <span class="font-medium text-text-primary">{{ currentOrderId() }}</span></p>
-    }
-
+    @if (error()) { <p class="mt-4 rounded-xl border border-[--color-danger]/30 bg-[--color-danger-muted]/20 p-4 text-sm text-[--color-danger]">{{ error() }}</p> }
+    @else if (isPaid()) { <p class="mt-4 rounded-xl border border-[--color-success]/30 bg-[--color-success-muted] p-4 text-sm text-[--color-success]">Payment confirmed. Your order has been marked as paid.</p> }
+    @else if (isPending()) { <p class="mt-4 rounded-xl bg-[--color-bg]/60 p-4 text-sm text-text-muted">Payment is processing. This page checks your status automatically.</p> }
+    @else { <p class="mt-4 rounded-xl bg-[--color-bg]/60 p-4 text-sm text-text-muted">We are waiting for Stripe confirmation. You can also check your order history.</p> }
+    @if (currentOrderId()) { <p class="mt-4 text-sm text-text-muted">Order ID: <span class="font-medium text-text-primary">{{ currentOrderId() }}</span></p> }
     <div class="mt-6 flex flex-wrap gap-3">
-      <a
-        routerLink="/orders"
-        class="inline-flex rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
-      >
-        View order history
-      </a>
-      <a
-        routerLink="/products"
-        class="inline-flex rounded-full border border-surface-elevated bg-surface-default px-4 py-2 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
-      >
-        Continue shopping
-      </a>
+      <a routerLink="/orders" class="btn-primary px-5 py-2.5 text-sm">View order history</a>
+      <a routerLink="/products" class="btn-secondary px-5 py-2.5 text-sm">Continue shopping</a>
     </div>
   </article>
 </section>
