@@ -1,7 +1,7 @@
-<section class="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 lg:px-8">
-  <header class="mb-8 flex flex-col gap-2">
+<section class="mx-auto w-full max-w-7xl px-4 py-14 md:px-6 lg:px-8">
+  <header class="mb-10 flex flex-col gap-2">
     <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Products</span>
-    <h1 class="text-3xl font-bold tracking-tight text-[--color-text]">Gaming Tech Grid</h1>
+    <h1 class="text-4xl font-bold tracking-tighter text-[--color-text]">Gaming Tech Grid</h1>
     <p class="text-sm text-[--color-text-muted]">Customized accessories for your next setup upgrade.</p>
   </header>
 
@@ -23,7 +23,7 @@
       <p class="text-sm text-text-muted">@if (isSearchActive()) { Try changing the prompt to describe what you need. } @else { Try refreshing or browse the featured collection next. }</p>
     </div>
   } @else {
-    <div class="card mb-5 flex flex-col gap-3 px-4 py-3 text-sm text-text-muted md:flex-row md:items-center md:justify-between">
+    <div class="card mb-6 flex flex-col gap-3 px-4 py-3 text-sm text-text-muted md:flex-row md:items-center md:justify-between">
       <p class="text-xs font-medium text-text-primary">{{ resultRangeLabel() }}</p>
       <div class="flex flex-wrap items-center gap-2">
         <span class="text-xs">Show:</span>
@@ -40,7 +40,7 @@
     </div>
 
     @if (shouldShowPagination()) {
-      <div class="card mt-8 flex flex-wrap items-center justify-center gap-2 px-4 py-3 text-sm text-text-muted">
+      <div class="card mt-10 flex flex-wrap items-center justify-center gap-2 px-4 py-3 text-sm text-text-muted">
         <button type="button" class="btn-secondary px-4 py-2 text-sm" [disabled]="!hasPreviousPage()" [class.opacity-40]="!hasPreviousPage()" (click)="goToPreviousPage()">&lt; Prev</button>
         @for (pageLink of pageLinks(); track $index) {
           @if (isPageLink(pageLink)) {

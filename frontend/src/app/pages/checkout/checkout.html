@@ -1,49 +1,49 @@
-<section class="mx-auto w-full max-w-7xl px-4 py-10 md:px-6 lg:px-8">
-  <header class="mb-8">
+<section class="mx-auto w-full max-w-7xl px-4 py-14 md:px-6 lg:px-8">
+  <header class="mb-10">
     <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Checkout</span>
-    <h1 class="mt-1 text-3xl font-bold tracking-tight text-[--color-text]">Checkout</h1>
+    <h1 class="mt-1 text-4xl font-bold tracking-tighter text-[--color-text]">Checkout</h1>
     <p class="mt-1 text-sm text-[--color-text-muted]">@if (mode() === 'order') { Complete payment for your pending order. } @else { Review your items and confirm shipping and billing addresses. }</p>
   </header>
 
   @if (!isAuthenticated()) {
     <div class="card p-8 text-center"><p class="text-sm text-text-muted">Log in to continue to checkout.</p><button type="button" class="btn-primary mt-4 px-5 py-2.5 text-sm" (click)="login()">Login</button></div>
   } @else if (isLoading()) {
-    <div class="card p-8"><div class="h-4 w-36 rounded-full bg-[--color-bg] skeleton-wave"></div><div class="mt-3 h-4 w-64 rounded-full bg-[--color-bg] skeleton-wave"></div></div>
+    <div class="card p-8 space-y-3"><div class="h-4 w-36 rounded-full bg-[--color-bg] skeleton-wave"></div><div class="h-4 w-64 rounded-full bg-[--color-bg] skeleton-wave"></div></div>
   } @else if (error()) {
-    <div class="card border-[--color-danger]/30 bg-[--color-danger-muted]/20 p-8 text-sm text-[--color-danger]">{{ error() }}
+    <div class="card border-[--color-danger]/30 bg-[--color-danger-muted] p-6 text-sm text-[--color-danger]">{{ error() }}
       <div class="mt-5 flex flex-wrap gap-3"><a routerLink="/profile" class="btn-primary px-4 py-2 text-sm">Go to profile</a><a routerLink="/products" class="btn-secondary px-4 py-2 text-sm">Continue shopping</a></div>
     </div>
   } @else {
-    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_26rem]">
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_26rem]">
       <article class="card p-6">
-        <h2 class="text-lg font-bold text-text-primary">Addresses</h2>
+        <h2 class="text-xl font-bold text-text-primary">Addresses</h2>
         <p class="mt-1 text-sm text-text-muted">Choose shipping and billing addresses before continuing to Stripe.</p>
-        <div class="mt-5 grid gap-4 md:grid-cols-2">
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
           <label class="text-sm font-medium text-text-primary">Shipping address <select class="select mt-2 px-3 py-2.5 text-sm" [ngModel]="shippingAddressId()" (ngModelChange)="shippingAddressId.set($event)"><option [ngValue]="null">Select shipping address</option>@for (address of addresses(); track address.id) {<option [ngValue]="address.id">{{ address.recipientName }} - {{ address.addressLine1 }}</option>}</select></label>
           <label class="text-sm font-medium text-text-primary">Billing address <select class="select mt-2 px-3 py-2.5 text-sm" [ngModel]="billingAddressId()" (ngModelChange)="billingAddressId.set($event)"><option [ngValue]="null">Select billing address</option>@for (address of addresses(); track address.id) {<option [ngValue]="address.id">{{ address.recipientName }} - {{ address.addressLine1 }}</option>}</select></label>
         </div>
-        <div class="mt-4 grid gap-4 md:grid-cols-2">
+        <div class="mt-5 grid gap-4 md:grid-cols-2">
           <div class="rounded-xl bg-[--color-bg]/60 p-4 text-sm text-text-muted"><p class="text-xs font-semibold uppercase tracking-wider text-text-primary/70">Selected shipping</p>@if (selectedShippingAddress()) {<p class="mt-2 leading-relaxed">{{ selectedShippingAddress()!.recipientName }}<br/>{{ selectedShippingAddress()!.addressLine1 }}<br/>@if (selectedShippingAddress()!.addressLine2) {{{ selectedShippingAddress()!.addressLine2 }}<br/>}{{ selectedShippingAddress()!.city }}, {{ selectedShippingAddress()!.state }} {{ selectedShippingAddress()!.postalCode }}<br/>{{ selectedShippingAddress()!.country }}</p>} @else {<p class="mt-2">No shipping address selected.</p>}</div>
           <div class="rounded-xl bg-[--color-bg]/60 p-4 text-sm text-text-muted"><p class="text-xs font-semibold uppercase tracking-wider text-text-primary/70">Selected billing</p>@if (selectedBillingAddress()) {<p class="mt-2 leading-relaxed">{{ selectedBillingAddress()!.recipientName }}<br/>{{ selectedBillingAddress()!.addressLine1 }}<br/>@if (selectedBillingAddress()!.addressLine2) {{{ selectedBillingAddress()!.addressLine2 }}<br/>}{{ selectedBillingAddress()!.city }}, {{ selectedBillingAddress()!.state }} {{ selectedBillingAddress()!.postalCode }}<br/>{{ selectedBillingAddress()!.country }}</p>} @else {<p class="mt-2">No billing address selected.</p>}</div>
         </div>
-        <div class="mt-4"><a routerLink="/profile" class="btn-secondary px-4 py-2 text-sm">Manage addresses in profile</a></div>
+        <div class="mt-5"><a routerLink="/profile" class="btn-secondary px-4 py-2 text-sm">Manage addresses in profile</a></div>
       </article>
 
       <article class="card h-fit p-6">
-        <h2 class="text-lg font-bold text-text-primary">Order summary</h2>
-        <div class="mt-4 max-h-72 space-y-2 overflow-y-auto pr-1">
+        <h2 class="text-xl font-bold text-text-primary">Order summary</h2>
+        <div class="mt-5 max-h-72 space-y-2 overflow-y-auto pr-1">
           @for (item of displayItems(); track item.key) {
             <div class="rounded-xl bg-[--color-bg]/60 p-3"><p class="text-sm font-semibold text-text-primary">{{ item.title }}</p><p class="mt-1 text-xs text-text-muted">Qty {{ item.quantity }} x {{ item.unitPrice | currency: currencyCode() : 'symbol' : '1.2-2' }}</p><p class="mt-1 text-sm font-bold text-text-primary">{{ item.lineTotal | currency: currencyCode() : 'symbol' : '1.2-2' }}</p></div>
           }
         </div>
-        <div class="mt-4 space-y-2.5 border-t border-border pt-4 text-sm">
+        <div class="mt-5 space-y-3 border-t border-border pt-5 text-sm">
           <div class="flex items-center justify-between text-text-muted"><span>Subtotal</span><span class="text-text-primary">{{ subtotal() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
           <div class="flex items-center justify-between text-text-muted"><span>Shipping</span><span class="text-text-primary">{{ shippingAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
           <div class="flex items-center justify-between text-text-muted"><span>Tax</span><span class="text-text-primary">{{ taxAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
           <div class="flex items-center justify-between text-base font-bold text-text-primary pt-1"><span>Total</span><span>{{ totalAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
         </div>
-        @if (submitError()) { <p class="mt-4 rounded-xl border border-[--color-danger]/30 bg-[--color-danger-muted]/20 p-3 text-sm text-[--color-danger]">{{ submitError() }}</p> }
-        <button type="button" class="btn-primary mt-4 w-full px-4 py-3 text-sm" [disabled]="isSubmitting()" (click)="proceedToStripe()">{{ isSubmitting() ? 'Redirecting...' : 'Proceed to Stripe' }}</button>
+        @if (submitError()) { <p class="mt-4 rounded-xl border border-[--color-danger]/30 bg-[--color-danger-muted] p-3 text-sm text-[--color-danger]">{{ submitError() }}</p> }
+        <button type="button" class="btn-primary mt-5 w-full py-3 text-sm font-semibold" [disabled]="isSubmitting()" (click)="proceedToStripe()">{{ isSubmitting() ? 'Redirecting...' : 'Proceed to Stripe' }}</button>
       </article>
     </div>
   }

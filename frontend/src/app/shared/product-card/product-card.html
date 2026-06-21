@@ -10,7 +10,7 @@
     type="button"
     [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'"
     [attr.aria-pressed]="isWishlisted"
-    class="absolute right-4 top-4 z-10 grid h-9 w-9 cursor-pointer place-items-center rounded-full bg-[--color-bg]/70 text-sm backdrop-blur-sm transition-colors duration-120"
+    class="absolute right-4 top-4 z-10 grid h-9 w-9 cursor-pointer place-items-center rounded-full bg-[--color-bg]/70 text-sm backdrop-blur-sm transition-colors duration-150"
     [ngClass]="isWishlisted ? 'text-[--color-danger]' : 'text-text-muted hover:text-text-primary'"
     (click)="onSaveToWishlist($event)"
   >{{ isWishlisted ? '♥' : '♡' }}</button>
