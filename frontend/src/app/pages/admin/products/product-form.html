@@ -2,87 +2,87 @@
   <div class="shrink-0 flex items-center justify-between pb-4">
     <div>
       <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Inventory</span>
-      <h1 class="mt-1 text-2xl font-semibold tracking-tight text-[--color-text]">{{ productId() ? 'Edit' : 'New' }} Product</h1>
+      <h1 class="mt-1 text-2xl font-bold tracking-tight text-[--color-text]">{{ productId() ? 'Edit' : 'New' }} Product</h1>
     </div>
-    <button class="text-sm text-[--color-text-muted] hover:text-[--color-text]" (click)="cancel()">Back to Products</button>
+    <button class="text-sm text-text-secondary hover:text-text-primary" (click)="cancel()">Back to Products</button>
   </div>
 
   @if (error()) {
-    <div class="shrink-0 rounded-sm bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ error() }}</div>
+    <div class="shrink-0 rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ error() }}</div>
   }
 
   @if (loading()) {
     <p class="text-sm text-[--color-text-muted]/50">Loading...</p>
   } @else {
-    <div class="flex-1 min-h-0 overflow-y-auto space-y-4 card p-6">
+    <div class="flex-1 min-h-0 overflow-y-auto space-y-4 rounded-xl border border-surface-elevated bg-surface-default p-6">
       <div class="grid gap-4 sm:grid-cols-2">
         <div>
-          <label for="sku" class="mb-1 block text-xs font-medium text-[--color-text-muted]">SKU *</label>
-          <input id="sku" class="input w-full px-3 py-2 text-sm" [ngModel]="sku()" (ngModelChange)="sku.set($event)" />
+          <label for="sku" class="mb-1 block text-xs font-medium text-text-secondary">SKU *</label>
+          <input id="sku" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="sku()" (ngModelChange)="sku.set($event)" />
         </div>
         <div>
-          <label for="slug" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Slug *</label>
-          <input id="slug" class="input w-full px-3 py-2 text-sm" [ngModel]="slug()" (ngModelChange)="slug.set($event)" />
+          <label for="slug" class="mb-1 block text-xs font-medium text-text-secondary">Slug *</label>
+          <input id="slug" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="slug()" (ngModelChange)="slug.set($event)" />
         </div>
       </div>
 
       <div>
-        <label for="name" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Name *</label>
-        <input id="name" class="input w-full px-3 py-2 text-sm" [ngModel]="name()" (ngModelChange)="name.set($event)" />
+        <label for="name" class="mb-1 block text-xs font-medium text-text-secondary">Name *</label>
+        <input id="name" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="name()" (ngModelChange)="name.set($event)" />
       </div>
 
       <div>
-        <label for="description" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Description</label>
-        <textarea id="description" class="input w-full px-3 py-2 text-sm" rows="3" [ngModel]="description()" (ngModelChange)="description.set($event)"></textarea>
+        <label for="description" class="mb-1 block text-xs font-medium text-text-secondary">Description</label>
+        <textarea id="description" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" rows="3" [ngModel]="description()" (ngModelChange)="description.set($event)"></textarea>
       </div>
 
       <div>
-        <label for="detailedDescription" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Detailed Description</label>
-        <textarea id="detailedDescription" class="input w-full px-3 py-2 text-sm" rows="5" [ngModel]="detailedDescription()" (ngModelChange)="detailedDescription.set($event)"></textarea>
+        <label for="detailedDescription" class="mb-1 block text-xs font-medium text-text-secondary">Detailed Description</label>
+        <textarea id="detailedDescription" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" rows="5" [ngModel]="detailedDescription()" (ngModelChange)="detailedDescription.set($event)"></textarea>
       </div>
 
       <div class="grid gap-4 sm:grid-cols-3">
         <div>
-          <label for="basePrice" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Base Price *</label>
-          <input id="basePrice" type="number" min="0" step="0.01" class="input w-full px-3 py-2 text-sm" [ngModel]="basePrice()" (ngModelChange)="basePrice.set($event)" />
+          <label for="basePrice" class="mb-1 block text-xs font-medium text-text-secondary">Base Price *</label>
+          <input id="basePrice" type="number" min="0" step="0.01" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="basePrice()" (ngModelChange)="basePrice.set($event)" />
         </div>
         <div>
-          <label for="initialQuantity" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Initial Quantity</label>
-          <input id="initialQuantity" type="number" min="0" class="input w-full px-3 py-2 text-sm" [ngModel]="initialQuantity()" (ngModelChange)="initialQuantity.set($event)" />
+          <label for="initialQuantity" class="mb-1 block text-xs font-medium text-text-secondary">Initial Quantity</label>
+          <input id="initialQuantity" type="number" min="0" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="initialQuantity()" (ngModelChange)="initialQuantity.set($event)" />
         </div>
         <div>
-          <label for="lowStockThreshold" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Low Stock Threshold</label>
-          <input id="lowStockThreshold" type="number" min="0" class="input w-full px-3 py-2 text-sm" [ngModel]="lowStockThreshold()" (ngModelChange)="lowStockThreshold.set($event)" />
+          <label for="lowStockThreshold" class="mb-1 block text-xs font-medium text-text-secondary">Low Stock Threshold</label>
+          <input id="lowStockThreshold" type="number" min="0" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="lowStockThreshold()" (ngModelChange)="lowStockThreshold.set($event)" />
         </div>
       </div>
 
-      <div class="space-y-4 rounded-sm border border-[--color-border] bg-[#f6f9fc] p-4">
+      <div class="space-y-4 rounded-xl border border-surface-elevated bg-surface-elevated/40 p-4">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p class="text-sm font-medium text-[--color-text]">Product Images *</p>
-            <p class="text-xs text-[--color-text-muted]">Upload images, review the previews, then mark one as the primary storefront image.</p>
+            <p class="text-sm font-medium text-text-primary">Product Images *</p>
+            <p class="text-xs text-text-secondary">Upload images, review the previews, then mark one as the primary storefront image.</p>
           </div>
 
-          <label class="btn-primary inline-flex cursor-pointer items-center justify-center px-4 py-2 text-sm">
+          <label class="inline-flex cursor-pointer items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover">
             <input type="file" accept="image/*" multiple class="sr-only" [disabled]="uploadingImages()" (change)="onImagesSelected($event)" />
             {{ uploadingImages() ? 'Uploading...' : 'Upload images' }}
           </label>
         </div>
 
         @if (imageUploadError()) {
-          <div class="rounded-sm bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ imageUploadError() }}</div>
+          <div class="rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ imageUploadError() }}</div>
         }
 
         @if (!images().length) {
-          <div class="rounded-sm border border-dashed border-[--color-border] bg-[--color-bg] px-4 py-8 text-center text-sm text-[--color-text-muted]">
+          <div class="rounded-xl border border-dashed border-surface-elevated bg-surface-default px-4 py-8 text-center text-sm text-text-secondary">
             No product images uploaded yet.
           </div>
         } @else {
           <div class="grid gap-4 sm:grid-cols-2">
             @for (image of images(); track image.imageId) {
-              <div class="flex h-full flex-col overflow-hidden rounded-sm border border-[--color-border] bg-[--color-bg]">
-                <div class="relative aspect-[4/3] overflow-hidden border-b border-[--color-border] bg-[#f6f9fc] p-3">
-                  <div class="h-full w-full overflow-hidden rounded-sm bg-[--color-bg]">
+              <div class="flex h-full flex-col overflow-hidden rounded-xl border border-surface-elevated bg-surface-default">
+                <div class="relative aspect-[4/3] overflow-hidden border-b border-surface-elevated bg-surface-elevated p-3">
+                  <div class="h-full w-full overflow-hidden rounded-lg bg-surface-default">
                     <app-cloudinary-image-frame
                       [source]="image.imageId"
                       [alt]="name() || 'Product image'"
@@ -90,28 +90,28 @@
                       width="320"
                       height="240"
                       imageClass="block h-full w-full object-contain"
-                      fallbackClass="grid h-full w-full place-items-center rounded-sm bg-[--color-bg] text-sm font-medium text-[--color-text-muted]"
+                      fallbackClass="grid h-full w-full place-items-center rounded-lg bg-surface-default text-sm font-medium text-text-secondary"
                       fallbackText="Image unavailable"
                     />
                   </div>
                 </div>
 
-                <div class="flex flex-1 flex-col gap-3 bg-[--color-bg] px-4 py-3">
+                <div class="flex flex-1 flex-col gap-3 bg-surface-default px-4 py-3">
                   <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                      <p class="truncate text-sm font-medium text-[--color-text]">{{ image.originalFilename || 'Uploaded image' }}</p>
-                      <p class="break-all text-xs leading-5 text-[--color-text-muted]">{{ image.imageId }}</p>
+                      <p class="truncate text-sm font-medium text-text-primary">{{ image.originalFilename || 'Uploaded image' }}</p>
+                      <p class="break-all text-xs leading-5 text-text-secondary">{{ image.imageId }}</p>
                     </div>
 
                     @if (primaryImageId() === image.imageId) {
-                      <span class="inline-flex shrink-0 rounded-sm bg-[--color-brand-muted] px-2 py-0.5 text-xs font-medium text-[--color-brand]">Primary</span>
+                      <span class="inline-flex shrink-0 rounded-full bg-[--color-brand-muted] px-2 py-0.5 text-xs font-medium text-[--color-brand]">Primary</span>
                     }
                   </div>
 
                   <div class="mt-auto flex flex-wrap items-center gap-2">
                     <button
                       type="button"
-                      class="min-w-[7.5rem] btn-secondary px-3 py-1.5 text-xs disabled:opacity-50"
+                      class="min-w-[7.5rem] rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-xs font-medium text-text-primary hover:bg-surface-elevated disabled:opacity-50"
                       [disabled]="primaryImageId() === image.imageId"
                       (click)="setPrimaryImage(image.imageId)"
                     >
@@ -120,7 +120,7 @@
 
                     <button
                       type="button"
-                      class="min-w-[5.25rem] rounded-sm border border-red-400/50 bg-[--color-danger-muted] px-3 py-1.5 text-xs font-medium text-[--color-danger] hover:bg-red-500/10"
+                      class="min-w-[5.25rem] rounded-lg border border-red-400/50 bg-[--color-danger-muted] px-3 py-1.5 text-xs font-medium text-[--color-danger] hover:bg-red-500/10"
                       (click)="removeImage(image.imageId)"
                     >
                       Remove
@@ -134,10 +134,10 @@
       </div>
 
       <div>
-        <label class="mb-1 block text-xs font-medium text-[--color-text-muted]">Categories</label>
+        <label class="mb-1 block text-xs font-medium text-text-secondary">Categories</label>
         <div class="flex flex-wrap gap-2">
           @for (cat of categories(); track cat.id) {
-            <label class="inline-flex items-center gap-1 rounded-sm border border-[--color-border] bg-[--color-bg] px-3 py-1.5 text-sm text-[--color-text] cursor-pointer hover:bg-[#f6f9fc]">
+            <label class="inline-flex items-center gap-1 rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary cursor-pointer">
               <input type="checkbox" [checked]="selectedCategoryIds().includes(cat.id)" (change)="toggleCategory(cat.id)" />
               {{ cat.name }}
             </label>
@@ -148,13 +148,13 @@
       @if (productId()) {
         <div class="flex items-center gap-2">
           <input type="checkbox" id="isActive" [checked]="isActive()" (change)="isActive.set(!isActive())" />
-          <label for="isActive" class="text-sm text-[--color-text]">Active</label>
+          <label for="isActive" class="text-sm text-text-primary">Active</label>
         </div>
       }
 
       <div class="flex justify-end gap-2 pt-2">
-        <button class="btn-secondary px-4 py-2 text-sm" (click)="cancel()">Cancel</button>
-        <button class="btn-primary px-4 py-2 text-sm disabled:opacity-50" [disabled]="saving()" (click)="save()">
+        <button class="rounded-lg border border-surface-elevated bg-surface-default px-4 py-2 text-sm text-text-primary hover:bg-surface-elevated" (click)="cancel()">Cancel</button>
+        <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50" [disabled]="saving()" (click)="save()">
           {{ saving() ? 'Saving...' : (productId() ? 'Update' : 'Create') }}
         </button>
       </div>

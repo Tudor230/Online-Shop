@@ -2,20 +2,20 @@
   <header class="mb-10 flex flex-wrap items-center justify-between gap-3">
     <div>
       <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Account</span>
-      <h1 class="mt-1 text-[2rem] font-light tracking-[-0.02em] text-[--color-text] leading-tight">Your profile</h1>
-      <p class="mt-1 text-sm text-[--color-text-muted]">Manage your details and default addresses.</p>
+      <h1 class="mt-1 text-4xl font-bold tracking-tighter text-text-primary">Your profile</h1>
+      <p class="mt-1 text-sm text-text-muted">Manage your details and default addresses.</p>
     </div>
   </header>
 
   @if (!isAuthenticated()) {
-    <div class="card p-8 text-center !shadow-none">
-      <p class="text-sm text-[--color-text-muted]">Log in to view and edit your profile.</p>
-      <button type="button" class="btn-primary mt-4 px-5 py-2.5 text-sm" (click)="login()">Sign in</button>
+    <div class="card p-8 text-center">
+      <p class="text-sm text-text-muted">Log in to view and edit your profile.</p>
+      <button type="button" class="btn-primary mt-4 px-5 py-2.5 text-sm" (click)="login()">Login</button>
     </div>
   } @else if (isLoadingProfile()) {
-    <div class="card p-8 space-y-3 !shadow-none">
-      <div class="h-4 w-40 rounded-sm bg-[#f6f9fc] skeleton-wave"></div>
-      <div class="h-4 w-64 rounded-sm bg-[#f6f9fc] skeleton-wave"></div>
+    <div class="card p-8 space-y-3">
+      <div class="h-4 w-40 rounded-full bg-[--color-bg] skeleton-wave"></div>
+      <div class="h-4 w-64 rounded-full bg-[--color-bg] skeleton-wave"></div>
     </div>
   } @else if (profileError()) {
     <div class="card border-[--color-danger]/30 bg-[--color-danger-muted] p-6 text-sm text-[--color-danger]">
@@ -24,21 +24,21 @@
   } @else {
     <div class="grid gap-8 lg:grid-cols-2">
       <article class="card p-6">
-        <h2 class="text-[1.375rem] font-light text-[--color-text]">Personal details</h2>
-        <p class="mt-1 text-sm text-[--color-text-muted]">Update your name for checkout and delivery records.</p>
+        <h2 class="text-xl font-bold text-text-primary">Personal details</h2>
+        <p class="mt-1 text-sm text-text-muted">Update your name for checkout and delivery records.</p>
 
         <form class="mt-6 space-y-4" [formGroup]="profileForm" (ngSubmit)="saveProfileDetails()">
-          <label class="block text-sm text-[--color-text]">
+          <label class="block text-sm text-text-muted">
             Email
             <input type="email" [value]="profile()?.email ?? ''" readonly class="input mt-2 px-3 py-2 text-sm opacity-50 cursor-not-allowed" />
           </label>
 
-          <label class="block text-sm text-[--color-text]">
+          <label class="block text-sm text-text-muted">
             First name
             <input type="text" formControlName="firstName" class="input mt-2 px-3 py-2 text-sm" />
           </label>
 
-          <label class="block text-sm text-[--color-text]">
+          <label class="block text-sm text-text-muted">
             Last name
             <input type="text" formControlName="lastName" class="input mt-2 px-3 py-2 text-sm" />
           </label>
@@ -54,17 +54,17 @@
       </article>
 
       <article class="card p-6">
-        <h2 class="text-[1.375rem] font-light text-[--color-text]">Add address</h2>
-        <p class="mt-1 text-sm text-[--color-text-muted]">Create billing and shipping options for this account.</p>
+        <h2 class="text-xl font-bold text-text-primary">Add address</h2>
+        <p class="mt-1 text-sm text-text-muted">Create billing and shipping options for this account.</p>
 
         <form class="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2" [formGroup]="addressForm" (ngSubmit)="addAddress()">
-          <label class="text-sm text-[--color-text] md:col-span-2">
+          <label class="text-sm text-text-muted md:col-span-2">
             Recipient name
             <input type="text" formControlName="recipientName" class="input mt-2 px-3 py-2 text-sm" />
             @if (getAddressError('recipientName')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('recipientName') }}</p> }
           </label>
 
-          <label class="text-sm text-[--color-text]">
+          <label class="text-sm text-text-muted">
             Phone number
             <input type="text" formControlName="phoneNumber" class="input mt-2 px-3 py-2 text-sm" />
             @if (getAddressError('phoneNumber')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('phoneNumber') }}</p> }
@@ -72,37 +72,37 @@
 
           <div></div>
 
-          <label class="text-sm text-[--color-text] md:col-span-2">
+          <label class="text-sm text-text-muted md:col-span-2">
             Address line 1
             <input type="text" formControlName="addressLine1" class="input mt-2 px-3 py-2 text-sm" />
             @if (getAddressError('addressLine1')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('addressLine1') }}</p> }
           </label>
 
-          <label class="text-sm text-[--color-text] md:col-span-2">
+          <label class="text-sm text-text-muted md:col-span-2">
             Address line 2
             <input type="text" formControlName="addressLine2" class="input mt-2 px-3 py-2 text-sm" />
             @if (getAddressError('addressLine2')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('addressLine2') }}</p> }
           </label>
 
-          <label class="text-sm text-[--color-text]">
+          <label class="text-sm text-text-muted">
             City
             <input type="text" formControlName="city" class="input mt-2 px-3 py-2 text-sm" />
             @if (getAddressError('city')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('city') }}</p> }
           </label>
 
-          <label class="text-sm text-[--color-text]">
+          <label class="text-sm text-text-muted">
             State
             <input type="text" formControlName="state" class="input mt-2 px-3 py-2 text-sm" />
             @if (getAddressError('state')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('state') }}</p> }
           </label>
 
-          <label class="text-sm text-[--color-text]">
+          <label class="text-sm text-text-muted">
             Postal code
             <input type="text" formControlName="postalCode" class="input mt-2 px-3 py-2 text-sm" />
             @if (getAddressError('postalCode')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('postalCode') }}</p> }
           </label>
 
-          <label class="text-sm text-[--color-text]">
+          <label class="text-sm text-text-muted">
             Country
             <input type="text" formControlName="country" class="input mt-2 px-3 py-2 text-sm" />
             @if (getAddressError('country')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('country') }}</p> }
@@ -121,43 +121,43 @@
       </article>
     </div>
 
-    <hr class="my-8 border-[--color-border]">
+    <hr class="my-8 border-border">
 
     <article class="card p-6">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 class="text-[1.375rem] font-light text-[--color-text]">Saved addresses</h2>
-          <p class="mt-1 text-sm text-[--color-text-muted]">Choose one primary address for shipping and one for billing.</p>
+          <h2 class="text-xl font-bold text-text-primary">Saved addresses</h2>
+          <p class="mt-1 text-sm text-text-muted">Choose one primary address for shipping and one for billing.</p>
         </div>
       </div>
 
       @if (primarySelectionError()) {
-        <p class="mt-3 rounded-md border border-[--color-danger]/30 bg-[--color-danger-muted] px-4 py-3 text-sm text-[--color-danger]">{{ primarySelectionError() }}</p>
+        <p class="mt-3 rounded-xl border border-[--color-danger]/30 bg-[--color-danger-muted] px-4 py-3 text-sm text-[--color-danger]">{{ primarySelectionError() }}</p>
       }
 
       @if (deleteAddressError()) {
-        <p class="mt-3 rounded-md border border-[--color-danger]/30 bg-[--color-danger-muted] px-4 py-3 text-sm text-[--color-danger]">{{ deleteAddressError() }}</p>
+        <p class="mt-3 rounded-xl border border-[--color-danger]/30 bg-[--color-danger-muted] px-4 py-3 text-sm text-[--color-danger]">{{ deleteAddressError() }}</p>
       }
 
       @if (!addresses().length) {
-        <div class="mt-5 rounded-md bg-[#f6f9fc] p-6 text-center text-sm text-[--color-text-muted]">
+        <div class="mt-5 rounded-xl bg-[--color-bg]/60 p-6 text-center text-sm text-text-muted">
           No saved addresses yet.
         </div>
       } @else {
         <div class="mt-5 grid gap-4 md:grid-cols-2">
           @for (address of addresses(); track address.id) {
-            <article class="rounded-md bg-[#f6f9fc] p-5">
+            <article class="rounded-xl bg-[--color-bg]/60 p-5">
               <div class="flex flex-wrap items-center gap-2">
-                <h3 class="text-sm font-normal text-[--color-text]">{{ address.recipientName }}</h3>
+                <h3 class="text-sm font-semibold text-text-primary">{{ address.recipientName }}</h3>
                 @if (isPrimaryShipping(address.id)) {
-                  <span class="rounded-sm bg-[--color-brand-muted] px-2 py-0.5 text-xs text-[--color-brand]">Primary shipping</span>
+                  <span class="rounded-full bg-[--color-brand-muted] px-2 py-0.5 text-xs text-[--color-brand]">Primary shipping</span>
                 }
                 @if (isPrimaryBilling(address.id)) {
-                  <span class="rounded-sm bg-[--color-warning-muted] px-2 py-0.5 text-xs text-[--color-warning]">Primary billing</span>
+                  <span class="rounded-full bg-[--color-warning-muted] px-2 py-0.5 text-xs text-[--color-warning]">Primary billing</span>
                 }
               </div>
 
-              <p class="mt-3 text-sm text-[--color-text-muted] leading-relaxed">
+              <p class="mt-3 text-sm text-text-muted leading-relaxed">
                 {{ address.addressLine1 }}<br />
                 @if (address.addressLine2) { {{ address.addressLine2 }}<br /> }
                 {{ address.city }}, {{ address.state }} {{ address.postalCode }}<br />
@@ -165,7 +165,7 @@
               </p>
 
               @if (address.phoneNumber) {
-                <p class="mt-2 text-sm text-[--color-text-muted]">Phone: {{ address.phoneNumber }}</p>
+                <p class="mt-2 text-sm text-text-muted">Phone: {{ address.phoneNumber }}</p>
               }
 
               <div class="mt-4 flex flex-wrap gap-2">

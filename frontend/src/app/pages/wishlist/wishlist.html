@@ -1,17 +1,17 @@
 <section class="mx-auto w-full max-w-7xl px-4 py-14 md:px-6 lg:px-8">
   <header class="mb-10 flex flex-col gap-2">
     <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Collection</span>
-    <h1 class="text-[2rem] font-light tracking-[-0.02em] text-[--color-text] leading-tight">Wishlist</h1>
+    <h1 class="text-4xl font-bold tracking-tighter text-[--color-text]">Wishlist</h1>
     <p class="text-sm text-[--color-text-muted]">Your saved products in one place.</p>
   </header>
 
-  @if (wishlistFacade.isLoading()) { <div class="card p-8 text-sm text-[--color-text-muted] !shadow-none">Loading wishlist...</div> }
+  @if (wishlistFacade.isLoading()) { <div class="card p-8 text-sm text-text-muted">Loading wishlist...</div> }
   @else if (wishlistFacade.error()) { <div class="card p-8 text-sm text-[--color-danger]">{{ wishlistFacade.error() }}</div> }
   @else if (!wishlistFacade.items().length) {
-    <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center !shadow-none">
-      <div class="flex h-12 w-12 items-center justify-center rounded-sm bg-[#f6f9fc] text-[--color-text-muted]/40">&#9825;</div>
-      <p class="text-base font-normal text-[--color-text]">Your wishlist is empty</p>
-      <p class="text-sm text-[--color-text-muted]">Save products to compare and buy later.</p>
+    <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center">
+      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[--color-bg] text-text-muted/40">&#9825;</div>
+      <p class="text-base font-semibold text-text-primary">Your wishlist is empty</p>
+      <p class="text-sm text-text-muted">Save products to compare and buy later.</p>
       <a routerLink="/products" class="btn-primary px-5 py-2.5 text-sm">Browse products</a>
     </div>
   } @else {
@@ -19,13 +19,13 @@
       @for (item of wishlistFacade.items(); track item.productSlug) {
         <article class="card p-5">
           <div class="grid grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-4">
-            <button type="button" class="w-22 overflow-hidden rounded-sm bg-[#f6f9fc] aspect-[4/3]" [attr.aria-label]="'Open ' + item.title" (click)="openProduct(item.productSlug)">
+            <button type="button" class="w-22 overflow-hidden rounded-xl bg-[--color-bg]/60 aspect-[4/3]" [attr.aria-label]="'Open ' + item.title" (click)="openProduct(item.productSlug)">
               <app-cloudinary-image-frame [source]="item.imageId" [alt]="item.title" [options]="wishlistImageOptions" width="160" height="160" [useLazy]="true"
-                imageClass="h-full w-full object-contain" fallbackClass="grid h-full w-full place-items-center px-1 text-center text-[11px] font-normal text-[--color-text-muted]" fallbackText="Image unavailable"/>
+                imageClass="h-full w-full object-contain" fallbackClass="grid h-full w-full place-items-center px-1 text-center text-[11px] font-medium text-text-muted" fallbackText="Image unavailable"/>
             </button>
             <button type="button" class="min-w-0 text-left" (click)="openProduct(item.productSlug)">
-              <p class="truncate text-sm font-normal text-[--color-text]">{{ item.title }}</p>
-              <p class="mt-1 text-sm font-normal text-[--color-text-muted]">{{ item.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
+              <p class="truncate text-sm font-semibold text-text-primary">{{ item.title }}</p>
+              <p class="mt-1 text-sm font-medium text-text-muted">{{ item.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
             </button>
             <div class="flex items-center gap-2">
               <button type="button" class="btn-primary px-4 py-2 text-xs" (click)="addToCart(item.productId)">Add to cart</button>

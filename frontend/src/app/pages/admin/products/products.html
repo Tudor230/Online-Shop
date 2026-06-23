@@ -2,7 +2,7 @@
   <div class="flex items-center justify-between pb-4">
     <div>
       <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Inventory</span>
-      <h1 class="mt-1.5 text-2xl font-semibold tracking-tight text-[--color-text]">Products</h1>
+      <h1 class="mt-1.5 text-2xl font-bold tracking-tight text-text-primary">Products</h1>
     </div>
     <div class="flex items-center gap-2">
       <input type="search" placeholder="Search products..." class="input w-48 px-3 py-1.5 text-sm" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
@@ -20,34 +20,34 @@
 
   <div class="flex-1 card overflow-hidden">
     @if (loading()) {
-      <div class="px-4 py-8 text-center text-sm text-[--color-text-muted]/50">Loading...</div>
+      <div class="px-4 py-8 text-center text-sm text-text-muted/50">Loading...</div>
     } @else {
       <table class="w-full text-left text-sm">
-        <thead><tr class="text-[--color-text-muted]/50"><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider"><input type="checkbox" class="h-4 w-4 rounded-sm accent-[--color-brand]" (change)="selectAll($event)" /></th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Image</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">SKU</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Name</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Price</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Stock</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Status</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Rating</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-right">Actions</th></tr></thead>
+        <thead><tr class="text-text-muted/50"><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider"><input type="checkbox" class="h-4 w-4 rounded accent-[--color-brand]" (change)="selectAll($event)" /></th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Image</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">SKU</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Name</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Price</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Stock</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Status</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Rating</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-right">Actions</th></tr></thead>
         <tbody>
           @for (product of filteredProducts(); track product.id; let even = $even) {
-            <tr class="transition-colors border-t border-[--color-border]" [class.bg-[#f6f9fc]]="even">
-              <td class="px-4 py-3"><input type="checkbox" class="h-4 w-4 rounded-sm accent-[--color-brand]" [checked]="selectedIds().has(product.id)" (change)="toggleSelection(product.id)" /></td>
-              <td class="px-4 py-3"><div class="h-[72px] w-24 overflow-hidden rounded-md bg-[--color-bg] p-1.5"><app-cloudinary-image-frame [source]="product.imagePlaceholder" [alt]="product.name" [options]="listImageOptions" width="96" height="72" imageClass="h-full w-full rounded-sm object-contain" fallbackClass="grid h-full w-full place-items-center rounded-sm bg-[--color-bg] text-[11px] font-medium text-[--color-text-muted]/40" fallbackText="No image" /></div></td>
-              <td class="px-4 py-3 text-[--color-text]">{{ product.sku }}</td>
-              <td class="px-4 py-3 text-[--color-text]">{{ product.name }}</td>
-              <td class="px-4 py-3 text-[--color-text]">{{ product.basePrice | currency : 'RON' : 'symbol' : '1.2-2' }}</td>
-              <td class="px-4 py-3 text-[--color-text]">{{ product.quantityAvailable }}</td>
-              <td class="px-4 py-3"><span class="inline-flex rounded-sm px-2.5 py-0.5 text-[11px] font-semibold" [class.bg-[--color-success-muted]]="product.isActive" [class.text-[--color-success]]="product.isActive" [class.bg-[--color-danger-muted]]="!product.isActive" [class.text-[--color-danger]]="!product.isActive">{{ product.isActive ? 'Active' : 'Inactive' }}</span></td>
-              <td class="px-4 py-3 text-[--color-text]">{{ product.rating }} ({{ product.reviewCount }})</td>
-              <td class="px-4 py-3 text-right"><a [routerLink]="['/admin/products', product.id, 'edit']" class="text-xs text-[--color-text-muted]/40 hover:text-[--color-text] transition-colors">Edit</a></td>
+            <tr class="transition-colors border-t border-border" [class.bg-[--color-bg]]="even">
+              <td class="px-4 py-3"><input type="checkbox" class="h-4 w-4 rounded accent-[--color-brand]" [checked]="selectedIds().has(product.id)" (change)="toggleSelection(product.id)" /></td>
+              <td class="px-4 py-3"><div class="h-[72px] w-24 overflow-hidden rounded-lg bg-[--color-bg] p-1.5"><app-cloudinary-image-frame [source]="product.imagePlaceholder" [alt]="product.name" [options]="listImageOptions" width="96" height="72" imageClass="h-full w-full rounded-md object-contain" fallbackClass="grid h-full w-full place-items-center rounded-md bg-[--color-bg] text-[11px] font-medium text-text-muted/40" fallbackText="No image" /></div></td>
+              <td class="px-4 py-3 text-text-primary">{{ product.sku }}</td>
+              <td class="px-4 py-3 text-text-primary">{{ product.name }}</td>
+              <td class="px-4 py-3 text-text-primary">{{ product.basePrice | currency : 'RON' : 'symbol' : '1.2-2' }}</td>
+              <td class="px-4 py-3 text-text-primary">{{ product.quantityAvailable }}</td>
+              <td class="px-4 py-3"><span class="inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-semibold" [class.bg-[--color-success-muted]]="product.isActive" [class.text-[--color-success]]="product.isActive" [class.bg-[--color-danger-muted]]="!product.isActive" [class.text-[--color-danger]]="!product.isActive">{{ product.isActive ? 'Active' : 'Inactive' }}</span></td>
+              <td class="px-4 py-3 text-text-primary">{{ product.rating }} ({{ product.reviewCount }})</td>
+              <td class="px-4 py-3 text-right"><a [routerLink]="['/admin/products', product.id, 'edit']" class="text-xs text-text-muted/40 hover:text-text-primary transition-colors">Edit</a></td>
             </tr>
           } @empty {
-            <tr><td colspan="9" class="px-4 py-8 text-center text-sm text-[--color-text-muted]/40">No products found.</td></tr>
+            <tr><td colspan="9" class="px-4 py-8 text-center text-sm text-text-muted/40">No products found.</td></tr>
           }
         </tbody>
       </table>
     }
   </div>
 
-  <div class="sticky bottom-0 -mx-6 px-6 pt-4 pb-0 bg-[#f6f9fc]/95 backdrop-blur-sm flex items-center justify-between">
+  <div class="sticky bottom-0 -mx-6 px-6 pt-4 pb-0 bg-[--color-bg]/95 backdrop-blur-sm flex items-center justify-between">
     <button class="btn-ghost px-3 py-1.5 text-sm" [disabled]="page() === 0" (click)="prevPage()">Previous</button>
-    <span class="text-sm text-[--color-text-muted]/40">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+    <span class="text-sm text-text-muted/40">Page {{ page() + 1 }} of {{ totalPages() }}</span>
     <button class="btn-ghost px-3 py-1.5 text-sm" [disabled]="page() >= totalPages() - 1" (click)="nextPage()">Next</button>
   </div>
 </div>
