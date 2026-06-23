@@ -1,12 +1,12 @@
 <section class="mx-auto w-full max-w-3xl px-4 py-16 md:px-6 lg:px-8">
-  <article class="card p-8 md:p-10">
+  <article class="card p-8 md:p-10 !shadow-none">
     <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Checkout</span>
-    <h1 class="mt-1 text-3xl font-bold tracking-tighter text-[--color-text]">Checkout status</h1>
-    @if (error()) { <p class="mt-5 rounded-xl border border-[--color-danger]/30 bg-[--color-danger-muted] p-4 text-sm text-[--color-danger]">{{ error() }}</p> }
-    @else if (isPaid()) { <p class="mt-5 rounded-xl border border-[--color-success]/30 bg-[--color-success-muted] p-4 text-sm text-[--color-success]">Payment confirmed. Your order has been marked as paid.</p> }
-    @else if (isPending()) { <p class="mt-5 rounded-xl bg-[--color-bg]/60 p-4 text-sm text-text-muted">Payment is processing. This page checks your status automatically.</p> }
-    @else { <p class="mt-5 rounded-xl bg-[--color-bg]/60 p-4 text-sm text-text-muted">We are waiting for Stripe confirmation. You can also check your order history.</p> }
-    @if (currentOrderId()) { <p class="mt-5 text-sm text-text-muted">Order ID: <span class="font-medium text-text-primary">{{ currentOrderId() }}</span></p> }
+    <h1 class="mt-1 text-[2rem] font-light tracking-[-0.02em] text-[--color-text] leading-tight">Checkout status</h1>
+    @if (error()) { <p class="mt-5 rounded-md border border-[--color-danger]/30 bg-[--color-danger-muted] p-4 text-sm text-[--color-danger]">{{ error() }}</p> }
+    @else if (isPaid()) { <p class="mt-5 rounded-md border border-[--color-success]/30 bg-[--color-success-muted] p-4 text-sm text-[--color-success]">Payment confirmed. Your order has been marked as paid.</p> }
+    @else if (isPending()) { <p class="mt-5 rounded-md bg-[#f6f9fc] p-4 text-sm text-[--color-text-muted]">Payment is processing. This page checks your status automatically.</p> }
+    @else { <p class="mt-5 rounded-md bg-[#f6f9fc] p-4 text-sm text-[--color-text-muted]">We are waiting for Stripe confirmation. You can also check your order history.</p> }
+    @if (currentOrderId()) { <p class="mt-5 text-sm text-[--color-text-muted]">Order ID: <span class="font-normal text-[--color-text]">{{ currentOrderId() }}</span></p> }
     <div class="mt-8 flex flex-wrap gap-3">
       <a routerLink="/orders" class="btn-primary px-5 py-2.5 text-sm">View order history</a>
       <a routerLink="/products" class="btn-secondary px-5 py-2.5 text-sm">Continue shopping</a>

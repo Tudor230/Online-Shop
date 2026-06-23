@@ -1,50 +1,50 @@
 <div class="flex flex-col h-full">
   <div class="pb-4 shrink-0">
     <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Overview</span>
-    <h1 class="mt-1.5 text-2xl font-bold tracking-tight text-[--color-text]">Dashboard</h1>
+    <h1 class="mt-1.5 text-[1.75rem] font-light tracking-tight text-[--color-text] leading-tight">Dashboard</h1>
     <div class="mt-2 flex items-center gap-3">
-      <span class="text-[11px] text-[--color-text-muted]/50">{{ today | date:'EEEE, MMMM d' }}</span>
-      <button class="rounded-lg bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-[--color-text-muted]/60 transition-all hover:bg-white/[0.06]" [disabled]="loading()" (click)="loadData()">{{ loading() ? 'Refreshing...' : 'Refresh' }}</button>
+      <span class="text-[11px] text-[--color-text-muted]">{{ today | date:'EEEE, MMMM d' }}</span>
+      <button class="rounded-sm bg-[--color-brand-muted] px-3 py-1.5 text-xs font-normal text-[--color-brand] transition-all hover:bg-[--color-brand-muted]/60" [disabled]="loading()" (click)="loadData()">{{ loading() ? 'Refreshing...' : 'Refresh' }}</button>
     </div>
   </div>
 
   @if (error()) {
-    <div class="rounded-xl bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger] shrink-0">{{ error() }}</div>
+    <div class="rounded-md bg-[--color-danger-muted] px-4 py-3 text-sm text-[--color-danger] shrink-0">{{ error() }}</div>
   }
 
   @if (loading()) {
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 shrink-0">
-      <div class="lg:col-span-2 rounded-2xl bg-white/[0.04] p-6 skeleton-wave"><div class="h-4 w-24 rounded bg-white/[0.06]"></div><div class="mt-3 h-10 w-40 rounded bg-white/[0.06]"></div></div>
-      <div class="rounded-2xl bg-[oklch(0.68_0.16_80/0.12)] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-14 rounded bg-white/[0.06]"></div></div>
-      <div class="rounded-2xl bg-[oklch(0.52_0.18_22/0.12)] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-14 rounded bg-white/[0.06]"></div></div>
-      <div class="lg:col-span-2 rounded-2xl bg-white/[0.04] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-12 rounded bg-white/[0.06]"></div></div>
-      <div class="rounded-2xl bg-white/[0.04] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-12 rounded bg-white/[0.06]"></div></div>
-      <div class="rounded-2xl bg-white/[0.04] p-5 skeleton-wave"><div class="h-4 w-20 rounded bg-white/[0.06]"></div><div class="mt-2 h-8 w-12 rounded bg-white/[0.06]"></div></div>
+      <div class="lg:col-span-2 rounded-md border border-[--color-border] p-6 skeleton-wave"><div class="h-4 w-24 rounded-sm bg-[#f6f9fc]"></div><div class="mt-3 h-10 w-40 rounded-sm bg-[#f6f9fc]"></div></div>
+      <div class="rounded-md bg-[rgba(155,104,41,0.12)] p-5 skeleton-wave"><div class="h-4 w-20 rounded-sm bg-[#f6f9fc]"></div><div class="mt-2 h-8 w-14 rounded-sm bg-[#f6f9fc]"></div></div>
+      <div class="rounded-md bg-[rgba(234,34,97,0.12)] p-5 skeleton-wave"><div class="h-4 w-20 rounded-sm bg-[#f6f9fc]"></div><div class="mt-2 h-8 w-14 rounded-sm bg-[#f6f9fc]"></div></div>
+      <div class="lg:col-span-2 rounded-md border border-[--color-border] p-5 skeleton-wave"><div class="h-4 w-20 rounded-sm bg-[#f6f9fc]"></div><div class="mt-2 h-8 w-12 rounded-sm bg-[#f6f9fc]"></div></div>
+      <div class="rounded-md border border-[--color-border] p-5 skeleton-wave"><div class="h-4 w-20 rounded-sm bg-[#f6f9fc]"></div><div class="mt-2 h-8 w-12 rounded-sm bg-[#f6f9fc]"></div></div>
+      <div class="rounded-md border border-[--color-border] p-5 skeleton-wave"><div class="h-4 w-20 rounded-sm bg-[#f6f9fc]"></div><div class="mt-2 h-8 w-12 rounded-sm bg-[#f6f9fc]"></div></div>
     </div>
   } @else {
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 shrink-0">
-      <div class="lg:col-span-2 flex flex-col justify-between rounded-2xl bg-white/[0.04] p-6 shadow-sm shadow-black/10">
-        <div><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/60">Total Revenue</p><span class="flex h-7 w-7 items-center justify-center rounded-lg bg-[--color-brand-muted]"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-[--color-brand]"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></span></div><p class="mt-3 text-5xl font-bold tracking-tight text-[--color-text]">{{ (stats()?.totalRevenue ?? 0) | currency : 'RON' : 'symbol' : '1.0-0' }}</p><p class="mt-1 text-xs text-[--color-text-muted]/40">Gross revenue across all orders</p></div>
+      <div class="lg:col-span-2 flex flex-col justify-between rounded-md border border-[--color-border] p-6 shadow-sm">
+        <div><div class="flex items-center justify-between"><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]">Total Revenue</p><span class="flex h-7 w-7 items-center justify-center rounded-sm bg-[--color-brand-muted]"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-[--color-brand]"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></span></div><p class="mt-3 text-5xl font-light tracking-tight text-[--color-text]">{{ (stats()?.totalRevenue ?? 0) | currency : 'RON' : 'symbol' : '1.0-0' }}</p><p class="mt-1 text-xs text-[--color-text-muted]">Gross revenue across all orders</p></div>
       </div>
-      <div class="flex flex-col justify-between rounded-2xl bg-[oklch(0.68_0.16_80/0.12)] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-warning]/80">Pending</p><p class="mt-2 text-4xl font-bold tracking-tight text-[--color-warning]">{{ stats()?.pendingOrders ?? 0 }}</p><p class="mt-1 text-[11px] text-[--color-warning]/60">Orders awaiting action</p></div></div>
-      <div class="flex flex-col justify-between rounded-2xl bg-[oklch(0.52_0.18_22/0.12)] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-danger]/80">Low Stock</p><p class="mt-2 text-4xl font-bold tracking-tight text-[--color-danger]">{{ stats()?.lowStockCount ?? 0 }}</p><p class="mt-1 text-[11px] text-[--color-danger]/60">Items need restocking</p></div></div>
-      <div class="lg:col-span-2 flex flex-col justify-between rounded-2xl bg-white/[0.04] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/60">Total Orders</p><p class="mt-2 text-3xl font-bold tracking-tight text-[--color-text]">{{ stats()?.totalOrders ?? 0 }}</p></div></div>
-      <div class="flex flex-col justify-between rounded-2xl bg-white/[0.04] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/60">Total Users</p><p class="mt-2 text-3xl font-bold tracking-tight text-[--color-text]">{{ stats()?.totalUsers ?? 0 }}</p></div></div>
-      <div class="flex flex-col justify-between rounded-2xl bg-white/[0.04] p-5 shadow-sm shadow-black/10"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]/60">Products</p><p class="mt-2 text-3xl font-bold tracking-tight text-[--color-text]">{{ stats()?.totalProducts ?? 0 }}</p></div></div>
+      <div class="flex flex-col justify-between rounded-md bg-[rgba(155,104,41,0.12)] p-5 shadow-sm"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-warning]">Pending</p><p class="mt-2 text-4xl font-light tracking-tight text-[--color-warning]">{{ stats()?.pendingOrders ?? 0 }}</p><p class="mt-1 text-[11px] text-[--color-warning]/70">Orders awaiting action</p></div></div>
+      <div class="flex flex-col justify-between rounded-md bg-[rgba(234,34,97,0.12)] p-5 shadow-sm"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-danger]">Low Stock</p><p class="mt-2 text-4xl font-light tracking-tight text-[--color-danger]">{{ stats()?.lowStockCount ?? 0 }}</p><p class="mt-1 text-[11px] text-[--color-danger]/70">Items need restocking</p></div></div>
+      <div class="lg:col-span-2 flex flex-col justify-between rounded-md border border-[--color-border] p-5 shadow-sm"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]">Total Orders</p><p class="mt-2 text-3xl font-light tracking-tight text-[--color-text]">{{ stats()?.totalOrders ?? 0 }}</p></div></div>
+      <div class="flex flex-col justify-between rounded-md border border-[--color-border] p-5 shadow-sm"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]">Total Users</p><p class="mt-2 text-3xl font-light tracking-tight text-[--color-text]">{{ stats()?.totalUsers ?? 0 }}</p></div></div>
+      <div class="flex flex-col justify-between rounded-md border border-[--color-border] p-5 shadow-sm"><div><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]">Products</p><p class="mt-2 text-3xl font-light tracking-tight text-[--color-text]">{{ stats()?.totalProducts ?? 0 }}</p></div></div>
     </div>
   }
 
-  <div class="mt-4 flex flex-col flex-1 min-h-0 rounded-2xl bg-white/[0.04] p-6 shadow-sm shadow-black/10">
-    <h2 class="mb-4 text-lg font-semibold text-[--color-text] shrink-0">Revenue (Last 30 Days)</h2>
+  <div class="mt-4 flex flex-col flex-1 min-h-0 rounded-md border border-[--color-border] p-6 shadow-sm">
+    <h2 class="mb-4 text-lg font-light text-[--color-text] shrink-0">Revenue (Last 30 Days)</h2>
     @if (revenue().length === 0) {
-      <p class="py-12 text-center text-sm text-[--color-text-muted]/40">No revenue data available.</p>
+      <p class="py-12 text-center text-sm text-[--color-text-muted]">No revenue data available.</p>
     } @else {
       @let maxRev = revenue().reduce((m, r) => m > r.revenue ? m : r.revenue, 0.01);
       <div class="flex items-end gap-1 overflow-x-auto flex-1 min-h-0">
         @for (item of revenue(); track item.date) {
           <div class="flex flex-1 flex-col items-center gap-1 h-full justify-end">
-            <div class="w-full rounded-sm bg-primary" [style.height.%]="(item.revenue / maxRev) * 100" [style.min-height.px]="item.revenue > 0 ? 4 : 0" [title]="item.date + ': ' + (item.revenue | currency : 'RON' : 'symbol' : '1.2-2')"></div>
-            <span class="text-[10px] text-[--color-text-muted]/30 shrink-0">{{ item.date | date:'MMM d' }}</span>
+            <div class="w-full rounded-sm bg-[--color-brand]" [style.height.%]="(item.revenue / maxRev) * 100" [style.min-height.px]="item.revenue > 0 ? 4 : 0" [title]="item.date + ': ' + (item.revenue | currency : 'RON' : 'symbol' : '1.2-2')"></div>
+            <span class="text-[10px] text-[--color-text-muted] shrink-0">{{ item.date | date:'MMM d' }}</span>
           </div>
         }
       </div>

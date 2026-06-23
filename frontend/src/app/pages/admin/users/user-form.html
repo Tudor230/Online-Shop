@@ -2,50 +2,50 @@
   <div class="shrink-0 flex items-center justify-between pb-4">
     <div>
       <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Users</span>
-      <h1 class="mt-1 text-2xl font-bold tracking-tight text-[--color-text]">{{ userId() ? 'Edit' : 'New' }} User</h1>
+      <h1 class="mt-1 text-2xl font-semibold tracking-tight text-[--color-text]">{{ userId() ? 'Edit' : 'New' }} User</h1>
     </div>
-    <button class="text-sm text-text-secondary hover:text-text-primary" (click)="cancel()">Back to Users</button>
+    <button class="text-sm text-[--color-text-muted] hover:text-[--color-text]" (click)="cancel()">Back to Users</button>
   </div>
 
   @if (error()) {
-    <div class="shrink-0 rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ error() }}</div>
+    <div class="shrink-0 rounded-sm bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ error() }}</div>
   }
 
   @if (loading()) {
     <p class="text-sm text-[--color-text-muted]/50">Loading...</p>
   } @else {
-    <div class="flex-1 min-h-0 overflow-y-auto space-y-4 rounded-xl border border-surface-elevated bg-surface-default p-6">
+    <div class="flex-1 min-h-0 overflow-y-auto space-y-4 card p-6">
       <div class="grid gap-4 sm:grid-cols-2">
         <div>
-          <label for="firstName" class="mb-1 block text-xs font-medium text-text-secondary">First Name *</label>
-          <input id="firstName" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="firstName()" (ngModelChange)="firstName.set($event)" />
+          <label for="firstName" class="mb-1 block text-xs font-medium text-[--color-text-muted]">First Name *</label>
+          <input id="firstName" class="input w-full px-3 py-2 text-sm" [ngModel]="firstName()" (ngModelChange)="firstName.set($event)" />
         </div>
         <div>
-          <label for="lastName" class="mb-1 block text-xs font-medium text-text-secondary">Last Name *</label>
-          <input id="lastName" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="lastName()" (ngModelChange)="lastName.set($event)" />
+          <label for="lastName" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Last Name *</label>
+          <input id="lastName" class="input w-full px-3 py-2 text-sm" [ngModel]="lastName()" (ngModelChange)="lastName.set($event)" />
         </div>
       </div>
 
       @if (!userId()) {
         <div>
-          <label for="email" class="mb-1 block text-xs font-medium text-text-secondary">Email *</label>
-          <input id="email" type="email" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="email()" (ngModelChange)="email.set($event)" />
+          <label for="email" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Email *</label>
+          <input id="email" type="email" class="input w-full px-3 py-2 text-sm" [ngModel]="email()" (ngModelChange)="email.set($event)" />
         </div>
         <div>
-          <label for="password" class="mb-1 block text-xs font-medium text-text-secondary">Password *</label>
-          <input id="password" type="password" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="password()" (ngModelChange)="password.set($event)" />
+          <label for="password" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Password *</label>
+          <input id="password" type="password" class="input w-full px-3 py-2 text-sm" [ngModel]="password()" (ngModelChange)="password.set($event)" />
         </div>
       } @else {
         <div>
-          <label for="email" class="mb-1 block text-xs font-medium text-text-secondary">Email</label>
-          <input id="email" type="email" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [value]="email()" disabled />
+          <label for="email" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Email</label>
+          <input id="email" type="email" class="input w-full px-3 py-2 text-sm" [value]="email()" disabled />
         </div>
       }
 
       <div class="grid gap-4 sm:grid-cols-2">
         <div>
-          <label for="role" class="mb-1 block text-xs font-medium text-text-secondary">Role</label>
-          <select id="role" class="w-full rounded-lg border border-surface-elevated bg-surface-default px-3 py-2 text-sm text-text-primary" [ngModel]="role()" (ngModelChange)="role.set($event)">
+          <label for="role" class="mb-1 block text-xs font-medium text-[--color-text-muted]">Role</label>
+          <select id="role" class="select w-full px-3 py-2 text-sm" [ngModel]="role()" (ngModelChange)="role.set($event)">
             <option value="CUSTOMER">Customer</option>
             <option value="SUPPORT">Support</option>
             <option value="ADMIN">Admin</option>
@@ -53,13 +53,13 @@
         </div>
         <div class="flex items-center gap-2">
           <input type="checkbox" id="isActive" [checked]="isActive()" (change)="isActive.set(!isActive())" />
-          <label for="isActive" class="text-sm text-text-primary">Active</label>
+          <label for="isActive" class="text-sm text-[--color-text]">Active</label>
         </div>
       </div>
 
       <div class="flex justify-end gap-2 pt-2">
-        <button class="rounded-lg border border-surface-elevated bg-surface-default px-4 py-2 text-sm text-text-primary hover:bg-surface-elevated" (click)="cancel()">Cancel</button>
-        <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50" [disabled]="saving()" (click)="save()">
+        <button class="btn-secondary px-4 py-2 text-sm" (click)="cancel()">Cancel</button>
+        <button class="btn-primary px-4 py-2 text-sm disabled:opacity-50" [disabled]="saving()" (click)="save()">
           {{ saving() ? 'Saving...' : (userId() ? 'Update' : 'Create') }}
         </button>
       </div>

@@ -1,18 +1,18 @@
 <section class="mx-auto w-full max-w-7xl px-4 py-14 md:px-6 lg:px-8">
   @if (isLoading) {
     <div class="grid gap-8 md:grid-cols-2">
-      <div class="aspect-[5/4] rounded-2xl bg-[--color-surface] skeleton-wave"></div>
+      <div class="aspect-[5/4] rounded-md bg-[#f6f9fc] skeleton-wave"></div>
       <div class="card p-8 flex flex-col gap-4">
-        <div class="h-7 w-2/3 rounded-full bg-[--color-bg] skeleton-wave"></div>
-        <div class="h-7 w-1/3 rounded-full bg-[--color-bg] skeleton-wave"></div>
-        <div class="mt-2 h-4 w-1/2 rounded-full bg-[--color-bg] skeleton-wave"></div>
+        <div class="h-7 w-2/3 rounded-sm bg-[#f6f9fc] skeleton-wave"></div>
+        <div class="h-7 w-1/3 rounded-sm bg-[#f6f9fc] skeleton-wave"></div>
+        <div class="mt-2 h-4 w-1/2 rounded-sm bg-[#f6f9fc] skeleton-wave"></div>
       </div>
     </div>
   } @else if (!product) {
-    <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center">
-      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[--color-bg] text-text-muted/50">◎</div>
-      <p class="text-base font-semibold text-text-primary">Product not found</p>
-      <p class="text-sm text-text-muted">This item may have moved or no longer exists.</p>
+    <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center !shadow-none">
+      <div class="flex h-12 w-12 items-center justify-center rounded-sm bg-[#f6f9fc] text-[--color-text-muted]/50">◎</div>
+      <p class="text-base font-normal text-[--color-text]">Product not found</p>
+      <p class="text-sm text-[--color-text-muted]">This item may have moved or no longer exists.</p>
       <button type="button" class="btn-primary px-5 py-2.5 text-sm" (click)="onBackRequested()">Back to grid</button>
     </div>
   } @else {
@@ -29,21 +29,21 @@
           <div class="aspect-[5/4]">
             <app-cloudinary-image-frame [source]="selectedImageId" [alt]="product.title" [options]="heroImageOptions" width="1200" height="960" [useResponsive]="true"
               imageClass="h-full w-full object-contain"
-              fallbackClass="grid h-full w-full place-items-center text-base font-medium text-text-muted"
+              fallbackClass="grid h-full w-full place-items-center text-base font-normal text-[--color-text-muted]"
               fallbackText="Image unavailable"/>
             @if (product.imageGalleryIds.length > 1) {
-              <button type="button" aria-label="Previous image" class="btn-ghost absolute left-6 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center text-lg bg-[--color-bg]/60 backdrop-blur-sm" (click)="onPreviousImageRequested()">‹</button>
-              <button type="button" aria-label="Next image" class="btn-ghost absolute right-6 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center text-lg bg-[--color-bg]/60 backdrop-blur-sm" (click)="onNextImageRequested()">›</button>
+              <button type="button" aria-label="Previous image" class="btn-ghost absolute left-6 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center text-lg bg-white/80 backdrop-blur-sm rounded-sm" (click)="onPreviousImageRequested()">‹</button>
+              <button type="button" aria-label="Next image" class="btn-ghost absolute right-6 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center text-lg bg-white/80 backdrop-blur-sm rounded-sm" (click)="onNextImageRequested()">›</button>
             }
           </div>
         </div>
         <div class="grid grid-cols-4 gap-2">
           @for (imageId of product.imageGalleryIds; track imageId; let index = $index) {
-            <button type="button" [attr.aria-label]="'Select image ' + (index + 1)" class="card aspect-[4/3] overflow-hidden p-1.5 text-xs"
+            <button type="button" [attr.aria-label]="'Select image ' + (index + 1)" class="card aspect-[4/3] overflow-hidden p-1.5 text-xs !shadow-none"
               [ngClass]="selectedImageIndex === index ? 'ring-2 ring-[--color-brand]' : ''" (click)="onImageSelected(index)">
               <app-cloudinary-image-frame [source]="imageId" [alt]="product.title + ' image ' + (index + 1)" [options]="thumbnailImageOptions" width="240" height="180" [useLazy]="true"
-                imageClass="h-full w-full rounded-lg object-contain"
-                fallbackClass="grid h-full w-full place-items-center rounded-lg bg-[--color-bg] text-[11px] font-medium text-text-muted"
+                imageClass="h-full w-full rounded-sm object-contain"
+                fallbackClass="grid h-full w-full place-items-center rounded-sm bg-[#f6f9fc] text-[11px] font-normal text-[--color-text-muted]"
                 fallbackText="No image"/>
             </button>
           }
@@ -52,10 +52,10 @@
 
       <div class="card p-8">
         <p class="text-[10px] font-semibold uppercase tracking-[0.15em] text-[--color-brand]">{{ product.category }}</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tighter text-text-primary">{{ product.title }}</h1>
-        <p class="mt-3 text-sm text-text-muted">★ {{ product.rating | number : '1.1-1' }} &middot; {{ product.reviewCount }} reviews</p>
-        <p class="mt-5 text-3xl font-bold tracking-tight text-text-primary">{{ product.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
-        <p class="mt-5 text-sm leading-relaxed text-text-muted">{{ product.description }}</p>
+        <h1 class="mt-2 text-[2rem] font-light tracking-tight text-[--color-text] leading-tight">{{ product.title }}</h1>
+        <p class="mt-3 text-sm text-[--color-text-muted]">★ {{ product.rating | number : '1.1-1' }} &middot; {{ product.reviewCount }} reviews</p>
+        <p class="mt-5 text-[2rem] font-light tracking-tight text-[--color-text]">{{ product.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
+        <p class="mt-5 text-sm leading-relaxed text-[--color-text-muted]">{{ product.description }}</p>
 
         <div class="mt-7 flex items-center gap-3">
           <button type="button" aria-label="Add to cart" class="btn-primary px-6 py-3 text-sm" (click)="onAddToCart()">Add to cart</button>
@@ -64,24 +64,24 @@
             (click)="onSaveToWishlist()">{{ isWishlisted ? '♥ Saved' : '♡ Save' }}</button>
         </div>
 
-        <div class="mt-7 grid gap-3 rounded-xl bg-[--color-bg]/60 p-5">
-          <div class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[--color-brand] text-xs">&check;</span><div><p class="text-sm font-semibold text-text-primary">Free Delivery over RON 50</p><p class="text-xs text-text-muted">Estimated delivery: 2-4 business days.</p></div></div>
-          <div class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[--color-brand] text-xs">&#8617;</span><div><p class="text-sm font-semibold text-text-primary">30-Day Free Returns</p><p class="text-xs text-text-muted">Not satisfied? Return it for a full refund.</p></div></div>
-          <div class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[--color-brand] text-xs">&#128274;</span><div><p class="text-sm font-semibold text-text-primary">Secure Checkout</p><p class="text-xs text-text-muted">Your payment information is encrypted and safe.</p></div></div>
+        <div class="mt-7 grid gap-3 rounded-md bg-[#f6f9fc] p-5">
+          <div class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-[--color-brand]/10 text-[--color-brand] text-xs">&check;</span><div><p class="text-sm font-normal text-[--color-text]">Free Delivery over RON 50</p><p class="text-xs text-[--color-text-muted]">Estimated delivery: 2-4 business days.</p></div></div>
+          <div class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-[--color-brand]/10 text-[--color-brand] text-xs">&#8617;</span><div><p class="text-sm font-normal text-[--color-text]">30-Day Free Returns</p><p class="text-xs text-[--color-text-muted]">Not satisfied? Return it for a full refund.</p></div></div>
+          <div class="flex items-start gap-3"><span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-[--color-brand]/10 text-[--color-brand] text-xs">&#128274;</span><div><p class="text-sm font-normal text-[--color-text]">Secure Checkout</p><p class="text-xs text-[--color-text-muted]">Your payment information is encrypted and safe.</p></div></div>
         </div>
 
-        <div id="write-review" class="mt-7 rounded-xl bg-[--color-bg]/60 p-5">
-          <p class="text-sm font-semibold text-text-primary">{{ product.hasReviewed ? 'Your review' : 'Write a review' }}</p>
-          @if (!isAuthenticated) { <p class="mt-2 text-sm text-text-muted">Log in and purchase this product to leave a review.</p> }
-          @else if (product.hasReviewed) { <p class="mt-2 text-sm text-text-muted">You already reviewed this product. @if (product.reviewedReviewId) { <a [routerLink]="[]" [fragment]="'review-' + product.reviewedReviewId" class="font-medium text-primary hover:underline">View your review</a> }</p> }
-          @else if (!product.canReview) { <p class="mt-2 text-sm text-text-muted">You can leave a review after purchasing this product.</p> }
+        <div id="write-review" class="mt-7 rounded-md bg-[#f6f9fc] p-5">
+          <p class="text-sm font-normal text-[--color-text]">{{ product.hasReviewed ? 'Your review' : 'Write a review' }}</p>
+          @if (!isAuthenticated) { <p class="mt-2 text-sm text-[--color-text-muted]">Log in and purchase this product to leave a review.</p> }
+          @else if (product.hasReviewed) { <p class="mt-2 text-sm text-[--color-text-muted]">You already reviewed this product. @if (product.reviewedReviewId) { <a [routerLink]="[]" [fragment]="'review-' + product.reviewedReviewId" class="font-normal text-[--color-brand] hover:underline">View your review</a> }</p> }
+          @else if (!product.canReview) { <p class="mt-2 text-sm text-[--color-text-muted]">You can leave a review after purchasing this product.</p> }
           @else {
             <div class="mt-3 grid gap-3">
-              <label for="review-rating" class="text-sm font-medium text-text-primary">Rating</label>
+              <label for="review-rating" class="text-sm font-normal text-[--color-text]">Rating</label>
               <select id="review-rating" class="select px-3 py-2 text-sm" [(ngModel)]="reviewRating">
                 <option [value]="5">5 - Excellent</option><option [value]="4">4 - Good</option><option [value]="3">3 - Average</option><option [value]="2">2 - Poor</option><option [value]="1">1 - Very poor</option>
               </select>
-              <label for="review-comment" class="text-sm font-medium text-text-primary">Review</label>
+              <label for="review-comment" class="text-sm font-normal text-[--color-text]">Review</label>
               <textarea id="review-comment" rows="4" class="input px-3 py-2 text-sm" placeholder="Share your experience with this product" [(ngModel)]="reviewComment"></textarea>
               @if (reviewError) { <p class="text-sm text-[--color-danger]">{{ reviewError }}</p> }
               <button type="button" class="btn-primary w-fit px-4 py-2 text-sm" [disabled]="isSubmittingReview || !reviewComment.trim().length" (click)="onSubmitReview()">{{ isSubmittingReview ? 'Submitting...' : 'Submit review' }}</button>
@@ -91,9 +91,9 @@
       </div>
     </article>
 
-    <section class="card mt-10 p-8">
-      <h2 class="text-xl font-bold text-text-primary">Product details</h2>
-      <div class="mt-4 space-y-4 text-sm leading-relaxed text-text-muted">
+    <section class="card mt-10 p-8 !shadow-none">
+      <h2 class="text-[1.375rem] font-light text-[--color-text]">Product details</h2>
+      <div class="mt-4 space-y-4 text-sm leading-relaxed text-[--color-text-muted]">
         @for (paragraph of (product.detailedDescription || product.description).split('\n\n'); track paragraph) { <p>{{ paragraph }}</p> }
       </div>
     </section>
