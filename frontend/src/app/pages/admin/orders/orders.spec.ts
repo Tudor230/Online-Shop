@@ -81,7 +81,6 @@ describe('AdminOrdersComponent', () => {
     };
     component.detailOrder.set(detail);
     component.newStatus.set('SHIPPED');
-    component.statusNote.set('Shipped today');
 
     mockApi.updateOrderStatus.mockReturnValue(of(detail));
     mockApi.getOrders.mockReturnValue(of({
@@ -90,7 +89,7 @@ describe('AdminOrdersComponent', () => {
 
     component.updateStatus();
 
-    expect(mockApi.updateOrderStatus).toHaveBeenCalledWith('1', { newStatus: 'SHIPPED', notes: 'Shipped today' });
+    expect(mockApi.updateOrderStatus).toHaveBeenCalledWith('1', { newStatus: 'SHIPPED' });
     expect(component.detailOrder()).toBeNull();
   });
 
