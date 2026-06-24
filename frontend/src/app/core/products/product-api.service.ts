@@ -9,13 +9,16 @@ export class ProductApiService {
   private readonly httpClient = inject(HttpClient);
   private readonly productsBaseUrl = `${keycloakConfig.backendApiUrl}/products`;
 
-  getProducts(options: { query?: string; page?: number; size?: number } = {}): Observable<ProductSearchPage> {
-    const { query, page = 1, size = 25 } = options;
+  getProducts(options: { query?: string; page?: number; size?: number; sort?: string } = {}): Observable<ProductSearchPage> {
+    const { query, page = 1, size = 25, sort } = options;
     let params = new HttpParams().set('page', String(page)).set('size', String(size));
 
     const trimmedQuery = query?.trim() ?? '';
     if (trimmedQuery) {
       params = params.set('q', trimmedQuery);
+    }
+    if (sort) {
+      params = params.set('sort', sort);
     }
 
     return this.httpClient.get<ProductSearchPage>(this.productsBaseUrl, { params });

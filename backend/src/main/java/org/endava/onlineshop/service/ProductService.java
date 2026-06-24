@@ -48,8 +48,8 @@ public class ProductService {
     private final ProductEmbeddingService productEmbeddingService;
 
     @Transactional(readOnly = true)
-    public ProductSearchPageDto getProducts(String query, Pageable pageable) {
-        Page<Product> page = productEmbeddingService.findActiveProducts(query, pageable);
+    public ProductSearchPageDto getProducts(String query, String sort, Pageable pageable) {
+        Page<Product> page = productEmbeddingService.findActiveProducts(query, sort, pageable);
         List<Product> products = page.getContent();
 
         Map<UUID, ProductReviewSnapshot> reviewByProductId = products.isEmpty()

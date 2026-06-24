@@ -1,9 +1,9 @@
-@if (isOpen) {
-  <div class="fixed inset-0 z-50">
-    <button type="button" class="absolute inset-0 bg-black/50 backdrop-blur-[1px]" aria-label="Close cart" (click)="onCloseRequested()"></button>
-    <aside class="absolute right-0 top-0 h-full w-full max-w-sm border-l border-border bg-[--color-surface] rounded-l-2xl shadow-xl animate-slide-in-right">
-      <div class="flex h-full flex-col">
-        <div class="flex items-center justify-between border-b border-border px-6 py-4">
+<div class="fixed inset-0 z-50" [style.display]="visible() ? '' : 'none'">
+  <button type="button" class="absolute inset-0 bg-black/35 backdrop-blur-sm transition-opacity duration-200" [class.opacity-0]="isClosing()" aria-label="Close cart" (click)="onCloseRequested()"></button>
+  <aside class="absolute right-0 top-0 h-full w-full max-w-sm transition-transform duration-200 ease-out-expo" [class.translate-x-full]="isClosing()" [class.animate-slide-in-right]="!isClosing() && visible()">
+    <div class="h-full border-l border-[--color-border-strong] bg-[hsl(195,15%,14%)] rounded-l-2xl shadow-2xl" style="transform: perspective(1200px) rotateY(-3deg); transform-origin: left center;">
+        <div class="flex h-full flex-col">
+          <div class="flex items-center justify-between border-b border-border px-6 py-4">
           <div class="flex items-center gap-3">
             <h2 class="text-lg font-semibold text-text-primary">Shopping cart</h2>
             @if (items.length) {
@@ -18,7 +18,7 @@
         @if (!items.length) {
           <div class="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
             <div class="flex h-20 w-20 items-center justify-center rounded-full bg-[--color-bg]">
-              <svg viewBox="0 0 24 24" class="h-8 w-8 fill-current text-text-muted/20"><path d="M7 18a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm10 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2ZM7.2 14h10.7a2 2 0 0 0 2-1.6L22 5H6.2l-.3-2H2v2h2.3l1.6 10.4A2 2 0 0 0 7.2 17H20v-2H7.2Z"/></svg>
+              <svg viewBox="0 0 24 24" class="h-8 w-8 fill-current text-text-muted/75"><path d="M7 18a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm10 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2ZM7.2 14h10.7a2 2 0 0 0 2-1.6L22 5H6.2l-.3-2H2v2h2.3l1.6 10.4A2 2 0 0 0 7.2 17H20v-2H7.2Z"/></svg>
             </div>
             <div>
               <p class="text-base font-semibold text-text-primary">Your cart is empty</p>
@@ -28,9 +28,9 @@
           </div>
         } @else {
           <div class="flex-1 overflow-y-auto px-6 py-2">
-            <div class="grid gap-1 divide-y divide-border">
+            <div class="grid gap-0 divide-y divide-[--color-border-strong]">
               @for (item of items; track item.productId) {
-                <article class="group cursor-pointer py-4" role="button" tabindex="0"
+                <article class="group cursor-pointer py-5" role="button" tabindex="0"
                   (click)="onItemSelected(item.productSlug)"
                   (keydown.enter)="onItemSelected(item.productSlug)"
                   (keydown.space)="onItemSelected(item.productSlug); $event.preventDefault()">
@@ -44,18 +44,18 @@
                     <div class="min-w-0 flex flex-col gap-2">
                       <p class="truncate text-sm font-semibold text-text-primary leading-snug">{{ item.title }}</p>
                       <div class="inline-flex items-center gap-1 rounded-full bg-[--color-bg]/60 p-0.5 w-fit">
-                        <button type="button" class="btn-ghost h-7 w-7 text-sm font-medium" aria-label="Decrease quantity"
+                        <button type="button" class="btn-ghost h-8 w-8 text-base font-medium cursor-pointer" aria-label="Decrease quantity"
                           (click)="$event.stopPropagation(); onDecrementRequested(item.productId)">−</button>
                         <span class="min-w-6 text-center text-xs font-semibold text-text-primary">{{ item.quantity }}</span>
-                        <button type="button" class="btn-ghost h-7 w-7 text-sm font-medium" aria-label="Increase quantity"
+                        <button type="button" class="btn-ghost h-8 w-8 text-base font-medium cursor-pointer" aria-label="Increase quantity"
                           (click)="$event.stopPropagation(); onIncrementRequested(item.productId)">+</button>
                       </div>
                     </div>
                     <div class="flex flex-col items-end gap-2">
-                      <p class="text-sm font-bold text-text-primary whitespace-nowrap">{{ item.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
-                      <button type="button" class="btn-ghost h-7 w-7 text-text-muted/30 hover:text-[--color-danger] transition-colors duration-150" aria-label="Remove item"
+                      <p class="text-sm whitespace-nowrap"><app-price-display [value]="item.price" /></p>
+                      <button type="button" class="btn-ghost h-8 w-8 text-text-muted/85 hover:text-[--color-danger] transition-colors duration-150 cursor-pointer" aria-label="Remove item"
                         (click)="$event.stopPropagation(); onRemoveRequested(item.productId)">
-                        <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-current"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                       </button>
                     </div>
                   </div>
@@ -67,7 +67,7 @@
           <div class="border-t border-border px-6 py-5 space-y-4">
             <div class="flex items-center justify-between">
               <span class="text-sm text-text-muted">Subtotal</span>
-              <span class="text-lg font-bold text-text-primary">{{ totalPrice | currency : 'RON' : 'symbol' : '1.2-2' }}</span>
+              <span class="text-lg"><app-price-display [value]="totalPrice" /></span>
             </div>
             <button type="button" class="btn-primary w-full py-3 text-sm font-semibold"
               [disabled]="!items.length || isCheckoutInProgress" (click)="onCheckoutRequested()">
@@ -77,6 +77,6 @@
           </div>
         }
       </div>
+      </div>
     </aside>
   </div>
-}

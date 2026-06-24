@@ -3,12 +3,14 @@
   [isSubmittingReview]="isSubmittingReview()" [reviewError]="reviewError()" [reviewFormResetToken]="reviewFormResetToken()"
   [selectedImageId]="selectedImage()" [selectedImageIndex]="selectedImageIndex()" [isWishlisted]="isWishlisted()"
   (backRequested)="goBackToGrid()" (imageSelected)="selectImage($event)" (previousImageRequested)="selectPreviousImage()"
-  (nextImageRequested)="selectNextImage()" (addToCart)="addToCart()" (reviewSubmitted)="submitReview($event)" (saveToWishlist)="saveToWishlist()"/>
+  (nextImageRequested)="selectNextImage()" (addToCart)="addToCart()" (reviewSubmitted)="submitReview($event)" (saveToWishlist)="saveToWishlist()"
+  (lightboxStateChanged)="onLightboxStateChanged($event)"/>
 
 @if (product(); as currentProduct) {
   <section class="mx-auto w-full max-w-7xl px-4 pb-12 md:px-6 lg:px-8">
-    <section class="card p-6">
-      <h2 class="text-lg font-bold text-text-primary">Similar items</h2>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <section class="card p-6 flex flex-col min-h-0">
+      <h2 class="text-lg font-bold text-text-primary shrink-0">Similar items</h2>
       @if (isSimilarItemsLoading()) {
         <div class="mt-4 flex gap-3 overflow-hidden">
           @for (item of [0, 1, 2, 3, 4]; track item) {
@@ -18,29 +20,29 @@
       } @else if (!similarItems().length) {
         <p class="mt-4 text-sm text-text-muted">No similar items found yet.</p>
       } @else {
-        <div class="relative mt-4 group">
-          <div #similarItemsTrack class="flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 pr-6">
+        <div class="relative mt-4 group flex-1 min-h-0">
+          <div #similarItemsTrack class="flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 pr-6 h-full">
             @for (item of similarItems(); track item.id) {
               <div class="min-w-[180px] max-w-[200px] flex-1 snap-start">
                 <app-product-card [product]="item" [isWishlisted]="isProductWishlisted(item.id)" (selected)="openSimilarProduct(item.slug)" (addToCart)="addSimilarProductToCart(item.id)" (saveToWishlist)="saveSimilarProductToWishlist(item.id)"/>
               </div>
             }
           </div>
-          <button type="button" class="btn-ghost absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center text-sm opacity-0 group-hover:opacity-100 disabled:opacity-40" [disabled]="!similarItems().length" (click)="scrollSimilarItems('left')" aria-label="Scroll similar items left">‹</button>
-          <button type="button" class="btn-ghost absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center text-sm opacity-0 group-hover:opacity-100 disabled:opacity-40" [disabled]="!similarItems().length" (click)="scrollSimilarItems('right')" aria-label="Scroll similar items right">›</button>
+          <button type="button" class="absolute -left-5 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-[--color-surface]/90 border border-[--color-border-strong] text-xl opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-[--color-surface] hover:scale-110 disabled:opacity-30" [disabled]="!similarItems().length" (click)="scrollSimilarItems('left')" aria-label="Scroll similar items left">‹</button>
+          <button type="button" class="absolute -right-5 top-1/2 z-10 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full bg-[--color-surface]/90 border border-[--color-border-strong] text-xl opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-[--color-surface] hover:scale-110 disabled:opacity-30" [disabled]="!similarItems().length" (click)="scrollSimilarItems('right')" aria-label="Scroll similar items right">›</button>
         </div>
       }
     </section>
 
-    <section class="card mt-8 p-6">
-      <h2 class="text-xl font-bold text-text-primary">Customer reviews</h2>
+    <section class="card p-6 flex flex-col min-h-0">
+      <h2 class="text-xl font-bold text-text-primary shrink-0">Customer reviews</h2>
       @if (!currentProduct.reviews.length) { <p class="mt-3 text-sm text-text-muted">No reviews yet. Be the first customer to share feedback.</p> }
       @else {
-        <div class="mt-4 grid gap-3">
+        <div class="mt-4 grid gap-3 flex-1 overflow-y-auto">
           @for (review of currentProduct.reviews; track review.id) {
             <article [attr.id]="'review-' + review.id" class="rounded-xl bg-[--color-bg]/60 p-4">
               <div class="flex flex-wrap items-center gap-2 text-xs text-text-muted">
-                <span class="font-semibold text-text-primary">{{ review.reviewerName }}</span><span>•</span><span>★ {{ review.rating }}</span><span>•</span><time [attr.datetime]="review.createdAt">{{ review.createdAt | date : 'mediumDate' }}</time>
+                <span class="font-semibold text-text-primary">{{ review.reviewerName }}</span><span>•</span><span><app-star-rating [rating]="review.rating" [showReviewCount]="false" /></span><span>•</span><time [attr.datetime]="review.createdAt">{{ review.createdAt | date : 'mediumDate' }}</time>
               </div>
               <p class="mt-2 text-sm leading-relaxed text-text-primary">{{ review.comment }}</p>
             </article>
@@ -48,5 +50,6 @@
         </div>
       }
     </section>
+    </div>
   </section>
 }

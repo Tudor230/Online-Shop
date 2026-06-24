@@ -1,16 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators, type AbstractControl, type ValidationErrors } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { AuthStateService } from '../../core/auth/auth-state.service';
 import { KeycloakAuthService } from '../../core/auth/keycloak-auth.service';
 import { ProfileApiService } from '../../core/profile/profile-api.service';
 import { Address, Profile } from '../../core/profile/profile.types';
+import { PhoneInputComponent } from '../../shared/phone-input/phone-input';
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PhoneInputComponent],
   templateUrl: './profile.html'
 })
 export class ProfilePageComponent {
@@ -19,8 +20,56 @@ export class ProfilePageComponent {
   private readonly keycloakAuthService = inject(KeycloakAuthService);
   private readonly formBuilder = inject(FormBuilder);
 
-  private readonly phonePattern = /^[0-9+()\-\s]{7,20}$/;
+  readonly countries = [
+    { code: 'RO', name: 'Romania' },
+    { code: 'US', name: 'United States' },
+    { code: 'GB', name: 'United Kingdom' },
+    { code: 'DE', name: 'Germany' },
+    { code: 'FR', name: 'France' },
+    { code: 'IT', name: 'Italy' },
+    { code: 'ES', name: 'Spain' },
+    { code: 'NL', name: 'Netherlands' },
+    { code: 'BE', name: 'Belgium' },
+    { code: 'AT', name: 'Austria' },
+    { code: 'HU', name: 'Hungary' },
+    { code: 'PL', name: 'Poland' },
+    { code: 'SE', name: 'Sweden' },
+    { code: 'DK', name: 'Denmark' },
+    { code: 'FI', name: 'Finland' },
+    { code: 'NO', name: 'Norway' },
+    { code: 'PT', name: 'Portugal' },
+    { code: 'GR', name: 'Greece' },
+    { code: 'CZ', name: 'Czech Republic' },
+    { code: 'SK', name: 'Slovakia' },
+    { code: 'BG', name: 'Bulgaria' },
+    { code: 'HR', name: 'Croatia' },
+    { code: 'SI', name: 'Slovenia' },
+    { code: 'IE', name: 'Ireland' },
+    { code: 'CH', name: 'Switzerland' },
+    { code: 'UA', name: 'Ukraine' },
+    { code: 'TR', name: 'Turkey' },
+    { code: 'CA', name: 'Canada' },
+    { code: 'AU', name: 'Australia' },
+    { code: 'JP', name: 'Japan' },
+    { code: 'CN', name: 'China' },
+    { code: 'BR', name: 'Brazil' },
+    { code: 'MX', name: 'Mexico' },
+    { code: 'IN', name: 'India' },
+    { code: 'KR', name: 'South Korea' },
+    { code: 'SG', name: 'Singapore' },
+    { code: 'NZ', name: 'New Zealand' },
+    { code: 'ZA', name: 'South Africa' },
+    { code: 'AE', name: 'United Arab Emirates' },
+  ];
+
   private readonly postalPattern = /^[A-Za-z0-9\-\s]{3,20}$/;
+
+  static phoneValidator(control: AbstractControl): ValidationErrors | null {
+    const value = (control.value ?? '').replace(/\D/g, '');
+    if (!value) return null;
+    if (value.length < 7) return { phoneMinLength: true };
+    return null;
+  }
 
   readonly isAuthenticated = this.authState.isAuthenticated;
   readonly profile = signal<Profile | null>(null);
@@ -47,13 +96,13 @@ export class ProfilePageComponent {
 
   readonly addressForm = this.formBuilder.nonNullable.group({
     recipientName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
-    phoneNumber: ['', [Validators.maxLength(20), Validators.pattern(this.phonePattern)]],
+    phoneNumber: ['', [ProfilePageComponent.phoneValidator]],
     addressLine1: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
     addressLine2: ['', [Validators.maxLength(255)]],
     city: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     state: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
     postalCode: ['', [Validators.required, Validators.pattern(this.postalPattern), Validators.maxLength(20)]],
-    country: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]]
+    country: ['', [Validators.required]],
   });
 
   readonly addresses = computed(() => this.profile()?.addresses ?? []);
@@ -237,6 +286,9 @@ export class ProfilePageComponent {
     if (control.errors['minlength']) {
       return 'Please enter at least two characters.';
     }
+    if (control.errors['phoneMinLength']) {
+      return 'Phone number is too short.';
+    }
     if (control.errors['maxlength']) {
       return 'Please shorten this value.';
     }
@@ -245,5 +297,18 @@ export class ProfilePageComponent {
     }
 
     return 'Please enter a valid value.';
+  }
+
+  formatPhoneDisplay(phone: string | null): string {
+    if (!phone) return '';
+    const digits = phone.replace(/\D/g, '');
+    let result = '+' + digits.slice(0, 3) + ' ';
+    let remaining = digits.slice(3);
+    while (remaining.length > 0) {
+      result += remaining.slice(0, 3);
+      remaining = remaining.slice(3);
+      if (remaining.length > 0) result += ' ';
+    }
+    return result;
   }
 }

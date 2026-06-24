@@ -10,12 +10,12 @@
     type="button"
     [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'"
     [attr.aria-pressed]="isWishlisted"
-    class="absolute right-4 top-4 z-10 grid h-9 w-9 cursor-pointer place-items-center rounded-full bg-[--color-bg]/70 text-sm backdrop-blur-sm transition-colors duration-150"
-    [ngClass]="isWishlisted ? 'text-[--color-danger]' : 'text-text-muted hover:text-text-primary'"
+    class="absolute right-4 top-4 z-10 grid h-9 w-9 cursor-pointer place-items-center rounded-full bg-[--color-surface]/90 text-base transition-colors duration-75"
+    [ngClass]="isWishlisted ? 'text-[--color-danger]' : 'text-text-muted/85 hover:text-[--color-danger]'"
     (click)="onSaveToWishlist($event)"
   >{{ isWishlisted ? '♥' : '♡' }}</button>
 
-  <div class="aspect-[4/3] overflow-hidden rounded-xl bg-[--color-bg]/50">
+  <div class="aspect-[4/3] overflow-hidden rounded-xl">
     <app-cloudinary-image-frame
       [source]="product.imageId" [alt]="product.title" [options]="productImageOptions"
       width="560" height="420"
@@ -25,14 +25,16 @@
     />
   </div>
 
-  <div class="grid gap-1.5">
-    <p class="text-[10px] font-semibold uppercase tracking-[0.15em] text-[--color-brand]">{{ product.category }}</p>
-    <h3 class="text-sm font-semibold leading-snug text-text-primary">{{ product.title }}</h3>
-    <p class="text-xs text-text-muted">★ {{ product.rating | number : '1.1-1' }} ({{ product.reviewCount }})</p>
+  <div class="grid gap-1">
+    <p class="text-[9px] font-normal uppercase tracking-[0.08em] text-text-muted/85">{{ product.category }}</p>
+    <h3 class="text-base font-bold leading-snug text-text-primary">{{ product.title }}</h3>
   </div>
 
-  <div class="mt-auto flex items-center justify-between gap-3">
-    <p class="text-base font-bold tracking-tight text-text-primary">{{ product.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
-    <button type="button" aria-label="Add to cart" class="btn-primary h-9 w-9 text-sm" (click)="onAddToCart($event)">+</button>
+  <div class="mt-auto grid gap-1.5">
+    <p class="text-lg"><app-price-display [value]="product.price" /></p>
+    <div class="flex items-center justify-between gap-2">
+      <p class="text-[11px] text-text-muted/75"><app-star-rating [rating]="product.rating" [reviewCount]="product.reviewCount" /></p>
+      <button type="button" aria-label="Add to cart" class="btn-primary h-9 w-9 text-lg" (click)="onAddToCart($event)">+</button>
+    </div>
   </div>
 </article>

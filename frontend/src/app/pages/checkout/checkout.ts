@@ -1,4 +1,4 @@
-import { CommonModule, CurrencyPipe, isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -13,11 +13,12 @@ import { OrderApiService } from '../../core/orders/order-api.service';
 import { OrderHistoryEntry } from '../../core/orders/order.types';
 import { ProfileApiService } from '../../core/profile/profile-api.service';
 import { Address, Profile } from '../../core/profile/profile.types';
+import { PriceDisplayComponent } from '../../shared/price-display/price-display';
 
 @Component({
   selector: 'app-checkout-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CurrencyPipe],
+  imports: [CommonModule, FormsModule, RouterLink, PriceDisplayComponent],
   templateUrl: './checkout.html'
 })
 export class CheckoutPageComponent implements OnDestroy {

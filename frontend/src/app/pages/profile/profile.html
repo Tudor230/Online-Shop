@@ -66,7 +66,7 @@
 
           <label class="text-sm text-text-muted">
             Phone number
-            <input type="text" formControlName="phoneNumber" class="input mt-2 px-3 py-2 text-sm" />
+            <app-phone-input class="mt-2" [formControl]="addressForm.controls.phoneNumber" />
             @if (getAddressError('phoneNumber')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('phoneNumber') }}</p> }
           </label>
 
@@ -91,7 +91,7 @@
           </label>
 
           <label class="text-sm text-text-muted">
-            State
+            County/State
             <input type="text" formControlName="state" class="input mt-2 px-3 py-2 text-sm" />
             @if (getAddressError('state')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('state') }}</p> }
           </label>
@@ -104,7 +104,12 @@
 
           <label class="text-sm text-text-muted">
             Country
-            <input type="text" formControlName="country" class="input mt-2 px-3 py-2 text-sm" />
+            <select formControlName="country" class="select mt-2 px-3 py-2 text-sm">
+              <option value="" disabled>Select country...</option>
+              @for (c of countries; track c.code) {
+                <option [value]="c.name">{{ c.name }}</option>
+              }
+            </select>
             @if (getAddressError('country')) { <p class="mt-1 text-xs text-[--color-danger]">{{ getAddressError('country') }}</p> }
           </label>
 
@@ -147,15 +152,7 @@
         <div class="mt-5 grid gap-4 md:grid-cols-2">
           @for (address of addresses(); track address.id) {
             <article class="rounded-xl bg-[--color-bg]/60 p-5">
-              <div class="flex flex-wrap items-center gap-2">
-                <h3 class="text-sm font-semibold text-text-primary">{{ address.recipientName }}</h3>
-                @if (isPrimaryShipping(address.id)) {
-                  <span class="rounded-full bg-[--color-brand-muted] px-2 py-0.5 text-xs text-[--color-brand]">Primary shipping</span>
-                }
-                @if (isPrimaryBilling(address.id)) {
-                  <span class="rounded-full bg-[--color-warning-muted] px-2 py-0.5 text-xs text-[--color-warning]">Primary billing</span>
-                }
-              </div>
+              <h3 class="text-sm font-semibold text-text-primary">{{ address.recipientName }}</h3>
 
               <p class="mt-3 text-sm text-text-muted leading-relaxed">
                 {{ address.addressLine1 }}<br />
@@ -165,26 +162,28 @@
               </p>
 
               @if (address.phoneNumber) {
-                <p class="mt-2 text-sm text-text-muted">Phone: {{ address.phoneNumber }}</p>
+                <p class="mt-2 text-sm text-text-muted">{{ formatPhoneDisplay(address.phoneNumber) }}</p>
               }
 
               <div class="mt-4 flex flex-wrap gap-2">
-                <button type="button" (click)="setPrimaryShipping(address)" [disabled]="isPrimaryShipping(address.id) || shippingUpdateInProgressId() === address.id"
-                  class="btn-ghost px-3 py-1.5 text-xs disabled:opacity-50">
-                  @if (shippingUpdateInProgressId() === address.id) { Setting shipping... }
-                  @else if (isPrimaryShipping(address.id)) { Shipping selected }
-                  @else { Set as shipping }
-                </button>
-
-                <button type="button" (click)="setPrimaryBilling(address)" [disabled]="isPrimaryBilling(address.id) || billingUpdateInProgressId() === address.id"
-                  class="btn-ghost px-3 py-1.5 text-xs disabled:opacity-50">
-                  @if (billingUpdateInProgressId() === address.id) { Setting billing... }
-                  @else if (isPrimaryBilling(address.id)) { Billing selected }
-                  @else { Set as billing }
-                </button>
-
+                @if (isPrimaryShipping(address.id)) {
+                  <span class="rounded-full bg-[hsl(160,35%,54%)]/20 px-3 py-1 text-xs font-medium text-[hsl(160,35%,54%)]">Primary shipping</span>
+                } @else {
+                  <button type="button" (click)="setPrimaryShipping(address)" [disabled]="shippingUpdateInProgressId() === address.id"
+                    class="btn-ghost px-3 py-1 text-xs disabled:opacity-50">
+                    @if (shippingUpdateInProgressId() === address.id) { Setting... } @else { Set as shipping }
+                  </button>
+                }
+                @if (isPrimaryBilling(address.id)) {
+                  <span class="rounded-full bg-[hsl(160,35%,54%)]/20 px-3 py-1 text-xs font-medium text-[hsl(160,35%,54%)]">Primary billing</span>
+                } @else {
+                  <button type="button" (click)="setPrimaryBilling(address)" [disabled]="billingUpdateInProgressId() === address.id"
+                    class="btn-ghost px-3 py-1 text-xs disabled:opacity-50">
+                    @if (billingUpdateInProgressId() === address.id) { Setting... } @else { Set as billing }
+                  </button>
+                }
                 <button type="button" (click)="deleteAddress(address)" [disabled]="!canDeleteAddress(address.id) || deleteInProgressId() === address.id"
-                  class="btn-ghost px-3 py-1.5 text-xs !text-[--color-danger] hover:!bg-[--color-danger-muted]/30 disabled:opacity-50">
+                  class="btn-ghost px-3 py-1 text-xs !text-[--color-danger] hover:!bg-[--color-danger-muted]/30 disabled:opacity-50">
                   @if (deleteInProgressId() === address.id) { Deleting... } @else { Delete }
                 </button>
               </div>

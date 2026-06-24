@@ -33,14 +33,14 @@
         <h2 class="text-xl font-bold text-text-primary">Order summary</h2>
         <div class="mt-5 max-h-72 space-y-2 overflow-y-auto pr-1">
           @for (item of displayItems(); track item.key) {
-            <div class="rounded-xl bg-[--color-bg]/60 p-3"><p class="text-sm font-semibold text-text-primary">{{ item.title }}</p><p class="mt-1 text-xs text-text-muted">Qty {{ item.quantity }} x {{ item.unitPrice | currency: currencyCode() : 'symbol' : '1.2-2' }}</p><p class="mt-1 text-sm font-bold text-text-primary">{{ item.lineTotal | currency: currencyCode() : 'symbol' : '1.2-2' }}</p></div>
+            <div class="rounded-xl bg-[--color-bg]/60 p-3"><p class="text-sm font-semibold text-text-primary">{{ item.title }}</p><p class="mt-1 text-xs text-text-muted">Qty {{ item.quantity }} x <app-price-display [value]="item.unitPrice" [currencyCode]="currencyCode()" variant="muted" /></p><p class="mt-1 text-sm"><app-price-display [value]="item.lineTotal" [currencyCode]="currencyCode()" /></p></div>
           }
         </div>
         <div class="mt-5 space-y-3 border-t border-border pt-5 text-sm">
-          <div class="flex items-center justify-between text-text-muted"><span>Subtotal</span><span class="text-text-primary">{{ subtotal() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
-          <div class="flex items-center justify-between text-text-muted"><span>Shipping</span><span class="text-text-primary">{{ shippingAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
-          <div class="flex items-center justify-between text-text-muted"><span>Tax</span><span class="text-text-primary">{{ taxAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
-          <div class="flex items-center justify-between text-base font-bold text-text-primary pt-1"><span>Total</span><span>{{ totalAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
+          <div class="flex items-center justify-between text-text-muted"><span>Subtotal</span><span><app-price-display [value]="subtotal()" [currencyCode]="currencyCode()" /></span></div>
+          <div class="flex items-center justify-between text-text-muted"><span>Shipping</span><span><app-price-display [value]="shippingAmount()" [currencyCode]="currencyCode()" /></span></div>
+          <div class="flex items-center justify-between text-text-muted"><span>Tax</span><span><app-price-display [value]="taxAmount()" [currencyCode]="currencyCode()" /></span></div>
+          <div class="flex items-center justify-between text-base pt-1"><span class="font-bold text-text-primary">Total</span><span><app-price-display [value]="totalAmount()" [currencyCode]="currencyCode()" /></span></div>
         </div>
         @if (submitError()) { <p class="mt-4 rounded-xl border border-[--color-danger]/30 bg-[--color-danger-muted] p-3 text-sm text-[--color-danger]">{{ submitError() }}</p> }
         <button type="button" class="btn-primary mt-5 w-full py-3 text-sm font-semibold" [disabled]="isSubmitting()" (click)="proceedToStripe()">{{ isSubmitting() ? 'Redirecting...' : 'Proceed to Stripe' }}</button>

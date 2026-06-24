@@ -19,6 +19,7 @@ interface SearchParams {
   query: string;
   page: number;
   size: number;
+  sort: string;
 }
 
 @Component({
@@ -29,7 +30,16 @@ interface SearchParams {
 })
 export class ProductGridComponent {
   private static readonly DEFAULT_PAGE_SIZE = 25;
+  private static readonly DEFAULT_SORT = 'newest';
   private static readonly PAGE_SIZE_OPTIONS = [25, 50, 100] as const;
+  private static readonly SORT_OPTIONS: ReadonlyArray<{ value: string; label: string }> = [
+    { value: 'newest', label: 'Newest' },
+    { value: 'price_asc', label: 'Price: Low to high' },
+    { value: 'price_desc', label: 'Price: High to low' },
+    { value: 'name_asc', label: 'Name: A to Z' },
+    { value: 'name_desc', label: 'Name: Z to A' },
+    { value: 'rating_desc', label: 'Top rated' },
+  ];
   private static readonly PAGE_LINK_WINDOW = 1;
 
   private readonly route = inject(ActivatedRoute);
@@ -43,20 +53,22 @@ export class ProductGridComponent {
       map((queryParams) => {
         const rawPage = Number(queryParams.get('page') ?? '1');
         const rawSize = Number(queryParams.get('size') ?? String(ProductGridComponent.DEFAULT_PAGE_SIZE));
+        const rawSort = queryParams.get('sort') ?? ProductGridComponent.DEFAULT_SORT;
         return {
           query: (queryParams.get('q') ?? '').trim(),
           page: Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1,
-          size: this.normalizePageSize(rawSize)
+          size: this.normalizePageSize(rawSize),
+          sort: this.normalizeSort(rawSort)
         } as SearchParams;
       })
     ),
-    { initialValue: { query: '', page: 1, size: ProductGridComponent.DEFAULT_PAGE_SIZE } as SearchParams }
+    { initialValue: { query: '', page: 1, size: ProductGridComponent.DEFAULT_PAGE_SIZE, sort: ProductGridComponent.DEFAULT_SORT } as SearchParams }
   );
 
   private readonly productListState = toSignal(
     toObservable(this.searchParams).pipe(
-      switchMap(({ query, page, size }) =>
-        this.productApiService.getProducts({ query, page, size }).pipe(
+      switchMap(({ query, page, size, sort }) =>
+        this.productApiService.getProducts({ query, page, size, sort }).pipe(
           map((result) => ({ isLoading: false, hasError: false, result })),
           startWith({ isLoading: true, hasError: false, result: this.emptyResult(page, size) }),
           catchError(() => of({ isLoading: false, hasError: true, result: this.emptyResult(page, size) }))
@@ -82,7 +94,9 @@ export class ProductGridComponent {
   readonly hasNextPage = computed(() => this.productListState().result.hasNext);
   readonly totalItems = computed(() => this.productListState().result.totalItems);
   readonly pageSize = computed(() => this.searchParams().size);
+  readonly sort = computed(() => this.searchParams().sort);
   readonly pageSizeOptions = ProductGridComponent.PAGE_SIZE_OPTIONS;
+  readonly sortOptions = ProductGridComponent.SORT_OPTIONS;
   readonly shouldShowPagination = computed(() => this.totalPages() > 1);
   readonly resultRangeLabel = computed(() => {
     const totalItems = this.totalItems();
@@ -149,18 +163,26 @@ export class ProductGridComponent {
     this.goToPage(1, size);
   }
 
+  changeSort(rawSort: string): void {
+    const sort = this.normalizeSort(rawSort);
+    if (sort === this.searchParams().sort) return;
+    this.goToPage(1, undefined, sort);
+  }
+
   isPageLink(pageLink: number | string): pageLink is number {
     return typeof pageLink === 'number';
   }
 
-  private goToPage(page: number, sizeOverride?: number): void {
+  private goToPage(page: number, sizeOverride?: number, sortOverride?: string): void {
     const { query, size } = this.searchParams();
     const nextSize = sizeOverride ?? size;
+    const nextSort = sortOverride ?? this.searchParams().sort;
     void this.router.navigate(['/products'], {
       queryParams: {
         q: query || null,
         page: page > 1 ? page : null,
-        size: nextSize === ProductGridComponent.DEFAULT_PAGE_SIZE ? null : nextSize
+        size: nextSize === ProductGridComponent.DEFAULT_PAGE_SIZE ? null : nextSize,
+        sort: nextSort === ProductGridComponent.DEFAULT_SORT ? null : nextSort
       }
     });
   }
@@ -173,6 +195,12 @@ export class ProductGridComponent {
     return ProductGridComponent.PAGE_SIZE_OPTIONS.includes(rawSize as (typeof ProductGridComponent.PAGE_SIZE_OPTIONS)[number])
       ? rawSize
       : ProductGridComponent.DEFAULT_PAGE_SIZE;
+  }
+
+  private normalizeSort(rawSort: string): string {
+    return ProductGridComponent.SORT_OPTIONS.some((option) => option.value === rawSort)
+      ? rawSort
+      : ProductGridComponent.DEFAULT_SORT;
   }
 
   private buildPageLinks(currentPage: number, totalPages: number): Array<number | string> {

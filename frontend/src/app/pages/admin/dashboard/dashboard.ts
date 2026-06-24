@@ -4,11 +4,12 @@ import { DatePipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { AdminApiService } from '../../../core/admin/admin-api.service';
 import { AdminDashboardStats, AdminRevenueChart } from '../../../core/admin/admin.types';
+import { PriceDisplayComponent } from '../../../shared/price-display/price-display';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, DatePipe, PriceDisplayComponent],
   templateUrl: './dashboard.html',
   providers: [DatePipe]
 })

@@ -121,15 +121,15 @@ export class Background3dComponent implements AfterViewInit, OnDestroy {
     this.pcScene.add(dir.clone());
     this.pcScene.add(frontLight.clone());
 
-    // Create soft radial glow behind the PC
+    // Create subtle structural glow behind the PC
     const canvas2d = document.createElement('canvas');
     canvas2d.width = 256;
     canvas2d.height = 256;
     const ctx = canvas2d.getContext('2d');
     if (ctx) {
       const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
-      gradient.addColorStop(0, 'rgba(200, 120, 40, 0.45)');
-      gradient.addColorStop(1, 'rgba(200, 120, 40, 0)');
+      gradient.addColorStop(0, 'hsla(210, 5%, 24%, 0.35)');
+      gradient.addColorStop(1, 'hsla(210, 5%, 20%, 0)');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 256, 256);
       const glowTexture = new THREE.CanvasTexture(canvas2d);

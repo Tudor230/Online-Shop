@@ -1,10 +1,10 @@
 <div class="flex flex-col min-h-full">
   <div class="pb-4">
     <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">System</span>
-    <h1 class="mt-1.5 text-2xl font-bold tracking-tight text-[--color-text]">Audit Logs</h1>
+    <h1 class="mt-1.5 text-2xl font-bold tracking-tight text-[--color-text]">Audit logs</h1>
   </div>
 
-  <div class="flex-1 rounded-2xl bg-white/[0.04] shadow-sm shadow-black/10 overflow-y-auto">
+  <div class="flex-1 rounded-2xl bg-[--color-overlay-default] overflow-y-auto">
     @if (loading()) {
       <div class="px-6 py-8 text-center text-sm text-[--color-text-muted]/50">Loading audit logs...</div>
     } @else {
@@ -16,7 +16,7 @@
         } @else {
           <table class="w-full text-left text-sm">
           <thead><tr class="text-[--color-text-muted]/50"><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Timestamp</th><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Admin</th><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Action</th><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Entity Type</th><th class="whitespace-nowrap px-6 py-3.5 text-xs font-semibold uppercase tracking-wider">Entity ID</th><th class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wider w-full">Details</th></tr></thead>
-          <tbody>@for (log of logs(); track log.id; let even = $even) {<tr class="transition-colors" [class.bg-white/[0.015]]="even"><td class="whitespace-nowrap px-6 py-4 text-[--color-text-muted]/50">{{ log.createdAt | date:'medium' }}</td><td class="whitespace-nowrap px-6 py-4"><span class="font-medium text-[--color-text]">{{ log.adminEmail || 'System' }}</span></td><td class="whitespace-nowrap px-6 py-4"><span class="inline-flex items-center rounded-full bg-white/[0.03] px-2.5 py-0.5 text-[11px] font-semibold text-[--color-text]">{{ log.actionType }}</span></td><td class="whitespace-nowrap px-6 py-4 font-medium text-[--color-text]">{{ log.entityType }}</td><td class="whitespace-nowrap px-6 py-4 font-mono text-xs text-[--color-text-muted]/40">{{ log.entityId || '-' }}</td><td class="px-6 py-4 text-[--color-text-muted]/40 truncate max-w-xs" [title]="formatDetails(log.details)">{{ formatDetails(log.details) }}</td></tr>}</tbody>
+          <tbody>@for (log of logs(); track log.id; let even = $even) {<tr class="transition-colors" [class.bg-[--color-overlay-stripe]]="even"><td class="whitespace-nowrap px-6 py-4 text-[--color-text-muted]/50">{{ log.createdAt | date:'medium' }}</td><td class="whitespace-nowrap px-6 py-4"><span class="font-medium text-[--color-text]">{{ log.adminEmail || 'System' }}</span></td><td class="whitespace-nowrap px-6 py-4"><span class="inline-flex items-center rounded-full bg-[--color-overlay-subtle] px-2.5 py-0.5 text-[11px] font-semibold text-[--color-text]">{{ log.actionType }}</span></td><td class="whitespace-nowrap px-6 py-4 font-medium text-[--color-text]">{{ log.entityType }}</td><td class="whitespace-nowrap px-6 py-4 font-mono text-xs text-[--color-text-muted]/40">{{ log.entityId || '-' }}</td><td class="px-6 py-4 text-[--color-text-muted]/40 truncate max-w-xs" [title]="formatDetails(log.details)">{{ formatDetails(log.details) }}</td></tr>}</tbody>
         </table>
         }
       }
@@ -24,11 +24,11 @@
   </div>
 
   @if (totalPages() > 1) {
-    <div class="sticky bottom-0 -mx-6 px-6 pt-4 pb-0 bg-[oklch(0.15_0.01_80)] flex items-center justify-between">
+    <div class="sticky bottom-0 -mx-6 px-6 pt-4 pb-0 bg-[--color-bg] flex items-center justify-between">
       <p class="text-sm text-[--color-text-muted]/40">Showing <span class="font-medium text-[--color-text]">{{ currentPage() * pageSize + 1 }}</span>–<span class="font-medium text-[--color-text]">{{ (currentPage() * pageSize) + logs().length }}</span> of <span class="font-medium text-[--color-text]">{{ totalElements() }}</span></p>
       <div class="flex items-center gap-2">
-        <button (click)="onPageChange(currentPage() - 1)" [disabled]="currentPage() === 0" class="rounded-lg bg-white/[0.03] px-3 py-1.5 text-sm font-medium text-[--color-text-muted]/60 hover:bg-white/[0.06] hover:text-[--color-text] disabled:opacity-30">Previous</button>
-        <button (click)="onPageChange(currentPage() + 1)" [disabled]="currentPage() >= totalPages() - 1" class="rounded-lg bg-white/[0.03] px-3 py-1.5 text-sm font-medium text-[--color-text-muted]/60 hover:bg-white/[0.06] hover:text-[--color-text] disabled:opacity-30">Next</button>
+        <button (click)="onPageChange(currentPage() - 1)" [disabled]="currentPage() === 0" class="rounded-lg bg-[--color-overlay-subtle] px-3 py-1.5 text-sm font-medium text-[--color-text-muted]/60 hover:bg-[--color-overlay-hover] hover:text-[--color-text] disabled:opacity-30">Previous</button>
+        <button (click)="onPageChange(currentPage() + 1)" [disabled]="currentPage() >= totalPages() - 1" class="rounded-lg bg-[--color-overlay-subtle] px-3 py-1.5 text-sm font-medium text-[--color-text-muted]/60 hover:bg-[--color-overlay-hover] hover:text-[--color-text] disabled:opacity-30">Next</button>
       </div>
     </div>
   }

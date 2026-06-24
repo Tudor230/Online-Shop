@@ -11,6 +11,7 @@ import { CreateProductReviewRequest, ProductDetails, ProductSummary } from '../.
 import { WishlistFacadeService } from '../../core/wishlist/wishlist-facade.service';
 import { ProductDisplayComponent } from '../../shared/product-display/product-display';
 import { ProductCardComponent } from '../../shared/product-card/product-card';
+import { StarRatingComponent } from '../../shared/star-rating/star-rating';
 
 interface SimilarItemsState {
   isLoading: boolean;
@@ -20,7 +21,7 @@ interface SimilarItemsState {
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, ProductDisplayComponent, ProductCardComponent],
+  imports: [CommonModule, ProductDisplayComponent, ProductCardComponent, StarRatingComponent],
   templateUrl: './product-details.html'
 })
 export class ProductDetailsComponent {
@@ -109,6 +110,8 @@ export class ProductDetailsComponent {
     return this.wishlistFacadeService.isInWishlist(currentProduct.id);
   });
 
+  readonly isLightboxOpen = signal(false);
+
   constructor() {
     effect(() => {
       this.product();
@@ -117,7 +120,7 @@ export class ProductDetailsComponent {
 
     effect((onCleanup) => {
       const currentProduct = this.product();
-      if (!this.isBrowser || !currentProduct || currentProduct.imageGalleryIds.length <= 1) {
+      if (!this.isBrowser || !currentProduct || currentProduct.imageGalleryIds.length <= 1 || this.isLightboxOpen()) {
         return;
       }
 
@@ -174,6 +177,10 @@ export class ProductDetailsComponent {
 
   goBackToGrid(): void {
     void this.router.navigateByUrl('/products');
+  }
+
+  onLightboxStateChanged(isOpen: boolean): void {
+    this.isLightboxOpen.set(isOpen);
   }
 
   addToCart(): void {

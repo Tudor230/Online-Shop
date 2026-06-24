@@ -21,7 +21,6 @@ export class WelcomeComponent {
   readonly isLoading = signal<boolean>(true);
 
   readonly introOpacity = signal<number>(1);
-  readonly introBlur = signal<number>(0);
   readonly introScale = signal<number>(1);
 
   readonly valueProps = signal<readonly ValueProp[]>([
@@ -45,7 +44,6 @@ export class WelcomeComponent {
     const dissolvePx = window.innerHeight * 0.85;
     const progress = Math.min(Math.max(scrollY / dissolvePx, 0), 1);
     this.introOpacity.set(1 - progress);
-    this.introBlur.set(progress * 8);
     this.introScale.set(1 + progress * 0.03);
   }
 

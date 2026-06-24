@@ -2,7 +2,7 @@
   <div class="shrink-0 flex items-center justify-between pb-4">
     <div>
       <span class="text-xs font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Inventory</span>
-      <h1 class="mt-1 text-2xl font-bold tracking-tight text-[--color-text]">{{ productId() ? 'Edit' : 'New' }} Product</h1>
+      <h1 class="mt-1 text-2xl font-bold tracking-tight text-[--color-text]">{{ productId() ? 'Edit' : 'New' }} product</h1>
     </div>
     <button class="text-sm text-text-secondary hover:text-text-primary" (click)="cancel()">Back to Products</button>
   </div>
@@ -63,7 +63,7 @@
             <p class="text-xs text-text-secondary">Upload images, review the previews, then mark one as the primary storefront image.</p>
           </div>
 
-          <label class="inline-flex cursor-pointer items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover">
+          <label class="inline-flex cursor-pointer items-center justify-center rounded-lg bg-[--color-primary-fill] border border-[--color-border-strong] px-4 py-2 text-sm font-medium text-[--color-primary] hover:bg-[--color-primary-fill-hover]">
             <input type="file" accept="image/*" multiple class="sr-only" [disabled]="uploadingImages()" (change)="onImagesSelected($event)" />
             {{ uploadingImages() ? 'Uploading...' : 'Upload images' }}
           </label>
@@ -154,7 +154,7 @@
 
       <div class="flex justify-end gap-2 pt-2">
         <button class="rounded-lg border border-surface-elevated bg-surface-default px-4 py-2 text-sm text-text-primary hover:bg-surface-elevated" (click)="cancel()">Cancel</button>
-        <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50" [disabled]="saving()" (click)="save()">
+        <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-[--color-primary] hover:bg-[--color-primary-fill-hover] disabled:opacity-50" [disabled]="saving()" (click)="save()">
           {{ saving() ? 'Saving...' : (productId() ? 'Update' : 'Create') }}
         </button>
       </div>

@@ -6,11 +6,13 @@ import { AdminApiService } from '../../../core/admin/admin-api.service';
 import { AdminProductList, PageResponse } from '../../../core/admin/admin.types';
 import { CloudinaryTransformOptions } from '../../../core/images/cloudinary-url.pipe';
 import { CloudinaryImageFrameComponent } from '../../../shared/cloudinary-image-frame/cloudinary-image-frame';
+import { PriceDisplayComponent } from '../../../shared/price-display/price-display';
+import { StarRatingComponent } from '../../../shared/star-rating/star-rating';
 
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CloudinaryImageFrameComponent],
+  imports: [CommonModule, FormsModule, RouterLink, CloudinaryImageFrameComponent, PriceDisplayComponent, StarRatingComponent],
   templateUrl: './products.html'
 })
 export class AdminProductsComponent implements OnInit {

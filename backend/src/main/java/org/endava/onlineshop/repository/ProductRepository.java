@@ -3,6 +3,7 @@ package org.endava.onlineshop.repository;
 import org.endava.onlineshop.model.entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +20,20 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
         UUID getId();
 
         Long getTotalCount();
-    }
+    @EntityGraph(attributePaths = {"categories", "inventory"})
+    @Query("""
+          SELECT p
+          FROM Product p
+          WHERE p.isActive = TRUE
+            AND (:query = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%'))
+                           OR LOWER(COALESCE(p.categoryText, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+                           OR LOWER(COALESCE(p.description, '')) LIKE LOWER(CONCAT('%', :query, '%')))
+          """)
+    Page<Product> findActiveProductsSorted(
+            @Param("query") String query,
+            Pageable pageable
+    );
+}
 
     @EntityGraph(attributePaths = {"categories", "inventory"})
     Optional<Product> findBySlugAndIsActiveTrue(String slug);
@@ -126,5 +140,19 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             @Param("semanticWeight") double semanticWeight,
             @Param("limit") int limit,
             @Param("offset") int offset
+    );
+
+    @EntityGraph(attributePaths = {"categories", "inventory"})
+    @Query("""
+          SELECT p
+          FROM Product p
+          WHERE p.isActive = TRUE
+            AND (:query = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%'))
+                           OR LOWER(COALESCE(p.categoryText, '')) LIKE LOWER(CONCAT('%', :query, '%'))
+                           OR LOWER(COALESCE(p.description, '')) LIKE LOWER(CONCAT('%', :query, '%')))
+          """)
+    Page<Product> findActiveProductsSorted(
+            @Param("query") String query,
+            Pageable pageable
     );
 }

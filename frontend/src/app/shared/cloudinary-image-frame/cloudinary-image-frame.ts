@@ -29,7 +29,7 @@ const EMPTY_PLUGINS: Plugins = [];
           (error)="onImageError()"
         />
       } @else {
-        <ng-container [ngTemplateOutlet]="fallback" />
+        <div [class]="fallbackClass + ' skeleton-wave'" aria-hidden="true"></div>
       }
     } @else {
       <ng-container [ngTemplateOutlet]="fallback" />
@@ -58,7 +58,7 @@ export class CloudinaryImageFrameComponent implements OnChanges {
     }
   }
 
-  get resolvedPlugins() {
+  get resolvedPlugins(): Plugins {
     if (!isPlatformBrowser(this.platformId)) {
       return EMPTY_PLUGINS;
     }

@@ -9,7 +9,7 @@
   @else if (wishlistFacade.error()) { <div class="card p-8 text-sm text-[--color-danger]">{{ wishlistFacade.error() }}</div> }
   @else if (!wishlistFacade.items().length) {
     <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center">
-      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[--color-bg] text-text-muted/40">&#9825;</div>
+      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[--color-bg] text-text-muted/85">&#9825;</div>
       <p class="text-base font-semibold text-text-primary">Your wishlist is empty</p>
       <p class="text-sm text-text-muted">Save products to compare and buy later.</p>
       <a routerLink="/products" class="btn-primary px-5 py-2.5 text-sm">Browse products</a>
@@ -25,7 +25,7 @@
             </button>
             <button type="button" class="min-w-0 text-left" (click)="openProduct(item.productSlug)">
               <p class="truncate text-sm font-semibold text-text-primary">{{ item.title }}</p>
-              <p class="mt-1 text-sm font-medium text-text-muted">{{ item.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
+              <p class="mt-1 text-sm font-medium text-text-muted"><app-price-display [value]="item.price" variant="muted" /></p>
             </button>
             <div class="flex items-center gap-2">
               <button type="button" class="btn-primary px-4 py-2 text-xs" (click)="addToCart(item.productId)">Add to cart</button>

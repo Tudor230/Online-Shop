@@ -7,20 +7,20 @@
   @if (error()) {<div class="rounded-xl bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ error() }}</div>}
   @if (actionError()) {<div class="rounded-xl bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ actionError() }}</div>}
 
-  <div class="flex-1 rounded-2xl bg-white/[0.04] shadow-sm shadow-black/10 overflow-y-auto">
+  <div class="flex-1 rounded-2xl bg-[--color-overlay-default] overflow-y-auto">
     @if (loading()) {<div class="px-4 py-8 text-center text-sm text-[--color-text-muted]/50">Loading...</div>} @else {
       <table class="w-full text-left text-sm">
         <thead><tr class="text-[--color-text-muted]/50"><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Name</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Slug</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Parent</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-right">Actions</th></tr></thead>
-        <tbody>@for (cat of categories(); track cat.id; let even = $even) {<tr class="transition-colors" [class.bg-white/[0.015]]="even"><td class="px-4 py-3 text-[--color-text]">{{ cat.name }}</td><td class="px-4 py-3 text-[--color-text-muted]/50">{{ cat.slug }}</td><td class="px-4 py-3 text-[--color-text-muted]/50">{{ cat.parentId ? (parentName(cat.parentId)) : '-' }}</td><td class="px-4 py-3 text-right"><button class="mr-2 text-xs text-[--color-text-muted]/40 hover:text-[--color-text]" (click)="startEdit(cat)">Edit</button><button class="text-xs text-[--color-danger]/50 hover:text-[--color-danger]" (click)="deleteCategory(cat.id)">Delete</button></td></tr>} @empty {<tr><td colspan="4" class="px-4 py-8 text-center text-sm text-[--color-text-muted]/40">No categories found.</td></tr>}</tbody>
+        <tbody>@for (cat of categories(); track cat.id; let even = $even) {<tr class="transition-colors" [class.bg-[--color-overlay-stripe]]="even"><td class="px-4 py-3 text-[--color-text]">{{ cat.name }}</td><td class="px-4 py-3 text-[--color-text-muted]/50">{{ cat.slug }}</td><td class="px-4 py-3 text-[--color-text-muted]/50">{{ cat.parentId ? (parentName(cat.parentId)) : '-' }}</td><td class="px-4 py-3 text-right"><button class="mr-2 text-xs text-[--color-text-muted]/40 hover:text-[--color-text]" (click)="startEdit(cat)">Edit</button><button class="text-xs text-[--color-danger]/50 hover:text-[--color-danger]" (click)="deleteCategory(cat.id)">Delete</button></td></tr>} @empty {<tr><td colspan="4" class="px-4 py-8 text-center text-sm text-[--color-text-muted]/40">No categories found.</td></tr>}</tbody>
       </table>
     }
   </div>
 
   @if (editing(); as edit) {
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div class="w-full max-w-md rounded-xl border border-surface-elevated bg-surface-default p-6 shadow-2xl">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-[--color-surface-overlay] p-4">
+      <div class="w-full max-w-md rounded-xl border border-surface-elevated bg-surface-default p-6">
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-lg font-bold text-text-primary">{{ edit.id ? 'Edit' : 'New' }} Category</h2>
+          <h2 class="text-lg font-bold text-text-primary">{{ edit.id ? 'Edit' : 'New' }} category</h2>
           <button class="text-sm text-text-secondary hover:text-text-primary" (click)="cancelEdit()">Back to Categories</button>
         </div>
         @if (actionError()) {<div class="mb-4 rounded-lg bg-[--color-danger-muted] border border-[--color-danger]/30 px-4 py-3 text-sm text-[--color-danger]">{{ actionError() }}</div>}
@@ -31,7 +31,7 @@
         </div>
         <div class="mt-4 flex justify-end gap-2">
           <button class="rounded-lg border border-surface-elevated bg-surface-default px-4 py-2 text-sm text-text-primary hover:bg-surface-elevated" (click)="cancelEdit()">Cancel</button>
-          <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover" (click)="save()">Save</button>
+          <button class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-[--color-primary] hover:bg-[--color-primary-fill-hover]" (click)="save()">Save</button>
         </div>
       </div>
     </div>

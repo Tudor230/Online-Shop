@@ -9,7 +9,9 @@ import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -87,8 +89,14 @@ public class ProductEmbeddingService {
         jdbcTemplate.update(UPDATE_PRODUCT_EMBEDDING_SQL, vector, product.getId());
     }
 
-    public Page<Product> findActiveProducts(String query, Pageable pageable) {
+    public Page<Product> findActiveProducts(String query, String sort, Pageable pageable) {
         String normalizedQuery = normalizeQuery(query);
+
+        if (sort != null && !sort.isBlank() && !"newest".equals(sort)) {
+            Pageable sortedPageable = applySort(pageable, sort);
+            return productRepository.findActiveProductsSorted(normalizedQuery, sortedPageable);
+        }
+
         boolean shouldUseSemantic = embeddingEnabled && !normalizedQuery.isBlank();
         String vectorLiteral = shouldUseSemantic ? createVectorLiteral(normalizedQuery) : null;
         boolean semanticEnabledForQuery = shouldUseSemantic && vectorLiteral != null;
@@ -155,6 +163,17 @@ public class ProductEmbeddingService {
 
     private String normalizeQuery(String query) {
         return query == null ? "" : query.trim();
+    }
+
+    private Pageable applySort(Pageable pageable, String sort) {
+        Sort springSort = switch (sort) {
+            case "price_asc" -> Sort.by("basePrice").ascending();
+            case "price_desc" -> Sort.by("basePrice").descending();
+            case "name_asc" -> Sort.by("name").ascending();
+            case "name_desc" -> Sort.by("name").descending();
+            default -> Sort.unsorted();
+        };
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), springSort);
     }
 
     private boolean hasEmbedding(UUID productId) {

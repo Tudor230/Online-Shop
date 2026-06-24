@@ -1,13 +1,15 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ProductSummary } from '../../core/products/product.types';
 import { CloudinaryTransformOptions } from '../../core/images/cloudinary-url.pipe';
 import { CloudinaryImageFrameComponent } from '../cloudinary-image-frame/cloudinary-image-frame';
+import { PriceDisplayComponent } from '../price-display/price-display';
+import { StarRatingComponent } from '../star-rating/star-rating';
 
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, CloudinaryImageFrameComponent],
+  imports: [CommonModule, CloudinaryImageFrameComponent, PriceDisplayComponent, StarRatingComponent],
   templateUrl: './product-card.html'
 })
 export class ProductCardComponent {

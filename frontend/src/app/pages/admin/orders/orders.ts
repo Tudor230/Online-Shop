@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminApiService } from '../../../core/admin/admin-api.service';
 import { AdminOrderList, AdminOrderDetail, PageResponse } from '../../../core/admin/admin.types';
+import { PriceDisplayComponent } from '../../../shared/price-display/price-display';
 
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PriceDisplayComponent],
   templateUrl: './orders.html'
 })
 export class AdminOrdersComponent implements OnInit {

@@ -8,11 +8,13 @@ import { KeycloakAuthService } from '../../core/auth/keycloak-auth.service';
 import { OrderApiService } from '../../core/orders/order-api.service';
 import { OrderHistoryEntry, OrderStatus, canCancelOrder, canPayOrder } from '../../core/orders/order.types';
 import { CloudinaryImageFrameComponent } from '../../shared/cloudinary-image-frame/cloudinary-image-frame';
+import { PriceDisplayComponent } from '../../shared/price-display/price-display';
+import { StarRatingComponent } from '../../shared/star-rating/star-rating';
 
 @Component({
   selector: 'app-order-history-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, CloudinaryImageFrameComponent],
+  imports: [CommonModule, RouterLink, CloudinaryImageFrameComponent, PriceDisplayComponent, StarRatingComponent],
   templateUrl: './order-history.html'
 })
 export class OrderHistoryPageComponent {

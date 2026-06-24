@@ -1,8 +1,8 @@
 <section class="mx-auto w-full max-w-7xl px-4 py-14 md:px-6 lg:px-8">
-  <header class="mb-10 flex flex-col gap-2">
-    <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Products</span>
-    <h1 class="text-4xl font-bold tracking-tighter text-[--color-text]">Gaming Tech Grid</h1>
-    <p class="text-sm text-[--color-text-muted]">Customized accessories for your next setup upgrade.</p>
+  <header class="mb-10 flex flex-col gap-1.5">
+    <span class="text-[10px] font-medium uppercase tracking-[0.12em] text-text-muted/85">Products</span>
+    <h1 class="text-5xl font-bold tracking-tighter text-text-primary">Gaming Tech Grid</h1>
+    <p class="mt-0.5 text-xs text-text-muted/75">Customized accessories for your next setup upgrade.</p>
   </header>
 
   @if (isLoading()) {
@@ -18,18 +18,28 @@
     </div>
   } @else if (!products().length) {
     <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center">
-      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[--color-bg] text-text-muted/50">◎</div>
+      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[--color-bg] text-text-muted/75">◎</div>
       <p class="text-base font-semibold text-text-primary">No products found</p>
       <p class="text-sm text-text-muted">@if (isSearchActive()) { Try changing the prompt to describe what you need. } @else { Try refreshing or browse the featured collection next. }</p>
     </div>
   } @else {
-    <div class="card mb-6 flex flex-col gap-3 px-4 py-3 text-sm text-text-muted md:flex-row md:items-center md:justify-between">
-      <p class="text-xs font-medium text-text-primary">{{ resultRangeLabel() }}</p>
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="text-xs">Show:</span>
-        @for (option of pageSizeOptions; track option) {
-          <button type="button" class="btn-secondary min-w-10 px-3 py-1.5 text-xs" [ngClass]="option === pageSize() ? '!bg-[--color-brand] !text-[--color-on-brand] !border-[--color-brand]' : ''" [attr.aria-pressed]="option === pageSize()" (click)="changePageSize(option)">{{ option }}</button>
-        }
+    <div class="mb-5 flex flex-col gap-2 text-[11px] md:flex-row md:items-center md:justify-between">
+      <p class="text-text-muted/75">{{ resultRangeLabel() }}</p>
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-1.5">
+          <span class="text-text-muted/80">Sort:</span>
+          <select #sortSelect class="select px-2.5 py-1.5 text-[11px] cursor-pointer" (change)="changeSort(sortSelect.value)">
+            @for (option of sortOptions; track option.value) {
+              <option [value]="option.value" [selected]="option.value === sort()">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="text-text-muted/80">Show:</span>
+          @for (option of pageSizeOptions; track option) {
+            <button type="button" class="btn-ghost min-w-8 px-2 py-1 text-[11px] cursor-pointer" [ngClass]="option === pageSize() ? '!text-text-primary !bg-[--color-border]' : 'text-text-muted/75'" [attr.aria-pressed]="option === pageSize()" (click)="changePageSize(option)">{{ option }}</button>
+          }
+        </div>
       </div>
     </div>
 
@@ -40,14 +50,14 @@
     </div>
 
     @if (shouldShowPagination()) {
-      <div class="card mt-10 flex flex-wrap items-center justify-center gap-2 px-4 py-3 text-sm text-text-muted">
-        <button type="button" class="btn-secondary px-4 py-2 text-sm" [disabled]="!hasPreviousPage()" [class.opacity-40]="!hasPreviousPage()" (click)="goToPreviousPage()">&lt; Prev</button>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-1.5">
+        <button type="button" class="btn-ghost px-3 py-1.5 text-xs" [disabled]="!hasPreviousPage()" [class.opacity-30]="!hasPreviousPage()" (click)="goToPreviousPage()">&lt; Prev</button>
         @for (pageLink of pageLinks(); track $index) {
           @if (isPageLink(pageLink)) {
-            <button type="button" class="btn-secondary min-w-10 px-3 py-2 text-sm" [ngClass]="pageLink === currentPage() ? '!bg-[--color-brand] !text-[--color-on-brand] !border-[--color-brand]' : ''" [disabled]="pageLink === currentPage()" (click)="goToPageLink(pageLink)">{{ pageLink }}</button>
-          } @else { <span class="px-1 text-text-muted/50">...</span> }
+            <button type="button" class="btn-ghost min-w-8 px-2 py-1.5 text-xs" [ngClass]="pageLink === currentPage() ? '!text-text-primary !bg-[--color-border]' : 'text-text-muted/75'" [disabled]="pageLink === currentPage()" (click)="goToPageLink(pageLink)">{{ pageLink }}</button>
+          } @else { <span class="px-1 text-[11px] text-text-muted/85">...</span> }
         }
-        <button type="button" class="btn-secondary px-4 py-2 text-sm" [disabled]="!hasNextPage()" [class.opacity-40]="!hasNextPage()" (click)="goToNextPage()">Next &gt;</button>
+        <button type="button" class="btn-ghost px-3 py-1.5 text-xs" [disabled]="!hasNextPage()" [class.opacity-30]="!hasNextPage()" (click)="goToNextPage()">Next &gt;</button>
       </div>
     }
   }
