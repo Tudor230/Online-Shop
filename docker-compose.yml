@@ -42,6 +42,7 @@ services:
       - "8081:8080"
     volumes:
       - ./infrastructure/keycloak-config:/opt/keycloak/data/import/
+      - ./infrastructure/keycloak-themes/online-shop:/opt/keycloak/themes/online-shop
     depends_on:
       - keycloak-db
 

@@ -65,18 +65,23 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             WITH lexical AS (
                 SELECT p.id,
                        ROW_NUMBER() OVER (
-                           ORDER BY ts_rank_cd(
-                               (
-                                    setweight(to_tsvector('english', p.name), 'A') ||
-                                    setweight(to_tsvector('english', COALESCE(p.category_text, '')), 'B') ||
-                                    setweight(to_tsvector('english', COALESCE(p.description, '')), 'C')
-                               ),
-                               websearch_to_tsquery('english', :query)
-                           ) DESC,
-                           p.name ASC
-                       ) AS rank_position
+                            ORDER BY ts_rank_cd(
+                                (
+                                     setweight(to_tsvector('english', p.name), 'A') ||
+                                     setweight(to_tsvector('english', COALESCE(p.category_text, '')), 'B') ||
+                                     setweight(to_tsvector('english', COALESCE(p.description, '')), 'C')
+                                ),
+                                websearch_to_tsquery('english', :query)
+                            ) DESC,
+                            p.name ASC
+                        ) AS rank_position
                 FROM product p
                 WHERE p.is_active = TRUE
+                  AND (:categoryPath IS NULL OR EXISTS (
+                      SELECT 1 FROM product_category pc
+                      JOIN category c ON pc.category_id = c.id
+                      WHERE pc.product_id = p.id AND c.path <@ CAST(:categoryPath AS ltree)
+                  ))
                   AND (
                       :query = ''
                       OR (
@@ -89,13 +94,18 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             semantic AS (
                 SELECT p.id,
                        ROW_NUMBER() OVER (
-                           ORDER BY p.embedding <=> CAST(:queryEmbedding AS vector) ASC,
-                           p.name ASC
-                       ) AS rank_position
+                            ORDER BY p.embedding <=> CAST(:queryEmbedding AS vector) ASC,
+                            p.name ASC
+                        ) AS rank_position
                 FROM product p
                 WHERE p.is_active = TRUE
                   AND :useSemantic = TRUE
                   AND p.embedding IS NOT NULL
+                  AND (:categoryPath IS NULL OR EXISTS (
+                      SELECT 1 FROM product_category pc
+                      JOIN category c ON pc.category_id = c.id
+                      WHERE pc.product_id = p.id AND c.path <@ CAST(:categoryPath AS ltree)
+                  ))
                   AND (1 - (p.embedding <=> CAST(:queryEmbedding AS vector))) >= :semanticMinSimilarity
             ),
             fused AS (
@@ -124,6 +134,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             @Param("rrfK") int rrfK,
             @Param("lexicalWeight") double lexicalWeight,
             @Param("semanticWeight") double semanticWeight,
+            @Param("categoryPath") String categoryPath,
             @Param("limit") int limit,
             @Param("offset") int offset
     );

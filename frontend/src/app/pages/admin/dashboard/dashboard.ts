@@ -15,6 +15,7 @@ import { AdminDashboardStats, AdminRevenueChart } from '../../../core/admin/admi
 export class AdminDashboardComponent implements OnInit {
   private readonly api = inject(AdminApiService);
   private readonly datePipe = inject(DatePipe);
+  readonly today = new Date();
   readonly stats = signal<AdminDashboardStats | null>(null);
   readonly revenue = signal<AdminRevenueChart[]>([]);
   readonly loading = signal(true);

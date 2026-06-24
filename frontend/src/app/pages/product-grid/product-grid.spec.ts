@@ -1,6 +1,6 @@
 import { convertToParamMap, ActivatedRoute, Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { CartFacadeService } from '../../core/cart/cart-facade.service';
 import { ProductApiService } from '../../core/products/product-api.service';
 import { type ProductSearchPage, type ProductSummary } from '../../core/products/product.types';
@@ -33,7 +33,7 @@ function buildPage(overrides: Partial<ProductSearchPage> = {}): ProductSearchPag
 describe('ProductGridComponent', () => {
   let queryParams$: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
   let responseSubjects: Subject<ProductSearchPage>[];
-  let getProductsCalls: Array<{ query?: string; page?: number; size?: number }>;
+  let getProductsCalls: Array<{ query?: string; category?: string; page?: number; size?: number }>;
   let navigateCalls: Array<unknown[]>;
 
   const getPageSizeButtons = (fixture: ReturnType<typeof TestBed.createComponent<ProductGridComponent>>) =>
@@ -48,12 +48,13 @@ describe('ProductGridComponent', () => {
     navigateCalls = [];
 
     const productApiService = {
-      getProducts: (options: { query?: string; page?: number; size?: number } = {}) => {
+      getProducts: (options: { query?: string; category?: string; page?: number; size?: number } = {}) => {
         getProductsCalls.push(options);
         const response$ = new Subject<ProductSearchPage>();
         responseSubjects.push(response$);
         return response$.asObservable();
-      }
+      },
+      getCategories: () => of([])
     } as Partial<ProductApiService>;
 
     const router = {
@@ -85,7 +86,7 @@ describe('ProductGridComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(getProductsCalls).toEqual([{ query: '', page: 1, size: 25 }]);
+    expect(getProductsCalls).toEqual([{ query: '', category: '', page: 1, size: 25 }]);
     expect(responseSubjects).toHaveLength(1);
 
     responseSubjects[0].next(buildPage({ page: 1, size: 25 }));
@@ -102,7 +103,7 @@ describe('ProductGridComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(getProductsCalls.at(-1)).toEqual({ query: '', page: 1, size: 50 });
+    expect(getProductsCalls.at(-1)).toEqual({ query: '', category: '', page: 1, size: 50 });
     expect(responseSubjects).toHaveLength(2);
     expect(fixture.componentInstance.pageSize()).toBe(50);
     expect(fixture.componentInstance.currentPage()).toBe(1);
@@ -115,7 +116,7 @@ describe('ProductGridComponent', () => {
     queryParams$.next(convertToParamMap({ page: '2', size: '37' }));
     fixture.detectChanges();
 
-    expect(getProductsCalls.at(-1)).toEqual({ query: '', page: 2, size: 25 });
+    expect(getProductsCalls.at(-1)).toEqual({ query: '', category: '', page: 2, size: 25 });
     expect(navigateCalls).toEqual([]);
   });
 });

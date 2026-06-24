@@ -1,23 +1,11 @@
-<section class="mx-auto w-full max-w-3xl px-4 py-10 md:px-6 lg:px-8">
-  <article class="rounded-2xl border border-surface-elevated bg-surface-default p-6 md:p-8">
-    <h1 class="text-2xl font-semibold text-text-primary">Checkout canceled</h1>
-    <p class="mt-4 text-sm text-text-secondary">
-      Your payment was not completed and no charge was captured. You can retry from order history.
-    </p>
-
-    <div class="mt-6 flex flex-wrap gap-3">
-      <a
-        routerLink="/products"
-        class="inline-flex rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
-      >
-        Back to products
-      </a>
-      <a
-        routerLink="/orders"
-        class="inline-flex rounded-full border border-surface-elevated bg-surface-default px-4 py-2 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
-      >
-        View order history
-      </a>
+<section class="mx-auto w-full max-w-3xl px-4 py-16 md:px-6 lg:px-8">
+  <article class="card p-8 md:p-10 !shadow-none">
+    <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Checkout</span>
+    <h1 class="mt-1 text-[2rem] font-light tracking-[-0.02em] text-[--color-text] leading-tight">Checkout canceled</h1>
+    <p class="mt-5 text-sm leading-relaxed text-[--color-text-muted]">Your payment was not completed and no charge was captured. You can retry from order history.</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a routerLink="/products" class="btn-primary px-5 py-2.5 text-sm">Back to products</a>
+      <a routerLink="/orders" class="btn-secondary px-5 py-2.5 text-sm">View order history</a>
     </div>
   </article>
 </section>

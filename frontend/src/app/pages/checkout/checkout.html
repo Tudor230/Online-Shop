@@ -1,175 +1,49 @@
-<section class="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 lg:px-8">
-  <header class="mb-6">
-    <h1 class="text-2xl font-semibold text-text-primary">Checkout</h1>
-    <p class="mt-1 text-sm text-text-secondary">
-      @if (mode() === 'order') {
-        Complete payment for your pending order.
-      } @else {
-        Review your items and confirm shipping and billing addresses.
-      }
-    </p>
+<section class="mx-auto w-full max-w-7xl px-4 py-14 md:px-6 lg:px-8">
+  <header class="mb-10">
+    <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Checkout</span>
+    <h1 class="mt-1 text-[2rem] font-light tracking-[-0.02em] text-[--color-text] leading-tight">Checkout</h1>
+    <p class="mt-1 text-sm text-[--color-text-muted]">@if (mode() === 'order') { Complete payment for your pending order. } @else { Review your items and confirm shipping and billing addresses. }</p>
   </header>
 
   @if (!isAuthenticated()) {
-    <div class="rounded-2xl border border-surface-elevated bg-surface-default p-6 text-center">
-      <p class="text-sm text-text-secondary">Log in to continue to checkout.</p>
-      <button
-        type="button"
-        class="mt-4 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
-        (click)="login()"
-      >
-        Login
-      </button>
-    </div>
+    <div class="card p-8 text-center !shadow-none"><p class="text-sm text-[--color-text-muted]">Log in to continue to checkout.</p><button type="button" class="btn-primary mt-4 px-5 py-2.5 text-sm" (click)="login()">Sign in</button></div>
   } @else if (isLoading()) {
-    <div class="rounded-2xl border border-surface-elevated bg-surface-default p-6">
-      <div class="h-4 w-36 rounded-full bg-surface-elevated animate-pulse"></div>
-      <div class="mt-3 h-4 w-64 rounded-full bg-surface-elevated animate-pulse"></div>
-    </div>
+    <div class="card p-8 space-y-3 !shadow-none"><div class="h-4 w-36 rounded-sm bg-[#f6f9fc] skeleton-wave"></div><div class="h-4 w-64 rounded-sm bg-[#f6f9fc] skeleton-wave"></div></div>
   } @else if (error()) {
-    <div class="rounded-2xl border border-red-400/40 bg-surface-default p-6 text-sm text-red-300">
-      {{ error() }}
-      <div class="mt-4 flex flex-wrap gap-3">
-        <a
-          routerLink="/profile"
-          class="inline-flex rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
-        >
-          Go to profile
-        </a>
-        <a
-          routerLink="/products"
-          class="inline-flex rounded-full border border-surface-elevated bg-surface-default px-4 py-2 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
-        >
-          Continue shopping
-        </a>
-      </div>
+    <div class="card border-[--color-danger]/30 bg-[--color-danger-muted] p-6 text-sm text-[--color-danger]">{{ error() }}
+      <div class="mt-5 flex flex-wrap gap-3"><a routerLink="/profile" class="btn-primary px-4 py-2 text-sm">Go to profile</a><a routerLink="/products" class="btn-secondary px-4 py-2 text-sm">Continue shopping</a></div>
     </div>
   } @else {
-    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_24rem]">
-      <article class="rounded-2xl border border-surface-elevated bg-surface-default p-5">
-        <h2 class="text-lg font-semibold text-text-primary">Addresses</h2>
-        <p class="mt-1 text-sm text-text-secondary">Choose shipping and billing addresses before continuing to Stripe.</p>
-
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_26rem]">
+      <article class="card p-6">
+        <h2 class="text-[1.375rem] font-light text-[--color-text]">Addresses</h2>
+        <p class="mt-1 text-sm text-[--color-text-muted]">Choose shipping and billing addresses before continuing to Stripe.</p>
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          <label class="text-sm font-normal text-[--color-text]">Shipping address <select class="select mt-2 px-3 py-2.5 text-sm" [ngModel]="shippingAddressId()" (ngModelChange)="shippingAddressId.set($event)"><option [ngValue]="null">Select shipping address</option>@for (address of addresses(); track address.id) {<option [ngValue]="address.id">{{ address.recipientName }} - {{ address.addressLine1 }}</option>}</select></label>
+          <label class="text-sm font-normal text-[--color-text]">Billing address <select class="select mt-2 px-3 py-2.5 text-sm" [ngModel]="billingAddressId()" (ngModelChange)="billingAddressId.set($event)"><option [ngValue]="null">Select billing address</option>@for (address of addresses(); track address.id) {<option [ngValue]="address.id">{{ address.recipientName }} - {{ address.addressLine1 }}</option>}</select></label>
+        </div>
         <div class="mt-5 grid gap-4 md:grid-cols-2">
-          <label class="text-sm text-text-secondary">
-            Shipping address
-            <select
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
-              [ngModel]="shippingAddressId()"
-              (ngModelChange)="shippingAddressId.set($event)"
-            >
-              <option [ngValue]="null">Select shipping address</option>
-              @for (address of addresses(); track address.id) {
-                <option [ngValue]="address.id">{{ address.recipientName }} - {{ address.addressLine1 }}</option>
-              }
-            </select>
-          </label>
-
-          <label class="text-sm text-text-secondary">
-            Billing address
-            <select
-              class="mt-2 w-full rounded-xl border border-surface-elevated bg-surface-elevated px-3 py-2 text-sm text-text-primary outline-none transition-colors duration-150 focus:border-primary"
-              [ngModel]="billingAddressId()"
-              (ngModelChange)="billingAddressId.set($event)"
-            >
-              <option [ngValue]="null">Select billing address</option>
-              @for (address of addresses(); track address.id) {
-                <option [ngValue]="address.id">{{ address.recipientName }} - {{ address.addressLine1 }}</option>
-              }
-            </select>
-          </label>
+          <div class="rounded-md bg-[#f6f9fc] p-4 text-sm text-[--color-text-muted]"><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text]">Selected shipping</p>@if (selectedShippingAddress()) {<p class="mt-2 leading-relaxed">{{ selectedShippingAddress()!.recipientName }}<br/>{{ selectedShippingAddress()!.addressLine1 }}<br/>@if (selectedShippingAddress()!.addressLine2) {{{ selectedShippingAddress()!.addressLine2 }}<br/>}{{ selectedShippingAddress()!.city }}, {{ selectedShippingAddress()!.state }} {{ selectedShippingAddress()!.postalCode }}<br/>{{ selectedShippingAddress()!.country }}</p>} @else {<p class="mt-2">No shipping address selected.</p>}</div>
+          <div class="rounded-md bg-[#f6f9fc] p-4 text-sm text-[--color-text-muted]"><p class="text-xs font-semibold uppercase tracking-wider text-[--color-text]">Selected billing</p>@if (selectedBillingAddress()) {<p class="mt-2 leading-relaxed">{{ selectedBillingAddress()!.recipientName }}<br/>{{ selectedBillingAddress()!.addressLine1 }}<br/>@if (selectedBillingAddress()!.addressLine2) {{{ selectedBillingAddress()!.addressLine2 }}<br/>}{{ selectedBillingAddress()!.city }}, {{ selectedBillingAddress()!.state }} {{ selectedBillingAddress()!.postalCode }}<br/>{{ selectedBillingAddress()!.country }}</p>} @else {<p class="mt-2">No billing address selected.</p>}</div>
         </div>
-
-        <div class="mt-4 grid gap-4 md:grid-cols-2">
-          <div class="rounded-xl border border-surface-elevated bg-surface-elevated/40 p-4 text-sm text-text-secondary">
-            <p class="font-semibold text-text-primary">Selected shipping</p>
-            @if (selectedShippingAddress()) {
-              <p class="mt-2">
-                {{ selectedShippingAddress()!.recipientName }}<br />
-                {{ selectedShippingAddress()!.addressLine1 }}<br />
-                @if (selectedShippingAddress()!.addressLine2) {
-                  {{ selectedShippingAddress()!.addressLine2 }}<br />
-                }
-                {{ selectedShippingAddress()!.city }}, {{ selectedShippingAddress()!.state }} {{ selectedShippingAddress()!.postalCode }}<br />
-                {{ selectedShippingAddress()!.country }}
-              </p>
-            } @else {
-              <p class="mt-2">No shipping address selected.</p>
-            }
-          </div>
-
-          <div class="rounded-xl border border-surface-elevated bg-surface-elevated/40 p-4 text-sm text-text-secondary">
-            <p class="font-semibold text-text-primary">Selected billing</p>
-            @if (selectedBillingAddress()) {
-              <p class="mt-2">
-                {{ selectedBillingAddress()!.recipientName }}<br />
-                {{ selectedBillingAddress()!.addressLine1 }}<br />
-                @if (selectedBillingAddress()!.addressLine2) {
-                  {{ selectedBillingAddress()!.addressLine2 }}<br />
-                }
-                {{ selectedBillingAddress()!.city }}, {{ selectedBillingAddress()!.state }} {{ selectedBillingAddress()!.postalCode }}<br />
-                {{ selectedBillingAddress()!.country }}
-              </p>
-            } @else {
-              <p class="mt-2">No billing address selected.</p>
-            }
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <a
-            routerLink="/profile"
-            class="inline-flex rounded-full border border-surface-elevated bg-surface-default px-4 py-2 text-sm font-semibold text-text-primary transition-colors duration-200 hover:bg-surface-elevated"
-          >
-            Manage addresses in profile
-          </a>
-        </div>
+        <div class="mt-5"><a routerLink="/profile" class="btn-secondary px-4 py-2 text-sm">Manage addresses in profile</a></div>
       </article>
 
-      <article class="h-fit rounded-2xl border border-surface-elevated bg-surface-default p-5">
-        <h2 class="text-lg font-semibold text-text-primary">Order summary</h2>
-
-        <div class="mt-4 max-h-72 space-y-3 overflow-y-auto pr-1">
+      <article class="card h-fit p-6">
+        <h2 class="text-[1.375rem] font-light text-[--color-text]">Order summary</h2>
+        <div class="mt-5 max-h-72 space-y-2 overflow-y-auto pr-1">
           @for (item of displayItems(); track item.key) {
-            <div class="rounded-xl border border-surface-elevated bg-surface-elevated/40 p-3">
-              <p class="text-sm font-semibold text-text-primary">{{ item.title }}</p>
-              <p class="mt-1 text-xs text-text-secondary">Qty {{ item.quantity }} x {{ item.unitPrice | currency: currencyCode() : 'symbol' : '1.2-2' }}</p>
-              <p class="mt-1 text-sm font-semibold text-text-primary">{{ item.lineTotal | currency: currencyCode() : 'symbol' : '1.2-2' }}</p>
-            </div>
+            <div class="rounded-md bg-[#f6f9fc] p-3"><p class="text-sm font-normal text-[--color-text]">{{ item.title }}</p><p class="mt-1 text-xs text-[--color-text-muted]">Qty {{ item.quantity }} x {{ item.unitPrice | currency: currencyCode() : 'symbol' : '1.2-2' }}</p><p class="mt-1 text-sm font-normal text-[--color-text]">{{ item.lineTotal | currency: currencyCode() : 'symbol' : '1.2-2' }}</p></div>
           }
         </div>
-
-        <div class="mt-4 space-y-2 border-t border-surface-elevated pt-4 text-sm">
-          <div class="flex items-center justify-between text-text-secondary">
-            <span>Subtotal</span>
-            <span class="text-text-primary">{{ subtotal() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span>
-          </div>
-          <div class="flex items-center justify-between text-text-secondary">
-            <span>Shipping</span>
-            <span class="text-text-primary">{{ shippingAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span>
-          </div>
-          <div class="flex items-center justify-between text-text-secondary">
-            <span>Tax</span>
-            <span class="text-text-primary">{{ taxAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span>
-          </div>
-          <div class="flex items-center justify-between text-base font-semibold text-text-primary">
-            <span>Total</span>
-            <span>{{ totalAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span>
-          </div>
+        <div class="mt-5 space-y-3 border-t border-[--color-border] pt-5 text-sm">
+          <div class="flex items-center justify-between text-[--color-text-muted]"><span>Subtotal</span><span class="text-[--color-text]">{{ subtotal() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
+          <div class="flex items-center justify-between text-[--color-text-muted]"><span>Shipping</span><span class="text-[--color-text]">{{ shippingAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
+          <div class="flex items-center justify-between text-[--color-text-muted]"><span>Tax</span><span class="text-[--color-text]">{{ taxAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
+          <div class="flex items-center justify-between text-base font-normal text-[--color-text] pt-1"><span>Total</span><span>{{ totalAmount() | currency: currencyCode() : 'symbol' : '1.2-2' }}</span></div>
         </div>
-
-        @if (submitError()) {
-          <p class="mt-4 rounded-xl border border-red-400/40 bg-surface-elevated p-3 text-sm text-red-300">{{ submitError() }}</p>
-        }
-
-        <button
-          type="button"
-          class="mt-4 w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
-          [disabled]="isSubmitting()"
-          (click)="proceedToStripe()"
-        >
-          {{ isSubmitting() ? 'Redirecting...' : 'Proceed to Stripe' }}
-        </button>
+        @if (submitError()) { <p class="mt-4 rounded-md border border-[--color-danger]/30 bg-[--color-danger-muted] p-3 text-sm text-[--color-danger]">{{ submitError() }}</p> }
+        <button type="button" class="btn-primary mt-5 w-full py-3 text-sm" [disabled]="isSubmitting()" (click)="proceedToStripe()">{{ isSubmitting() ? 'Redirecting...' : 'Proceed to Stripe' }}</button>
       </article>
     </div>
   }

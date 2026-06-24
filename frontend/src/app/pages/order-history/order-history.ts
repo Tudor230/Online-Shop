@@ -67,23 +67,34 @@ export class OrderHistoryPageComponent {
   }
 
   statusLabel(status: OrderStatus): string {
-    return status.charAt(0) + status.slice(1).toLowerCase();
+    switch (status) {
+      case 'PENDING': return 'Pending Payment';
+      case 'PAID': return 'Paid';
+      case 'PROCESSING': return 'Processing';
+      case 'SHIPPED': return 'Shipped';
+      case 'DELIVERED': return 'Delivered';
+      case 'CANCELLED': return 'Cancelled';
+      case 'RETURNED': return 'Returned';
+      default: return status;
+    }
   }
 
   statusClass(status: OrderStatus): string {
     switch (status) {
       case 'DELIVERED':
-        return 'bg-emerald-500/20 text-emerald-300';
+        return 'text-[#15be53]';
       case 'SHIPPED':
-        return 'bg-primary/20 text-primary';
+        return 'text-[#2b91df]';
       case 'PROCESSING':
       case 'PAID':
-        return 'bg-warning/20 text-warning';
+        return 'text-[#9b6829]';
+      case 'PENDING':
+        return 'text-[#533afd]';
       case 'CANCELLED':
       case 'RETURNED':
-        return 'bg-red-500/20 text-red-300';
+        return 'text-[#ea2261]';
       default:
-        return 'bg-surface-elevated text-text-secondary';
+        return 'text-[#64748d]';
     }
   }
 

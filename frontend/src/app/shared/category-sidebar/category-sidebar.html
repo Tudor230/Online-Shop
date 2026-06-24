@@ -1,0 +1,55 @@
+<aside class="card flex w-72 shrink-0 flex-col gap-1 self-start p-3">
+  <h2 class="mb-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-[--color-text-muted]">Categories</h2>
+
+  <button
+    type="button"
+    class="w-full rounded-sm px-2 py-1 text-left text-sm font-medium transition-colors duration-150"
+    [class.bg-[#533afd]/10]="!activeCategoryPath"
+    [class.text-[#533afd]]="!activeCategoryPath"
+    [class.text-[--color-text]]="activeCategoryPath"
+    [class.hover:bg-[#f6f9fc]]="activeCategoryPath"
+    (click)="selectCategory(null)"
+  >All Products</button>
+
+  <div class="mt-1 border-t border-[--color-border]"></div>
+
+  <ng-container *ngTemplateOutlet="nodeList; context: { nodes: categories, depth: 0 }" />
+</aside>
+
+<ng-template #nodeList let-nodes="nodes" let-depth="depth">
+  @for (node of nodes; track node.id) {
+    <div [style.padding-left.px]="depth * 12">
+      <button
+        type="button"
+        class="flex w-full items-center gap-1 rounded-sm px-2 py-1 text-left text-sm transition-colors duration-150"
+        [class.bg-[#533afd]/10]="activeCategoryPath === node.path"
+        [class.text-[#533afd]]="activeCategoryPath === node.path"
+        [class.font-medium]="activeCategoryPath === node.path"
+        [class.text-[--color-text]]="activeCategoryPath !== node.path"
+        [class.hover:bg-[#f6f9fc]]="activeCategoryPath !== node.path"
+        (click)="selectCategory(node.path)"
+      >
+        @if (node.children.length > 0) {
+          <svg
+            class="h-3 w-3 shrink-0 text-[--color-text-muted] transition-transform duration-150"
+            [class.rotate-90]="!isCollapsed(node.id)"
+            (click)="toggleCollapse(node.id); $event.stopPropagation()"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ><path d="m9 18 6-6-6-6"/></svg>
+        } @else {
+          <span class="w-3 shrink-0"></span>
+        }
+        <span class="truncate">{{ node.name }}</span>
+      </button>
+
+      @if (!isCollapsed(node.id) && node.children.length > 0) {
+        <ng-container *ngTemplateOutlet="nodeList; context: { nodes: node.children, depth: depth + 1 }" />
+      }
+    </div>
+  }
+</ng-template>

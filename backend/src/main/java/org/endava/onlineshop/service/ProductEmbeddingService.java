@@ -87,7 +87,9 @@ public class ProductEmbeddingService {
         jdbcTemplate.update(UPDATE_PRODUCT_EMBEDDING_SQL, vector, product.getId());
     }
 
-    public Page<Product> findActiveProducts(String query, Pageable pageable) {
+    public Page<Product> findActiveProducts(String query, String categorySlug, Pageable pageable) {
+        String categoryPath = categorySlug != null && !categorySlug.isBlank() ? categorySlug.trim() : null;
+
         String normalizedQuery = normalizeQuery(query);
         boolean shouldUseSemantic = embeddingEnabled && !normalizedQuery.isBlank();
         String vectorLiteral = shouldUseSemantic ? createVectorLiteral(normalizedQuery) : null;
@@ -104,6 +106,7 @@ public class ProductEmbeddingService {
                 rrfK,
                 lexicalWeight,
                 semanticWeight,
+                categoryPath,
                 limit,
                 offset
         );

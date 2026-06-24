@@ -5,8 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import { CartFacadeService } from '../../core/cart/cart-facade.service';
 import { ProductApiService } from '../../core/products/product-api.service';
-import { type ProductSearchPage, type ProductSummary } from '../../core/products/product.types';
+import { type CategoryTreeNode, type ProductSearchPage, type ProductSummary } from '../../core/products/product.types';
 import { WishlistFacadeService } from '../../core/wishlist/wishlist-facade.service';
+import { CategorySidebarComponent } from '../../shared/category-sidebar/category-sidebar';
 import { ProductCardComponent } from '../../shared/product-card/product-card';
 
 interface ProductListState {
@@ -17,6 +18,7 @@ interface ProductListState {
 
 interface SearchParams {
   query: string;
+  category: string;
   page: number;
   size: number;
 }
@@ -24,7 +26,7 @@ interface SearchParams {
 @Component({
   selector: 'app-product-grid',
   standalone: true,
-  imports: [CommonModule, ProductCardComponent],
+  imports: [CommonModule, ProductCardComponent, CategorySidebarComponent],
   templateUrl: './product-grid.html'
 })
 export class ProductGridComponent {
@@ -45,18 +47,19 @@ export class ProductGridComponent {
         const rawSize = Number(queryParams.get('size') ?? String(ProductGridComponent.DEFAULT_PAGE_SIZE));
         return {
           query: (queryParams.get('q') ?? '').trim(),
+          category: (queryParams.get('category') ?? '').trim(),
           page: Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1,
           size: this.normalizePageSize(rawSize)
         } as SearchParams;
       })
     ),
-    { initialValue: { query: '', page: 1, size: ProductGridComponent.DEFAULT_PAGE_SIZE } as SearchParams }
+    { initialValue: { query: '', category: '', page: 1, size: ProductGridComponent.DEFAULT_PAGE_SIZE } as SearchParams }
   );
 
   private readonly productListState = toSignal(
     toObservable(this.searchParams).pipe(
-      switchMap(({ query, page, size }) =>
-        this.productApiService.getProducts({ query, page, size }).pipe(
+      switchMap(({ query, category, page, size }) =>
+        this.productApiService.getProducts({ query, category, page, size }).pipe(
           map((result) => ({ isLoading: false, hasError: false, result })),
           startWith({ isLoading: true, hasError: false, result: this.emptyResult(page, size) }),
           catchError(() => of({ isLoading: false, hasError: true, result: this.emptyResult(page, size) }))
@@ -83,7 +86,13 @@ export class ProductGridComponent {
   readonly totalItems = computed(() => this.productListState().result.totalItems);
   readonly pageSize = computed(() => this.searchParams().size);
   readonly pageSizeOptions = ProductGridComponent.PAGE_SIZE_OPTIONS;
+  readonly activeCategoryPath = computed(() => {
+    const slug = this.searchParams().category;
+    return slug.length > 0 ? slug : null;
+  });
   readonly shouldShowPagination = computed(() => this.totalPages() > 1);
+
+  readonly categories = toSignal(this.productApiService.getCategories(), { initialValue: [] as CategoryTreeNode[] });
   readonly resultRangeLabel = computed(() => {
     const totalItems = this.totalItems();
     if (totalItems === 0) {
@@ -99,6 +108,18 @@ export class ProductGridComponent {
 
   openProductDetails(productSlug: string): void {
     void this.router.navigate(['/product', productSlug]);
+  }
+
+  selectCategory(path: string | null): void {
+    const { query } = this.searchParams();
+    void this.router.navigate(['/products'], {
+      queryParams: {
+        q: query || null,
+        category: path || null,
+        page: null,
+        size: null
+      }
+    });
   }
 
   addProductToCart(productId: string): void {
@@ -154,11 +175,12 @@ export class ProductGridComponent {
   }
 
   private goToPage(page: number, sizeOverride?: number): void {
-    const { query, size } = this.searchParams();
+    const { query, category, size } = this.searchParams();
     const nextSize = sizeOverride ?? size;
     void this.router.navigate(['/products'], {
       queryParams: {
         q: query || null,
+        category: category || null,
         page: page > 1 ? page : null,
         size: nextSize === ProductGridComponent.DEFAULT_PAGE_SIZE ? null : nextSize
       }

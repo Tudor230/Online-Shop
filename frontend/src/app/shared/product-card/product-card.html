@@ -1,5 +1,5 @@
 <article
-  class="group relative grid h-full cursor-pointer gap-4 rounded-2xl border border-surface-elevated bg-surface-default p-4 transition-colors duration-200 hover:bg-surface-elevated"
+  class="card card-interactive group relative grid h-full cursor-pointer gap-4 overflow-hidden p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-[rgba(50,50,93,0.25)_0px_30px_60px_-30px,rgba(0,0,0,0.15)_0px_18px_36px_-18px]"
   role="button"
   tabindex="0"
   (click)="onSelected()"
@@ -10,18 +10,14 @@
     type="button"
     [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'"
     [attr.aria-pressed]="isWishlisted"
-    class="absolute right-4 top-4 z-10 grid h-10 w-10 cursor-pointer place-items-center rounded-full bg-surface-default transition-all duration-200"
-    [ngClass]="
-      isWishlisted
-        ? 'text-red-400 opacity-100'
-        : 'text-text-primary opacity-80 hover:opacity-100'
-    "
+    class="absolute right-3 top-3 z-10 grid h-9 w-9 cursor-pointer place-items-center rounded-sm bg-white/80 text-base backdrop-blur-sm shadow-sm transition-all duration-150 hover:bg-white"
+    [ngClass]="isWishlisted ? 'text-[--color-danger]' : 'text-[--color-text-muted] hover:text-[--color-text]'"
     (click)="onSaveToWishlist($event)"
   >
     {{ isWishlisted ? '♥' : '♡' }}
   </button>
 
-  <div class="aspect-[4/3] overflow-hidden rounded-xl bg-surface-elevated">
+  <div class="aspect-[4/3] overflow-hidden rounded-sm bg-[#f6f9fc]">
     <app-cloudinary-image-frame
       [source]="product.imageId"
       [alt]="product.title"
@@ -29,26 +25,26 @@
       width="560"
       height="420"
       imageClass="h-full w-full object-contain"
-      fallbackClass="grid h-full w-full place-items-center text-sm font-medium text-text-secondary"
+      fallbackClass="grid h-full w-full place-items-center text-sm font-normal text-[--color-text-muted]"
       fallbackText="Image unavailable"
     />
   </div>
 
   <div class="grid gap-2">
-    <p class="text-xs font-semibold uppercase tracking-wide text-primary-hover">{{ product.category }}</p>
-    <h3 class="text-base font-semibold text-text-primary">{{ product.title }}</h3>
-    <p class="text-sm text-text-secondary">★ {{ product.rating | number : '1.1-1' }} ({{ product.reviewCount }})</p>
+    <p class="text-[10px] font-semibold uppercase tracking-[0.15em] text-[--color-brand]">{{ product.category }}</p>
+    <h3 class="text-sm font-normal leading-snug text-[--color-text] group-hover:text-[--color-brand] transition-colors duration-150 line-clamp-2">{{ product.title }}</h3>
+    <div class="flex items-center gap-1.5">
+      <span class="text-xs font-normal text-[--color-text]">★ {{ product.rating | number : '1.1-1' }}</span>
+      <span class="text-[10px] text-[--color-text-muted]">({{ product.reviewCount }})</span>
+    </div>
   </div>
 
-  <div class="mt-auto flex items-center justify-between gap-3">
-    <p class="text-lg font-semibold text-text-primary">{{ product.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
-    <button
-      type="button"
-      aria-label="Add to cart"
-      class="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
-      (click)="onAddToCart($event)"
-    >
-      +
+  <div class="mt-auto flex items-end justify-between gap-3">
+    <div class="flex flex-col">
+      <p class="text-lg font-normal tracking-tight text-[--color-text] leading-none">{{ product.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
+    </div>
+    <button type="button" aria-label="Add to cart" class="btn-primary grid h-9 w-9 shrink-0 place-items-center" (click)="onAddToCart($event)">
+      <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M7 18a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm10 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2ZM7.2 14h10.7a2 2 0 0 0 2-1.6L22 5H6.2l-.3-2H2v2h2.3l1.6 10.4A2 2 0 0 0 7.2 17H20v-2H7.2Z"/></svg>
     </button>
   </div>
 </article>

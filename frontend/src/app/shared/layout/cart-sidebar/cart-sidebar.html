@@ -1,106 +1,81 @@
 @if (isOpen) {
   <div class="fixed inset-0 z-50">
-    <button
-      type="button"
-      class="absolute inset-0 bg-black/5 backdrop-blur-sm"
-      aria-label="Close cart"
-      (click)="onCloseRequested()"
-    ></button>
-
-    <aside class="absolute right-0 top-0 h-full w-full max-w-md border-l border-surface-elevated bg-surface-default p-5 shadow-2xl">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-text-primary">Shopping cart</h2>
-        <button
-          type="button"
-          class="rounded-full bg-surface-elevated px-3 py-1 text-sm font-medium text-text-primary transition-colors hover:bg-surface-default"
-          (click)="onCloseRequested()"
-        >
-          Close
-        </button>
-      </div>
-
-      @if (!items.length) {
-        <div class="mt-8 rounded-xl border border-surface-elevated bg-surface-elevated p-6 text-center text-text-secondary">
-          Your cart is empty.
+    <button type="button" class="absolute inset-0 bg-[rgba(6,27,49,0.35)] backdrop-blur-[1px]" aria-label="Close cart" (click)="onCloseRequested()"></button>
+    <aside class="absolute right-0 top-0 h-full w-full max-w-sm border-l border-[--color-border] bg-white rounded-l-md shadow-[rgba(50,50,93,0.25)_0px_30px_60px_-30px,rgba(0,0,0,0.15)_0px_18px_36px_-18px] animate-slide-in-right">
+      <div class="flex h-full flex-col">
+        <div class="flex items-center justify-between border-b border-[--color-border] px-6 py-4">
+          <div class="flex items-center gap-3">
+            <h2 class="text-lg font-light text-[--color-text]">Shopping cart</h2>
+            @if (items.length) {
+              <span class="rounded-sm bg-[#f6f9fc] px-2 py-0.5 text-xs font-normal text-[--color-text-muted]">{{ items.length }} {{ items.length === 1 ? 'item' : 'items' }}</span>
+            }
+          </div>
+          <button type="button" class="btn-ghost h-9 w-9" aria-label="Close cart" (click)="onCloseRequested()">
+            <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </button>
         </div>
-      } @else {
-        <div class="mt-5 grid max-h-[70vh] gap-0 overflow-y-auto pr-1">
-          @for (item of items; track item.productId) {
-            <article
-              class="cursor-pointer border-b border-surface-elevated py-4"
-              role="button"
-              tabindex="0"
-              (click)="onItemSelected(item.productSlug)"
-              (keydown.enter)="onItemSelected(item.productSlug)"
-              (keydown.space)="onItemSelected(item.productSlug); $event.preventDefault()"
-            >
-              <div class="grid grid-cols-[104px_minmax(0,1fr)_auto] items-start gap-3">
-                <div class="w-24 overflow-hidden rounded-lg bg-surface-elevated aspect-[4/3]">
-                  <app-cloudinary-image-frame
-                    [source]="item.imageId"
-                    [alt]="item.title"
-                    [options]="cartImageOptions"
-                    width="160"
-                    height="160"
-                    [useLazy]="true"
-                    imageClass="h-full w-full object-contain"
-                    fallbackClass="grid h-full w-full place-items-center px-1 text-center text-[11px] font-medium text-text-secondary"
-                    fallbackText="Image unavailable"
-                  />
-                </div>
 
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-semibold text-text-primary">{{ item.title }}</p>
-                  <div class="mt-3 inline-flex items-center gap-2">
-                    <button
-                      type="button"
-                      class="h-8 w-8 rounded-full bg-surface-elevated text-base font-semibold text-text-primary transition-colors hover:bg-surface-default"
-                      aria-label="Decrease quantity"
-                      (click)="$event.stopPropagation(); onDecrementRequested(item.productId)"
-                    >
-                      -
-                    </button>
-                    <span class="min-w-6 text-center text-sm font-semibold text-text-primary">{{ item.quantity }}</span>
-                    <button
-                      type="button"
-                      class="h-8 w-8 rounded-full bg-surface-elevated text-base font-semibold text-text-primary transition-colors hover:bg-surface-default"
-                      aria-label="Increase quantity"
-                      (click)="$event.stopPropagation(); onIncrementRequested(item.productId)"
-                    >
-                      +
-                    </button>
+        @if (!items.length) {
+          <div class="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
+            <div class="flex h-20 w-20 items-center justify-center rounded-sm bg-[#f6f9fc]">
+              <svg viewBox="0 0 24 24" class="h-8 w-8 fill-current text-[--color-text-muted]/20"><path d="M7 18a2 2 0 1 0 2 2 2 2 0 0 0-2-2Zm10 0a2 2 0 1 0 2 2 2 2 0 0 0-2-2ZM7.2 14h10.7a2 2 0 0 0 2-1.6L22 5H6.2l-.3-2H2v2h2.3l1.6 10.4A2 2 0 0 0 7.2 17H20v-2H7.2Z"/></svg>
+            </div>
+            <div>
+              <p class="text-base font-normal text-[--color-text]">Your cart is empty</p>
+              <p class="mt-1 text-sm text-[--color-text-muted]">Looks like you haven't added anything yet.</p>
+            </div>
+            <a routerLink="/products" class="btn-primary mt-2 px-6 py-3 text-sm" (click)="onCloseRequested()">Browse products</a>
+          </div>
+        } @else {
+          <div class="flex-1 overflow-y-auto px-6 py-2">
+            <div class="grid gap-1 divide-y divide-[--color-border]">
+              @for (item of items; track item.productId) {
+                <article class="group cursor-pointer py-4" role="button" tabindex="0"
+                  (click)="onItemSelected(item.productSlug)"
+                  (keydown.enter)="onItemSelected(item.productSlug)"
+                  (keydown.space)="onItemSelected(item.productSlug); $event.preventDefault()">
+                  <div class="grid grid-cols-[72px_minmax(0,1fr)_auto] items-start gap-4">
+                    <div class="w-[72px] overflow-hidden rounded-sm bg-[#f6f9fc] aspect-square">
+                      <app-cloudinary-image-frame [source]="item.imageId" [alt]="item.title" [options]="cartImageOptions" width="160" height="160" [useLazy]="true"
+                        imageClass="h-full w-full object-contain"
+                        fallbackClass="grid h-full w-full place-items-center px-1 text-center text-[10px] font-normal text-[--color-text-muted]"
+                        fallbackText="No image"/>
+                    </div>
+                    <div class="min-w-0 flex flex-col gap-2">
+                      <p class="truncate text-sm font-normal text-[--color-text] leading-snug">{{ item.title }}</p>
+                      <div class="inline-flex items-center gap-1 rounded-sm bg-[#f6f9fc] p-0.5 w-fit">
+                        <button type="button" class="btn-ghost h-7 w-7 text-sm" aria-label="Decrease quantity"
+                          (click)="$event.stopPropagation(); onDecrementRequested(item.productId)">−</button>
+                        <span class="min-w-6 text-center text-xs font-normal text-[--color-text]">{{ item.quantity }}</span>
+                        <button type="button" class="btn-ghost h-7 w-7 text-sm" aria-label="Increase quantity"
+                          (click)="$event.stopPropagation(); onIncrementRequested(item.productId)">+</button>
+                      </div>
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                      <p class="text-sm font-normal text-[--color-text] whitespace-nowrap">{{ item.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
+                      <button type="button" class="btn-ghost h-7 w-7 text-[--color-text-muted]/30 hover:text-[--color-danger] transition-colors duration-150" aria-label="Remove item"
+                        (click)="$event.stopPropagation(); onRemoveRequested(item.productId)">
+                        <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 fill-current"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                      </button>
+                    </div>
                   </div>
-                </div>
+                </article>
+              }
+            </div>
+          </div>
 
-                <div class="text-right">
-                  <p class="text-lg font-semibold text-text-primary">{{ item.price | currency : 'RON' : 'symbol' : '1.2-2' }}</p>
-                  <button
-                    type="button"
-                    class="mt-3 text-sm font-semibold text-red-400 transition-colors hover:text-red-300"
-                    (click)="$event.stopPropagation(); onRemoveRequested(item.productId)"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            </article>
-          }
-        </div>
-      }
-
-      <div class="absolute bottom-0 left-0 right-0 border-t border-surface-elevated bg-surface-default p-5">
-        <div class="flex items-center justify-between text-base font-semibold text-text-primary">
-          <span>Total</span>
-          <span>{{ totalPrice | currency : 'RON' : 'symbol' : '1.2-2' }}</span>
-        </div>
-        <button
-          type="button"
-          class="mt-4 w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
-          [disabled]="!items.length || isCheckoutInProgress"
-          (click)="onCheckoutRequested()"
-        >
-          {{ isCheckoutInProgress ? 'Redirecting...' : 'Checkout' }}
-        </button>
+          <div class="border-t border-[--color-border] px-6 py-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-[--color-text-muted]">Subtotal</span>
+              <span class="text-lg font-normal text-[--color-text]">{{ totalPrice | currency : 'RON' : 'symbol' : '1.2-2' }}</span>
+            </div>
+            <button type="button" class="btn-primary w-full py-3 text-sm"
+              [disabled]="!items.length || isCheckoutInProgress" (click)="onCheckoutRequested()">
+              {{ isCheckoutInProgress ? 'Redirecting...' : 'Checkout' }}
+            </button>
+            <button type="button" class="btn-ghost w-full py-2 text-xs" (click)="onCloseRequested()">Continue shopping</button>
+          </div>
+        }
       </div>
     </aside>
   </div>

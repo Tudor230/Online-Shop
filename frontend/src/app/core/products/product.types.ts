@@ -49,3 +49,12 @@ export interface CreateProductReviewRequest {
   rating: number;
   comment: string;
 }
+
+export interface CategoryTreeNode {
+  id: string;
+  parentId: string | null;
+  name: string;
+  slug: string;
+  path: string;
+  children: CategoryTreeNode[];
+}

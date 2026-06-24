@@ -1,100 +1,42 @@
-<div class="space-y-4">
-  <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold text-text-primary">Users</h1>
+<div class="flex flex-col min-h-full">
+  <div class="flex items-center justify-between pb-4">
+    <div><span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Users</span><h1 class="mt-1.5 text-2xl font-semibold tracking-tight text-[--color-text]">Manage users</h1></div>
     <div class="flex items-center gap-2">
-      <a routerLink="/admin/users/new" class="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover">Add User</a>
-      <input
-        type="search"
-        placeholder="Search users..."
-        class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary outline-none focus:border-primary"
-        [ngModel]="searchQuery()"
-        (ngModelChange)="searchQuery.set($event)"
-      />
+      <a routerLink="/admin/users/new" class="btn-primary px-4 py-2 text-sm">Add User</a>
+      <input type="search" placeholder="Search users..." class="input w-48 px-3 py-1.5 text-sm" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
     </div>
   </div>
 
-  @if (error()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ error() }}</div>
-  }
+  @if (error()) {<div class="rounded-sm bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ error() }}</div>}
+  @if (actionError()) {<div class="rounded-sm bg-[--color-danger-muted]/30 px-4 py-3 text-sm text-[--color-danger] mb-4">{{ actionError() }}</div>}
 
-  @if (actionError()) {
-    <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ actionError() }}</div>
-  }
-
-  @if (loading()) {
-    <p class="text-sm text-text-secondary">Loading...</p>
-  } @else {
-    <div class="overflow-x-auto rounded-xl border border-surface-elevated bg-surface-default">
+  <div class="flex-1 card overflow-hidden">
+    @if (loading()) {
+      <div class="px-4 py-8 text-center text-sm text-[--color-text-muted]/50">Loading...</div>
+    } @else {
       <table class="w-full text-left text-sm">
-        <thead class="border-b border-surface-elevated bg-surface-default text-text-secondary">
-          <tr>
-            <th class="px-4 py-3 font-medium">Email</th>
-            <th class="px-4 py-3 font-medium">Name</th>
-            <th class="px-4 py-3 font-medium">Role</th>
-            <th class="px-4 py-3 font-medium">Status</th>
-            <th class="px-4 py-3 font-medium">Created</th>
-            <th class="px-4 py-3 font-medium text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-surface-elevated">
-          @for (user of filteredUsers(); track user.id) {
-            <tr class="transition-colors hover:bg-surface-elevated/50">
-              <td class="px-4 py-3 text-text-primary">{{ user.email }}</td>
-              <td class="px-4 py-3 text-text-primary">{{ user.firstName }} {{ user.lastName }}</td>
-              <td class="px-4 py-3 text-text-primary">{{ user.role }}</td>
-              <td class="px-4 py-3">
-                <span
-                  class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium"
-                  [class.bg-green-100]="user.isActive"
-                  [class.text-green-700]="user.isActive"
-                  [class.bg-red-100]="!user.isActive"
-                  [class.text-red-700]="!user.isActive"
-                >
-                  {{ user.isActive ? 'Active' : 'Inactive' }}
-                </span>
-              </td>
-              <td class="px-4 py-3 text-text-secondary">{{ user.createdAt | date:'short' }}</td>
-              <td class="px-4 py-3 text-right">
-                <a [routerLink]="['/admin/users', user.id, 'edit']" class="mr-2 text-xs text-text-secondary hover:text-text-primary">Edit</a>
-                <button
-                  class="mr-2 text-xs text-text-secondary hover:text-text-primary"
-                  (click)="toggleActive(user)"
-                >
-                  {{ user.isActive ? 'Deactivate' : 'Activate' }}
-                </button>
-                <button
-                  class="text-xs text-red-500 hover:text-red-700"
-                  (click)="deleteUser(user.id)"
-                >
-                  Delete
-                </button>
-              </td>
+        <thead><tr class="text-[--color-text-muted]/50"><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Email</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Name</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Role</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Status</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider">Created</th><th class="px-4 py-3.5 text-xs font-semibold uppercase tracking-wider text-right">Actions</th></tr></thead>
+        <tbody>
+          @for (user of filteredUsers(); track user.id; let even = $even) {
+            <tr class="transition-colors border-t border-[--color-border]" [class.bg-[#f6f9fc]]="even">
+              <td class="px-4 py-3 text-[--color-text]">{{ user.email }}</td>
+              <td class="px-4 py-3 text-[--color-text]">{{ user.firstName }} {{ user.lastName }}</td>
+              <td class="px-4 py-3 text-[--color-text]">{{ user.role }}</td>
+              <td class="px-4 py-3"><span class="inline-flex rounded-sm px-2.5 py-0.5 text-[11px] font-semibold" [class.bg-[--color-success-muted]/40]="user.isActive" [class.text-[--color-success]]="user.isActive" [class.bg-[--color-danger-muted]/40]="!user.isActive" [class.text-[--color-danger]]="!user.isActive">{{ user.isActive ? 'Active' : 'Inactive' }}</span></td>
+              <td class="px-4 py-3 text-[--color-text-muted]/50">{{ user.createdAt | date:'short' }}</td>
+              <td class="px-4 py-3 text-right"><a [routerLink]="['/admin/users', user.id, 'edit']" class="btn-ghost mr-2 px-2 py-1 text-xs">Edit</a><button class="btn-ghost mr-2 px-2 py-1 text-xs" (click)="toggleActive(user)">{{ user.isActive ? 'Deactivate' : 'Activate' }}</button><button class="btn-ghost px-2 py-1 text-xs text-[--color-danger] hover:bg-[--color-danger-muted]" (click)="deleteUser(user.id)">Delete</button></td>
             </tr>
           } @empty {
-            <tr>
-              <td colspan="6" class="px-4 py-6 text-center text-sm text-text-secondary">No users found.</td>
-            </tr>
+            <tr><td colspan="6" class="px-4 py-8 text-center text-sm text-[--color-text-muted]/40">No users found.</td></tr>
           }
         </tbody>
       </table>
-    </div>
+    }
+  </div>
 
-    <div class="flex items-center justify-between">
-      <button
-        class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary transition-colors hover:bg-surface-elevated disabled:opacity-50"
-        [disabled]="page() === 0"
-        (click)="prevPage()"
-      >
-        Previous
-      </button>
-      <span class="text-sm text-text-secondary">Page {{ page() + 1 }} of {{ totalPages() }}</span>
-      <button
-        class="rounded-lg border border-surface-elevated bg-surface-default px-3 py-1.5 text-sm text-text-primary transition-colors hover:bg-surface-elevated disabled:opacity-50"
-        [disabled]="page() >= totalPages() - 1"
-        (click)="nextPage()"
-      >
-        Next
-      </button>
-    </div>
-  }
+  <div class="sticky bottom-0 -mx-6 px-6 py-4 bg-[#f6f9fc] flex items-center justify-between">
+    <button class="btn-ghost px-3 py-1.5 text-sm" [disabled]="page() === 0" (click)="prevPage()">Previous</button>
+    <span class="text-sm text-[--color-text-muted]/40">Page {{ page() + 1 }} of {{ totalPages() }}</span>
+    <button class="btn-ghost px-3 py-1.5 text-sm" [disabled]="page() >= totalPages() - 1" (click)="nextPage()">Next</button>
+  </div>
 </div>
