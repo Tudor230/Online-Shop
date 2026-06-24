@@ -71,8 +71,7 @@
         <div>
           <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-[--color-text-muted]">Update Status</h3>
           <div class="flex gap-2">
-            <select class="select px-3 py-2 text-sm" [(ngModel)]="newStatus"><option value="PENDING">PENDING</option><option value="PAID">PAID</option><option value="PROCESSING">PROCESSING</option><option value="SHIPPED">SHIPPED</option><option value="DELIVERED">DELIVERED</option><option value="CANCELLED">CANCELLED</option><option value="RETURNED">RETURNED</option></select>
-            <input class="input flex-1 px-3 py-2 text-sm" placeholder="Note (optional)" [(ngModel)]="statusNote" />
+            <select class="select flex-1 px-3 py-2 text-sm" [(ngModel)]="newStatus"><option value="PENDING">PENDING</option><option value="PAID">PAID</option><option value="PROCESSING">PROCESSING</option><option value="SHIPPED">SHIPPED</option><option value="DELIVERED">DELIVERED</option><option value="CANCELLED">CANCELLED</option><option value="RETURNED">RETURNED</option></select>
             <button class="btn-primary px-4 py-2 text-sm" (click)="updateStatus()">Update</button>
           </div>
         </div>

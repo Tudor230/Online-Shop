@@ -21,7 +21,7 @@ export class AdminOrdersComponent implements OnInit {
   readonly actionError = signal<string | null>(null);
   readonly detailOrder = signal<AdminOrderDetail | null>(null);
   readonly newStatus = signal('');
-  readonly statusNote = signal('');
+
   readonly statusFilter = signal('');
   readonly searchQuery = signal('');
 
@@ -80,7 +80,7 @@ export class AdminOrdersComponent implements OnInit {
     const detail = this.detailOrder();
     if (!detail) return;
     this.actionError.set(null);
-    this.api.updateOrderStatus(detail.id, { newStatus: this.newStatus(), notes: this.statusNote() || undefined }).subscribe({
+    this.api.updateOrderStatus(detail.id, { newStatus: this.newStatus() }).subscribe({
       next: () => {
         this.closeDetail();
         this.loadOrders();

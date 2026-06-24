@@ -35,7 +35,7 @@
               <td class="px-4 py-3 text-[--color-text]">{{ product.quantityAvailable }}</td>
               <td class="px-4 py-3"><span class="inline-flex rounded-sm px-2.5 py-0.5 text-[11px] font-semibold" [class.bg-[--color-success-muted]]="product.isActive" [class.text-[--color-success]]="product.isActive" [class.bg-[--color-danger-muted]]="!product.isActive" [class.text-[--color-danger]]="!product.isActive">{{ product.isActive ? 'Active' : 'Inactive' }}</span></td>
               <td class="px-4 py-3 text-[--color-text]">{{ product.rating }} ({{ product.reviewCount }})</td>
-              <td class="px-4 py-3 text-right"><a [routerLink]="['/admin/products', product.id, 'edit']" class="text-xs text-[--color-text-muted]/40 hover:text-[--color-text] transition-colors">Edit</a></td>
+              <td class="px-4 py-3 text-right"><a [routerLink]="['/admin/products', product.id, 'edit']" class="btn-ghost px-2 py-1 text-xs">Edit</a></td>
             </tr>
           } @empty {
             <tr><td colspan="9" class="px-4 py-8 text-center text-sm text-[--color-text-muted]/40">No products found.</td></tr>

@@ -82,17 +82,19 @@ export class OrderHistoryPageComponent {
   statusClass(status: OrderStatus): string {
     switch (status) {
       case 'DELIVERED':
-        return 'bg-[--color-success-muted] text-[--color-success]';
+        return 'text-[#15be53]';
       case 'SHIPPED':
-        return 'bg-[--color-info-muted] text-[--color-info]';
+        return 'text-[#2b91df]';
       case 'PROCESSING':
       case 'PAID':
-        return 'bg-[--color-warning-muted] text-[--color-warning]';
+        return 'text-[#9b6829]';
+      case 'PENDING':
+        return 'text-[#533afd]';
       case 'CANCELLED':
       case 'RETURNED':
-        return 'bg-[--color-danger-muted] text-[--color-danger]';
+        return 'text-[#ea2261]';
       default:
-        return 'bg-[--color-surface] text-[--color-text-muted]';
+        return 'text-[#64748d]';
     }
   }
 

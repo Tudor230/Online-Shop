@@ -24,7 +24,7 @@
               <td class="px-4 py-3 text-[--color-text]">{{ user.role }}</td>
               <td class="px-4 py-3"><span class="inline-flex rounded-sm px-2.5 py-0.5 text-[11px] font-semibold" [class.bg-[--color-success-muted]/40]="user.isActive" [class.text-[--color-success]]="user.isActive" [class.bg-[--color-danger-muted]/40]="!user.isActive" [class.text-[--color-danger]]="!user.isActive">{{ user.isActive ? 'Active' : 'Inactive' }}</span></td>
               <td class="px-4 py-3 text-[--color-text-muted]/50">{{ user.createdAt | date:'short' }}</td>
-              <td class="px-4 py-3 text-right"><a [routerLink]="['/admin/users', user.id, 'edit']" class="mr-2 text-xs text-[--color-text-muted]/40 hover:text-[--color-text]">Edit</a><button class="mr-2 text-xs text-[--color-text-muted]/40 hover:text-[--color-text]" (click)="toggleActive(user)">{{ user.isActive ? 'Deactivate' : 'Activate' }}</button><button class="text-xs text-[--color-danger]/50 hover:text-[--color-danger]" (click)="deleteUser(user.id)">Delete</button></td>
+              <td class="px-4 py-3 text-right"><a [routerLink]="['/admin/users', user.id, 'edit']" class="btn-ghost mr-2 px-2 py-1 text-xs">Edit</a><button class="btn-ghost mr-2 px-2 py-1 text-xs" (click)="toggleActive(user)">{{ user.isActive ? 'Deactivate' : 'Activate' }}</button><button class="btn-ghost px-2 py-1 text-xs text-[--color-danger] hover:bg-[--color-danger-muted]" (click)="deleteUser(user.id)">Delete</button></td>
             </tr>
           } @empty {
             <tr><td colspan="6" class="px-4 py-8 text-center text-sm text-[--color-text-muted]/40">No users found.</td></tr>
