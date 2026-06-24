@@ -5,24 +5,26 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.endava.onlineshop.model.enums.Role;
+import org.hibernate.type.SqlTypes;
+
+import java.util.UUID;
 
 @Entity
-@Table(name = "user")
+@Table(name = "`user`")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User extends AuditedEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
-
-    @Column(nullable = false, length = 30)
-    private String password;
 
     @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
@@ -30,7 +32,17 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "role", nullable = false, columnDefinition = "user_role")
+    private Role role = Role.CUSTOMER;
+
+    @Column(name = "default_shipping_address_id")
+    private UUID defaultShippingAddressId;
+
+    @Column(name = "default_billing_address_id")
+    private UUID defaultBillingAddressId;
+
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
 }

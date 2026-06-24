@@ -5,11 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 public class ResponseHandler {
     public static ResponseEntity<APIResponse> errorResponse(String message, HttpStatus statusCode){
-        APIResponse apiResponse = new APIResponse.Builder()
-                .statusCode(statusCode.value())
-                .message(message)
-                .build();
-
+        APIResponse apiResponse = new APIResponse(message, statusCode.value());
         return ResponseEntity.status(statusCode).body(apiResponse);
     }
 }

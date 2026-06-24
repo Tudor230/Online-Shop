@@ -1,0 +1,270 @@
+<app-landing-header />
+
+<main class="overflow-x-hidden min-h-[500vh]">
+  <div 
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-[#0a0a0a] backdrop-blur-2xl transition-all duration-1000 ease-[cubic-bezier(0.4,0,0.2,1)]"
+    [ngClass]="isLoading() ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none scale-105'"
+  >
+    <div class="relative flex flex-col items-center gap-10">
+      <div class="relative flex h-24 w-24 items-center justify-center">
+        <div class="absolute inset-0 rounded-tl-2xl rounded-br-2xl border-[2px] border-primary/80 shadow-[0_0_20px_rgba(136,85,255,0.4)] animate-[spin_3s_linear_infinite]"></div>
+        <div class="absolute inset-3 rounded-tr-xl rounded-bl-xl border-[2px] border-text-secondary/60 animate-[spin_2s_linear_infinite_reverse]"></div>
+        <div class="absolute inset-6 rounded-full border border-white/20 animate-[spin_1.5s_linear_infinite]"></div>
+        <div class="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_12px_rgba(136,85,255,1)] animate-ping"></div>
+      </div>
+      
+      <div class="flex flex-col items-center gap-2.5">
+        <span class="text-sm font-bold uppercase tracking-[0.4em] text-primary animate-pulse">Constructing Shop</span>
+        <span class="text-xs font-medium text-text-secondary/60 tracking-widest uppercase">Assembling Order</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intro dissolve overlay -->
+  <div
+    class="fixed inset-0 z-20 flex flex-col items-center justify-center pointer-events-none"
+    [style.opacity]="introOpacity()"
+    [style.filter]="'blur(' + introBlur() + 'px)'"
+    [style.transform]="'scale(' + introScale() + ')'"
+  >
+    <div class="flex flex-col items-center gap-4 text-center px-safe">
+      <h1 class="text-5xl font-extrabold tracking-tighter text-text-primary sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05]" style="text-shadow: 0 4px 20px rgba(0,0,0,0.55);">
+        Crafted Tech.<br />
+        <span class="font-semibold tracking-tight text-text-primary/80">Customized for You.</span>
+      </h1>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 px-8 py-4 rounded-full">
+      <span class="text-[10px] font-semibold uppercase tracking-[0.3em] text-white">Scroll</span>
+      <div class="relative flex flex-col items-center -space-y-1">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <app-background-3d (modelsLoaded)="onModelsLoaded()" />
+
+  <!-- Section 0: Desk Scene — 3D scroll reveal -->
+  <section class="relative h-[300dvh]" aria-label="Desk setup"></section>
+
+  <div class="relative">
+    <div class="absolute inset-0 bg-bg-default pointer-events-none z-0"></div>
+    <!-- Gradient transition band overlapping the bottom of the 3D scene -->
+    <div class="absolute left-0 right-0 bottom-full h-[6dvh] bg-gradient-to-t from-bg-default to-transparent pointer-events-none z-0"></div>
+    
+    <section class="relative z-10 flex min-h-[85dvh] md:min-h-[100dvh] items-start md:items-center overflow-hidden" aria-label="Hero">
+    <div class="hero-mesh-gradient absolute inset-0 z-0" aria-hidden="true"></div>
+    <div class="hero-grid-pattern absolute inset-0 z-0" aria-hidden="true"></div>
+    <div class="absolute -right-20 top-1/4 h-72 w-72 rounded-full bg-primary/5 blur-3xl z-0" aria-hidden="true"></div>
+    <div class="absolute -left-16 bottom-1/4 h-56 w-56 rounded-full bg-primary/10 blur-3xl z-0" aria-hidden="true"></div>
+
+    <div class="relative z-10 mx-auto w-full max-w-7xl px-safe py-16 md:px-6 md:py-24 lg:py-32">
+      <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8 xl:gap-10">
+        <div class="flex flex-col items-start gap-6 lg:col-span-7 xl:col-span-6 xl:col-start-1 animate-hero-entrance">
+          <h1 class="text-4xl font-extrabold tracking-tighter text-text-primary sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.05] sm:leading-[0.92]">
+            Crafted Tech.<br />
+            <span class="font-semibold tracking-tight text-text-primary/80">Curated for You.</span>
+          </h1>
+
+          <p class="max-w-md text-lg font-normal leading-relaxed text-text-secondary md:text-xl">
+            Precision-built gear for creators, builders, and everyday visionaries. No noise. Just what matters.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 mt-2">
+            <a
+              routerLink="/products"
+              aria-label="Explore the collection"
+              class="group inline-flex min-h-[44px] items-center gap-3 rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all duration-500 ease-premium hover:bg-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-default"
+            >
+              Explore the Collection
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-[1px] group-hover:scale-105" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <a
+              routerLink="/products"
+              class="inline-flex min-h-[44px] items-center text-sm font-medium text-text-secondary underline-offset-4 transition-colors duration-300 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-default focus-visible:rounded-sm"
+            >
+              View all products
+            </a>
+          </div>
+        </div>
+
+        <div class="relative flex h-[400px] w-full items-center justify-center md:h-[500px] lg:col-span-5 xl:col-span-5 xl:col-start-8 lg:h-[600px] lg:mt-16">
+          <div class="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.04] blur-3xl" aria-hidden="true"></div>
+          <div class="relative w-full h-full animate-hero-entrance [animation-delay:200ms]">
+            <!-- Photo cards replaced by 3D PC model -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="relative z-10 mx-auto h-px w-24 bg-gradient-to-r from-transparent via-primary/30 to-transparent" aria-hidden="true"></div>
+
+  <section class="relative z-10 mx-auto w-full max-w-7xl px-safe py-16 md:px-6 md:py-24 lg:px-8" aria-label="Why shop with us">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
+      @for (prop of valueProps(); track prop.title; let i = $index) {
+        <div
+          class="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border-t-2 border-primary/30 bg-surface-default p-6 animate-fade-up transition-colors duration-500 ease-premium hover:bg-surface-elevated/50"
+          [class.range-stagger-1]="i === 0"
+          [class.range-stagger-2]="i === 1"
+          [class.range-stagger-3]="i === 2"
+        >
+          <span class="absolute right-4 top-2 text-6xl font-black leading-none text-primary/10 select-none" aria-hidden="true">0{{ i + 1 }}</span>
+          <div class="relative z-10 flex flex-col gap-4">
+            <div class="h-8 w-8 rounded-lg bg-primary/10" aria-hidden="true"></div>
+            <h3 class="text-base font-semibold tracking-tight text-text-primary">{{ prop.title }}</h3>
+            <p class="text-sm font-normal text-text-secondary">{{ prop.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="relative z-10 mx-auto w-full max-w-7xl overflow-hidden px-safe py-24 md:px-6 md:py-32 lg:px-8" aria-label="Our craft">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="relative animate-slide-in-left">
+        <div class="absolute -inset-4 bg-primary/5 blur-3xl rounded-full" aria-hidden="true"></div>
+        <img src="https://picsum.photos/seed/studio/1200/800" alt="The Studio" class="relative rounded-3xl border border-white/5 shadow-2xl z-10">
+        <div class="absolute -right-8 -bottom-8 w-48 h-48 glass-surface rounded-2xl p-6 hidden md:flex flex-col justify-end gap-2 z-20">
+          <p class="text-xs font-medium text-primary uppercase tracking-widest">Est. 2026</p>
+          <p class="text-sm font-semibold text-text-primary">Quality over quantity, always.</p>
+        </div>
+      </div>
+      
+      <div class="flex flex-col gap-8 animate-fade-up">
+        <div class="flex flex-col gap-4">
+          <h2 class="text-4xl font-extrabold tracking-tight text-text-primary md:text-6xl lg:text-7xl leading-[0.95]">
+            Designed for the<br /> details you notice.
+          </h2>
+        </div>
+        <p class="text-xl leading-relaxed text-text-secondary max-w-xl">
+          Every product in our catalog is hand-selected for build quality, longevity, and understated design. We skip the gimmicks so you can focus on what you create.
+        </p>
+        <div class="h-px w-24 bg-primary/30"></div>
+        <div class="flex items-center gap-6">
+          <div>
+            <p class="text-3xl font-bold text-text-primary">100%</p>
+            <p class="text-xs text-text-secondary uppercase tracking-widest">Selected</p>
+          </div>
+          <div class="w-px h-8 bg-white/10"></div>
+          <div>
+            <p class="text-3xl font-bold text-text-primary">4.9/5</p>
+            <p class="text-xs text-text-secondary uppercase tracking-widest">Rating</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="relative z-10 py-24 md:py-40 animate-fade-up last-section" aria-label="Call to action">
+    <div class="cta-mesh-gradient absolute inset-0 z-0" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl animate-pulse-glow z-0" aria-hidden="true"></div>
+
+    <div class="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 md:gap-8 px-safe text-center md:px-6 lg:px-8">
+      <h2 class="text-5xl font-extrabold tracking-tighter leading-tight text-text-primary md:text-7xl lg:text-8xl">
+        Ready to build<br class="hidden md:block" /> your next setup?
+      </h2>
+      <p class="max-w-lg text-xl text-text-secondary">Browse the collection and find the gear that fits your workflow.</p>
+      <a
+        routerLink="/products"
+        aria-label="Browse the collection"
+        class="group mt-4 inline-flex items-center gap-3 rounded-full bg-primary px-10 py-5 text-lg font-semibold text-primary-foreground transition-all duration-500 ease-premium hover:bg-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-default shadow-2xl shadow-primary/20"
+      >
+        Explore the Collection
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/10 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-0.5 group-hover:scale-110" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <footer class="relative z-10 mt-auto border-t border-surface-elevated/50 bg-surface-default/30 backdrop-blur-sm">
+    <div class="mx-auto w-full max-w-7xl px-4 py-7 md:px-6 lg:px-8">
+      <div class="grid gap-10 lg:grid-cols-[1.5fr_0.9fr_0.9fr_1.2fr] lg:items-start">
+        <section class="lg:pr-4">
+          <div class="inline-flex items-center gap-2 text-text-primary">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">O</span>
+            <span class="text-base font-semibold">Online Shop</span>
+          </div>
+          <p class="mt-3 text-sm text-text-secondary">
+            Build your perfect setup with configurable keyboards, GPUs, and creator-grade accessories.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-sm font-semibold text-text-primary">Shop</h2>
+          <ul class="mt-2 space-y-1.5 text-sm text-text-secondary">
+            <li><a routerLink="/" class="transition-colors duration-200 hover:text-text-primary">Custom PC parts</a></li>
+            <li><a routerLink="/" class="transition-colors duration-200 hover:text-text-primary">Gaming peripherals</a></li>
+            <li><a routerLink="/" class="transition-colors duration-200 hover:text-text-primary">Workspace upgrades</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-sm font-semibold text-text-primary">Support</h2>
+          <ul class="mt-2 space-y-1.5 text-sm text-text-secondary">
+            <li><a routerLink="/profile" class="transition-colors duration-200 hover:text-text-primary">My account</a></li>
+            <li>
+              <a routerLink="/shipping-and-returns" class="transition-colors duration-200 hover:text-text-primary">Shipping and returns</a>
+            </li>
+            <li><a routerLink="/warranty-policy" class="transition-colors duration-200 hover:text-text-primary">Warranty policy</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-sm font-semibold text-text-primary">Buying with us</h2>
+          <ul class="mt-2 space-y-1.5 text-sm text-text-secondary">
+            <li>Secure checkout with encrypted payments</li>
+            <li>48h dispatch on in-stock custom builds</li>
+            <li>Dedicated tuning support for every order</li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="mt-6 flex justify-center">
+        <section class="w-full max-w-2xl rounded-2xl border border-surface-elevated bg-surface-glass px-4 py-4 sm:px-5">
+          <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,1fr)] lg:items-center">
+            <div class="flex flex-wrap items-center gap-x-2 gap-y-1 lg:max-w-2xl">
+              <h2 class="text-sm font-semibold text-text-primary">Stay in the loop</h2>
+              <p class="text-sm text-text-secondary">Get launch alerts and drops.</p>
+            </div>
+
+            <form class="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:justify-self-end lg:min-w-88">
+              <label class="sr-only" for="footer-email">Email address</label>
+              <input
+                id="footer-email"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                class="min-w-0 flex-1 rounded-full border border-surface-elevated bg-surface-default px-4 py-2 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-primary"
+              />
+              <button
+                type="button"
+                class="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary-hover"
+              >
+                Subscribe
+              </button>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      <div class="mt-5 border-t border-surface-elevated pt-4">
+        <div class="flex w-full flex-col gap-2 text-xs text-text-secondary md:flex-row md:items-center md:justify-between">
+          <p>&copy; 2026 Online Shop. Customizable electronics for creators and gamers.</p>
+          <div class="flex flex-wrap gap-3">
+            <a routerLink="/privacy-policy" class="transition-colors duration-200 hover:text-text-primary">Privacy policy</a>
+            <a routerLink="/terms" class="transition-colors duration-200 hover:text-text-primary">Terms of use</a>
+            <a routerLink="/" class="transition-colors duration-200 hover:text-text-primary">Cookie settings</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  </div>
+</main>

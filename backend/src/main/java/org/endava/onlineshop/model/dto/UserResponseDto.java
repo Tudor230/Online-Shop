@@ -2,11 +2,20 @@ package org.endava.onlineshop.model.dto;
 
 import org.endava.onlineshop.model.enums.Role;
 
+import java.time.Instant;
+import java.util.UUID;
+
 public record UserResponseDto(
-        Long id,
+        UUID id,
         String email,
         String firstName,
         String lastName,
-        Role role
+        Role role,
+        UUID defaultShippingAddressId,
+        UUID defaultBillingAddressId,
+        Boolean isActive,
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }
+

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "ps5-console-shell",
+    "category": "Electronics > Video Games > PlayStation > Console Mods",
+    "title": "PS5 Console Shell",
+    "price": 64.99,
+    "description": "Custom matte shell plates with a precision fit that refresh your PS5 look in seconds.",
+    "detailedDescription": "Precision-molded replacement plates align with every vent and port on the PS5 for a factory-smooth fit. The matte finish cuts glare and fingerprints, while the reinforced clips keep the shell locked in place during long sessions.\n\nInstallation is tool-free and takes only a few minutes thanks to the snap-in rails and clear alignment markers. The plates are engineered to preserve airflow, and the kit includes a microfiber cloth and quick-start guide for a clean finish.",
+    "imageName": "product-09.jpg",
+    "imageGalleryNames": [
+      "product-09.jpg",
+      "product-10.jpg",
+      "product-11.jpeg",
+      "product-12.jpg"
+    ],
+    "availableColors": [
+      { "name": "Midnight", "swatch": "text-primary" },
+      { "name": "Nebula Violet", "swatch": "primary" },
+      { "name": "Slate", "swatch": "surface-elevated" }
+    ]
+  },
+  {
+    "id": "ps5-controller",
+    "category": "Electronics > Video Games > PlayStation > Controllers",
+    "title": "PS5 Controller",
+    "price": 79.99,
+    "description": "Adaptive trigger gaming controller tuned for low-latency sessions and long comfort.",
+    "detailedDescription": "DualSense-style controller with adaptive triggers and refined haptics for immersive play across shooters, racers, and story-driven titles. The textured grips and balanced weight reduce fatigue, while the low-latency wireless connection keeps inputs tight.\n\nUSB-C charging and a 3.5 mm headset jack make it easy to plug in and keep playing, and the built-in mic supports quick party chat. The shell is shaped for long sessions, with a smoother trigger pull and improved shoulder button feel.",
+    "imageName": "product-05.jpg",
+    "imageGalleryNames": [
+      "product-05.jpg",
+      "product-06.jpg",
+      "product-07.jpg",
+      "product-08.jpg"
+    ],
+    "availableColors": [
+      { "name": "Cosmic Red", "swatch": "warning" },
+      { "name": "Starlight Blue", "swatch": "primary-hover" },
+      { "name": "White", "swatch": "text-primary" }
+    ]
+  },
+  {
+    "id": "xbox-controller",
+    "category": "Electronics > Video Games > Xbox > Controllers",
+    "title": "Xbox Controller",
+    "price": 69.99,
+    "description": "Textured wireless controller with ergonomic grip and responsive thumbstick precision.",
+    "detailedDescription": "Textured grips and a hybrid D-pad deliver confident control across shooters, racers, and platformers. Tuned thumbsticks and a refined trigger curve give precise input with a smooth return, even during rapid action.\n\nWireless and USB-C connectivity make it easy to pair with console, PC, or mobile, while the share button keeps clips and screenshots one tap away. The controller supports button remapping and runs on standard AA batteries or a rechargeable pack.",
+    "imageName": "product-13.jpg",
+    "imageGalleryNames": [
+      "product-13.jpg",
+      "product-14.jpg",
+      "product-15.jpg",
+      "product-16.jpg"
+    ],
+    "availableColors": [
+      { "name": "Carbon Black", "swatch": "surface-elevated" },
+      { "name": "Pulse Blue", "swatch": "primary" },
+      { "name": "Electric Volt", "swatch": "warning" }
+    ]
+  },
+  {
+    "id": "switch-2-joy-cons",
+    "category": "Electronics > Video Games > Nintendo > Handheld Gear",
+    "title": "Switch 2 Joy-Cons",
+    "price": 89.99,
+    "description": "Next-gen Joy-Cons with improved haptics and sharper motion tracking for party play.",
+    "detailedDescription": "Updated Joy-Cons with tighter motion sensors and improved HD rumble for precise mini-game action and smoother aiming. The sticks feature a refined travel curve for consistent control, and the triggers feel more responsive in fast inputs.\n\nCompatible with the Switch 2 rail system and includes a comfortable grip mode for longer sessions. The upgraded battery management keeps them running through extended party nights, and the pairing process is fast and reliable.",
+    "imageName": "product-17.jpg",
+    "imageGalleryNames": [
+      "product-17.jpg",
+      "product-18.jpg",
+      "product-19.jpg",
+      "product-20.jpg"
+    ],
+    "availableColors": [
+      { "name": "Neon Left", "swatch": "primary-hover" },
+      { "name": "Neon Right", "swatch": "warning" },
+      { "name": "Shadow Gray", "swatch": "text-secondary" }
+    ]
+  },
+  {
+    "id": "ps5-edge-controller",
+    "category": "Electronics > Video Games > PlayStation > Controllers",
+    "title": "PS5 Edge Controller",
+    "price": 999.99,
+    "description": "Highly customizable gaming controller tuned for intense and professional sessions and reliability.",
+    "detailedDescription": "Pro-grade controller with swappable stick modules, adjustable trigger stops, and multiple onboard profiles built for competitive play. The paddles are positioned for quick reach, and the grips stay secure during high-intensity matches.\n\nOn-controller profiles let you swap layouts in seconds, while the trigger stops make rapid firing and quick input changes consistent. Ships with a braided USB-C cable, a hard shell case, and a full accessory kit to keep everything organized.",
+    "imageName": "product-21.jpg",
+    "imageGalleryNames": [
+      "product-21.jpg",
+      "product-22.jpg",
+      "product-23.jpg",
+      "product-24.jpg"
+    ],
+    "availableColors": [
+      { "name": "Cosmic Red", "swatch": "warning" },
+      { "name": "Starlight Blue", "swatch": "primary-hover" },
+      { "name": "White", "swatch": "text-primary" }
+    ]
+  },
+  {
+    "id": "switch-2-controller",
+    "category": "Electronics > Video Games > Nintendo > Controllers",
+    "title": "Switch 2 Controller",
+    "price": 399.99,
+    "description": "Next-gen controller with improved haptics and ergonomic grip for long comfortable sessions.",
+    "detailedDescription": "Full-size Switch 2 controller featuring upgraded haptics, responsive motion controls, and a smoother trigger response. The soft-touch shell and balanced weight keep your hands comfortable over long play sessions.\n\nExtended battery life supports marathon play, and the controller pairs quickly with the console or docked setup. Programmable buttons and a refined D-pad make it easy to tailor your layout for different genres.",
+    "imageName": "product-25.jpg",
+    "imageGalleryNames": [
+      "product-25.jpg",
+      "product-26.jpg",
+      "product-27.jpg",
+      "product-28.jpg"
+    ],
+    "availableColors": [
+      { "name": "Neon Left", "swatch": "primary-hover" },
+      { "name": "Neon Right", "swatch": "warning" },
+      { "name": "Shadow Gray", "swatch": "text-secondary" }
+    ]
+  },
+  {
+    "id": "switch-2-camera",
+    "category": "Electronics > Video Games > Nintendo > Accessories",
+    "title": "Switch 2 Camera",
+    "price": 89.99,
+    "description": "New camera connect and see your friends while you play.",
+    "detailedDescription": "Compact 1080p camera designed for Switch 2 party play and streaming sessions, with clear imaging and balanced color in mixed lighting. A wide-angle lens keeps everyone in frame, and the low-light tuning reduces noise in evening play.\n\nThe built-in privacy shutter slides closed when you are not using it, and the flexible mount works on tabletop or TV placement. The cable is long enough for living room setups and stores neatly when you travel.",
+    "imageName": "product-29.jpg",
+    "imageGalleryNames": [
+      "product-29.jpg",
+      "product-30.jpg",
+      "product-31.jpg",
+      "product-32.jpg"
+    ],
+    "availableColors": [
+      { "name": "Neon Left", "swatch": "primary-hover" },
+      { "name": "Neon Right", "swatch": "warning" },
+      { "name": "Shadow Gray", "swatch": "text-secondary" }
+    ]
+  },
+  {
+    "id": "ps5-headphones",
+    "category": "Electronics > Video Games > PlayStation > Accessories",
+    "title": "PS5 Headphones",
+    "price": 999.99,
+    "description": "Comfortable and reliable headphones, hear each footstep with pinpoint accuracy.",
+    "detailedDescription": "Over-ear wireless headset tuned for 3D audio and competitive clarity with crisp spatial cues. Plush memory-foam cushions and a balanced clamping force keep the fit secure without fatigue.\n\nA flip-to-mute mic and on-cup controls make it easy to adjust chat on the fly, while fast charging delivers hours of play in a short top-up. The headset pairs quickly with PS5 and includes a wired option for low-latency sessions.",
+    "imageName": "product-33.jpg",
+    "imageGalleryNames": [
+      "product-33.jpg",
+      "product-34.jpg",
+      "product-35.jpg",
+      "product-36.jpg"
+    ],
+    "availableColors": [
+      { "name": "Cosmic Red", "swatch": "warning" },
+      { "name": "Starlight Blue", "swatch": "primary-hover" },
+      { "name": "White", "swatch": "text-primary" }
+    ]
+  }
+]
