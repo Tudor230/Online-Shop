@@ -8,9 +8,9 @@
       <input type="search" placeholder="Search products..." class="input w-48 px-3 py-1.5 text-sm" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
       <a routerLink="/admin/products/new" class="btn-primary h-8 px-4 py-1.5 text-xs">Add Product</a>
       @if (selectedIds().size > 0) {
-        <button class="btn-primary px-3 py-1.5 text-xs !bg-[--color-success] hover:!bg-[--color-success]/90" (click)="bulkActivate()">Activate</button>
-        <button class="btn-primary px-3 py-1.5 text-xs !bg-[--color-warning] hover:!bg-[--color-warning]/90" (click)="bulkDeactivate()">Deactivate</button>
-        <button class="btn-primary px-3 py-1.5 text-xs !bg-[--color-danger] hover:!bg-[--color-danger]/90" (click)="bulkDelete()">Delete</button>
+        <button class="btn-primary h-8 px-3 py-1.5 text-xs !bg-[--color-success] hover:!bg-[--color-success]/90" (click)="bulkActivate()">Activate</button>
+        <button class="btn-primary h-8 px-3 py-1.5 text-xs !bg-[--color-warning] hover:!bg-[--color-warning]/90" (click)="bulkDeactivate()">Deactivate</button>
+        <button class="btn-primary h-8 px-3 py-1.5 text-xs !bg-[--color-danger] hover:!bg-[--color-danger]/90" (click)="bulkDelete()">Delete</button>
       }
     </div>
   </div>
