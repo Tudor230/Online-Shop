@@ -33,9 +33,10 @@ public class ProductController {
     @GetMapping
     public ProductSearchPageDto getProducts(
         @RequestParam(name = "q", required = false) String query,
+        @RequestParam(name = "category", required = false) String categorySlug,
         @PageableDefault(size = 25) Pageable pageable
     ) {
-        return productService.getProducts(query, pageable);
+        return productService.getProducts(query, categorySlug, pageable);
     }
 
     @GetMapping("/{slug}")

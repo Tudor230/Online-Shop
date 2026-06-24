@@ -1,54 +1,62 @@
-<section class="mx-auto w-full max-w-7xl px-4 py-14 md:px-6 lg:px-8">
-  <header class="mb-10 flex flex-col gap-2">
-    <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Products</span>
-    <h1 class="text-[2rem] font-light tracking-[-0.02em] text-[--color-text] leading-tight">Gaming Tech Grid</h1>
-    <p class="text-sm text-[--color-text-muted]">Customized accessories for your next setup upgrade.</p>
-  </header>
+<section class="mx-auto flex w-full max-w-7xl gap-6 px-4 py-14 md:px-6 lg:px-8">
+  <app-category-sidebar
+    [categories]="categories()"
+    [activeCategoryPath]="activeCategoryPath()"
+    (categorySelected)="selectCategory($event)"
+  />
 
-  @if (isLoading()) {
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 2xl:grid-cols-5">
-      @for (item of skeletonItems; track item) {
-        <div class="card p-4 !shadow-none"><div class="aspect-[4/3] rounded-sm bg-[#f6f9fc] skeleton-wave"></div><div class="mt-4 h-4 w-3/4 rounded-sm bg-[#f6f9fc] skeleton-wave"></div><div class="mt-3 h-4 w-1/3 rounded-sm bg-[#f6f9fc] skeleton-wave"></div></div>
-      }
-    </div>
-  } @else if (hasError()) {
-    <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center !shadow-none">
-      <p class="text-base font-normal text-[--color-text]">Search is unavailable right now</p>
-      <p class="text-sm text-[--color-text-muted]">Please try again in a moment.</p>
-    </div>
-  } @else if (!products().length) {
-    <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center !shadow-none">
-      <div class="flex h-12 w-12 items-center justify-center rounded-sm bg-[#f6f9fc] text-[--color-text-muted]/50">◎</div>
-      <p class="text-base font-normal text-[--color-text]">No products found</p>
-      <p class="text-sm text-[--color-text-muted]">@if (isSearchActive()) { Try changing the prompt to describe what you need. } @else { Try refreshing or browse the featured collection next. }</p>
-    </div>
-  } @else {
-    <div class="card mb-6 flex flex-col gap-3 px-4 py-3 text-sm text-[--color-text-muted] md:flex-row md:items-center md:justify-between !shadow-none">
-      <p class="text-xs font-normal text-[--color-text]">{{ resultRangeLabel() }}</p>
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="text-xs">Show:</span>
-        @for (option of pageSizeOptions; track option) {
-          <button type="button" class="btn-secondary min-w-10 px-3 py-1.5 text-xs font-normal" [ngClass]="option === pageSize() ? '!bg-[#061b31] !text-white !border-[#061b31]' : ''" [attr.aria-pressed]="option === pageSize()" (click)="changePageSize(option)">{{ option }}</button>
+  <div class="min-w-0 flex-1">
+    <header class="mb-10 flex flex-col gap-2">
+      <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-[--color-brand]">Products</span>
+      <h1 class="text-[2rem] font-light tracking-[-0.02em] text-[--color-text] leading-tight">Gaming Tech Grid</h1>
+      <p class="text-sm text-[--color-text-muted]">Customized accessories for your next setup upgrade.</p>
+    </header>
+
+    @if (isLoading()) {
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5 2xl:grid-cols-4">
+        @for (item of skeletonItems; track item) {
+          <div class="card p-4 !shadow-none"><div class="aspect-[4/3] rounded-sm bg-[#f6f9fc] skeleton-wave"></div><div class="mt-4 h-4 w-3/4 rounded-sm bg-[#f6f9fc] skeleton-wave"></div><div class="mt-3 h-4 w-1/3 rounded-sm bg-[#f6f9fc] skeleton-wave"></div></div>
         }
       </div>
-    </div>
-
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 2xl:grid-cols-5">
-      @for (product of products(); track product.id) {
-        <app-product-card [product]="product" [isWishlisted]="isProductWishlisted(product.id)" (selected)="openProductDetails(product.slug)" (addToCart)="addProductToCart(product.id)" (saveToWishlist)="saveProductToWishlist(product.id)"/>
-      }
-    </div>
-
-    @if (shouldShowPagination()) {
-      <div class="card mt-10 flex flex-wrap items-center justify-center gap-2 px-4 py-3 text-sm text-[--color-text-muted] !shadow-none">
-        <button type="button" class="btn-secondary px-4 py-2 text-sm" [disabled]="!hasPreviousPage()" [class.opacity-40]="!hasPreviousPage()" (click)="goToPreviousPage()">&lt; Prev</button>
-        @for (pageLink of pageLinks(); track $index) {
-          @if (isPageLink(pageLink)) {
-            <button type="button" class="btn-secondary min-w-10 px-3 py-2 text-sm font-normal" [ngClass]="pageLink === currentPage() ? '!bg-[#061b31] !text-white !border-[#061b31]' : ''" [disabled]="pageLink === currentPage()" (click)="goToPageLink(pageLink)">{{ pageLink }}</button>
-          } @else { <span class="px-1 text-[--color-text-muted]/50">...</span> }
-        }
-        <button type="button" class="btn-secondary px-4 py-2 text-sm" [disabled]="!hasNextPage()" [class.opacity-40]="!hasNextPage()" (click)="goToNextPage()">Next &gt;</button>
+    } @else if (hasError()) {
+      <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center !shadow-none">
+        <p class="text-base font-normal text-[--color-text]">Search is unavailable right now</p>
+        <p class="text-sm text-[--color-text-muted]">Please try again in a moment.</p>
       </div>
+    } @else if (!products().length) {
+      <div class="card flex min-h-64 flex-col items-center justify-center gap-3 p-8 text-center !shadow-none">
+        <div class="flex h-12 w-12 items-center justify-center rounded-sm bg-[#f6f9fc] text-[--color-text-muted]/50">◎</div>
+        <p class="text-base font-normal text-[--color-text]">No products found</p>
+        <p class="text-sm text-[--color-text-muted]">@if (isSearchActive()) { Try changing the prompt to describe what you need. } @else { Try refreshing or browse the featured collection next. }</p>
+      </div>
+    } @else {
+      <div class="card mb-6 flex flex-col gap-3 px-4 py-3 text-sm text-[--color-text-muted] md:flex-row md:items-center md:justify-between !shadow-none">
+        <p class="text-xs font-normal text-[--color-text]">{{ resultRangeLabel() }}</p>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs">Show:</span>
+          @for (option of pageSizeOptions; track option) {
+            <button type="button" class="btn-secondary min-w-10 px-3 py-1.5 text-xs font-normal" [ngClass]="option === pageSize() ? '!bg-[#061b31] !text-white !border-[#061b31]' : ''" [attr.aria-pressed]="option === pageSize()" (click)="changePageSize(option)">{{ option }}</button>
+          }
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-5 2xl:grid-cols-4">
+        @for (product of products(); track product.id) {
+          <app-product-card [product]="product" [isWishlisted]="isProductWishlisted(product.id)" (selected)="openProductDetails(product.slug)" (addToCart)="addProductToCart(product.id)" (saveToWishlist)="saveProductToWishlist(product.id)"/>
+        }
+      </div>
+
+      @if (shouldShowPagination()) {
+        <div class="card mt-10 flex flex-wrap items-center justify-center gap-2 px-4 py-3 text-sm text-[--color-text-muted] !shadow-none">
+          <button type="button" class="btn-secondary px-4 py-2 text-sm" [disabled]="!hasPreviousPage()" [class.opacity-40]="!hasPreviousPage()" (click)="goToPreviousPage()">&lt; Prev</button>
+          @for (pageLink of pageLinks(); track $index) {
+            @if (isPageLink(pageLink)) {
+              <button type="button" class="btn-secondary min-w-10 px-3 py-2 text-sm font-normal" [ngClass]="pageLink === currentPage() ? '!bg-[#061b31] !text-white !border-[#061b31]' : ''" [disabled]="pageLink === currentPage()" (click)="goToPageLink(pageLink)">{{ pageLink }}</button>
+            } @else { <span class="px-1 text-[--color-text-muted]/50">...</span> }
+          }
+          <button type="button" class="btn-secondary px-4 py-2 text-sm" [disabled]="!hasNextPage()" [class.opacity-40]="!hasNextPage()" (click)="goToNextPage()">Next &gt;</button>
+        </div>
+      }
     }
-  }
+  </div>
 </section>
